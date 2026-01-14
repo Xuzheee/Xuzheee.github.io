@@ -1,19 +1,26 @@
 ---
 const { sideBarActiveItemID } = Astro.props;
-const activeClass = "bg-base-300"; // For primary color replace with `active` class
+const activeClass = "bg-base-300"; // 选中时的背景颜色
 ---
 
 <ul class="menu grow shrink menu-md overflow-y-auto">
+    <!-- Home -->
     <li><a class="py-3 text-base" id="home" href="/">Home</a></li>
-    <li><a class="py-3 text-base" id="projects" href="/projects">Projects</a></li>
-    <li><a class="py-3 text-base" id="services" href="/services">Services</a></li>
-    <li><a class="py-3 text-base" id="store" href="/store">Store</a></li>
-    <li><a class="py-3 text-base" id="blog" href="/blog/">Blog</a></li>
+    
+    <!-- CV (简历) - 放在 Home 之后 -->
     <li><a class="py-3 text-base" id="cv" href="/cv">CV</a></li>
+
+    <!-- Projects (项目) -->
+    <li><a class="py-3 text-base" id="projects" href="/projects">Projects</a></li>
+
+    <!-- Blog (博客) -->
+    <li><a class="py-3 text-base" id="blog" href="/blog/">Blog</a></li>
+    
+    <!-- Contact (联系) -->
     <li>
         <a
             class="py-3 text-base"
-            href="mailto:contact.manuelernestog@gmail.com"
+            href="mailto:huangxuzhe12@163.com"
             target="_blank"
             referrerpolicy="no-referrer-when-downgrade">Contact</a
         >
@@ -24,3 +31,4 @@ const activeClass = "bg-base-300"; // For primary color replace with `active` cl
 const activeItemElem = document.getElementById(sideBarActiveItemID);
 activeItemElem && activeItemElem.classList.add(activeClass);
 </script>
+

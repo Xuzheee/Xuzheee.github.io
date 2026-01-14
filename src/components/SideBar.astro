@@ -12,12 +12,22 @@ const { sideBarActiveItemID } = Astro.props;
       <a href="/">
         <div class="avatar transition ease-in-out hover:scale-[102%] block m-auto">
           <div class="w-[8.5rem]">
-            <Image class="mask mask-circle" format="webp" width={300} height={300} src="/profile.webp" alt="Profile image" />
+            <!-- 这里的 /profile.jpg 对应你刚刚上传到 public 文件夹的图片文件名 -->
+            <!-- 如果你上传的是 png，请改为 /profile.png -->
+            <img class="mask mask-circle" format="webp" width={300} height={300} src="/profile.jpg" alt="Profile image" />
           </div>
         </div>
       </a>
     </div>
+    
+    <!-- 侧边栏的名字和简介 -->
+    <div class="mx-auto text-center mb-6">
+      <h1 class="text-xl font-bold mb-1">杨黄旭哲</h1>
+      <h2 class="text-sm text-opacity-80">数据分析/电子游戏</h2>
+    </div>
+
     <SideBarMenu sideBarActiveItemID={sideBarActiveItemID} />
     <SideBarFooter />
   </aside>
 </div>
+
