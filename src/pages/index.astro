@@ -13,11 +13,11 @@ const last_posts = posts.slice(0, 3);
   <div class="pb-12 mt-5">
     <div class="text-xl py-1">你好 👋</div>
     <div class="text-5xl font-bold">我是 杨黄旭哲</div>
-    <div class="text-3xl py-3 font-bold">计算社会科学硕士研究生</div>
+    <div class="text-3xl py-3 font-bold">计算社会科学(统计学)硕士研究生</div>
     <div class="py-2">
       <text class="text-lg">
         本科毕业于<b>中国农业大学</b>（社会学），目前在<b>香港中文大学（深圳）</b>攻读计算社会科学硕士。<br/>
-        我擅长结合社会学的定性洞察与计算机科学的定量技术。熟练掌握 Python (Pandas/Numpy/Scikit-learn)、SQL 及 Web 开发，致力于数据分析、大模型 (LLM) 与社会模拟 (Agent-based Modeling) 的交叉研究。
+        我擅长结合社会学的定性洞察与计算机科学的定量技术。熟练掌握 Python (Pandas/Numpy/Scikit-learn)、SQL 及 Web 开发，致力于数据分析、自然语言处理、大模型 (LLM) 与社会模拟 (Agent-based Modeling) 的交叉研究。
       </text>
     </div>
     <div class="mt-8">
@@ -36,7 +36,7 @@ const last_posts = posts.slice(0, 3);
       title="计算社会科学 理学硕士"
       subtitle="2025.09 - 2027.06 (预计) | 香港中文大学（深圳）"
     >
-      <p>主修课程：社会计算、数据挖掘、网络科学。研究方向：机器学习与大模型多智能体模拟(GABM)，游戏制作和心理评估 。</p>
+      <p>主修课程：社会计算、数据挖掘、统计模型。研究方向：机器学习与社会计算，大模型驱动的Agent模拟（GABM），游戏制作和心理评估 。</p>
     </TimeLineElement>
 
     <TimeLineElement
@@ -45,7 +45,7 @@ const last_posts = posts.slice(0, 3);
     >
       <p>
         独立开发 Flask/Django 后端，集成 GPT/Qwen 大模型接口。
-        编写 Scrapy/Selenium 爬虫采集 30万+ 条多模态数据，构建 Ontology Learning 数据库。
+        编写 Scrapy/Selenium 爬虫采集 30万+ 条多模态数据，利用应急事件图片数据构建 Ontology Learning 数据库。
       </p>
     </TimeLineElement>
 
@@ -62,7 +62,7 @@ const last_posts = posts.slice(0, 3);
       title="社会学 法学学士"
       subtitle="2021.09 - 2025.07 | 中国农业大学"
     >
-       <p>核心课程：社会科学统计分析、高级统计模型、定量研究方法。曾获优秀学生记者奖项。</p>
+       <p>核心课程：社会科学统计分析、定量研究方法、社会政策理论。曾获优秀学生记者奖项。</p>
     </TimeLineElement>
   </div>
   
@@ -77,24 +77,173 @@ const last_posts = posts.slice(0, 3);
     <div class="text-3xl w-full font-bold mb-5 mt-10">精选项目 Featured Projects</div>
   </div>
 
-  <HorizontalCard
-    title="Seven Angry Man: 多智能体辩论模拟"
-    img="/project1.png"
-    desc="基于 LangChain 和 Streamlit 开发的 GABM Webapp。基于经典电影《Twelve Angry Man》，构建拥有不同性格特征和经历的大模型 Agent，模拟群体辩论与极化现象。"
-    url="https://seven-angry-agent-f6vjdwtdxgluau6qkvfmxv.streamlit.app/"
-    badge="LLM Agent"
-  />
-  <div class="divider my-0"></div>
-
-
-
-  <HorizontalCard
+    <HorizontalCard
     title="Anti Emo: 心理治愈游戏"
     img="/project2.png"
     desc="关注电子游戏与心理健康的结合。合作开发的心理治愈游戏，包含完整的心理学评估模块。使用 Unity 脚本开发与 Web 部署。"
     url="https://anti-emo.netlify.app/"
     badge="Game & Psych"
   />
+<div class="divider my-0"></div>  
+  
+  <HorizontalCard
+    title="Seven Angry Man: 多智能体辩论模拟"
+    img="/project1.png"
+    desc="基于 LangChain 和 Streamlit 开发的 GABM Webapp。基于经典电影《Twelve Angry Man》，构建拥有不同性格特征和经历的大模型 Agent，模拟群体辩论与极化现象。"
+    url="https://zhuanlan.zhihu.com/p/1985132118804829175"
+    badge="LLM Agent"
+  />
+
+
+
+
+
+<!-- 分隔线 -->
+<div class="divider my-0"></div>
+
+<!-- 兴趣爱好板块开始 -->
+<div class="pb-12 mt-5">
+  <div class="text-3xl w-full font-bold mb-5">个人兴趣 & 爱好 Interests</div>
+
+  <!-- 1. 徒步部分 -->
+  <div class="py-4">
+    <div class="text-xl font-semibold mb-2 flex items-center gap-2">
+      🏔️ 徒步 Hiking
+    </div>
+    <p class="text-lg mb-4 text-justify">
+      我相信双脚丈量大地的力量。热爱在周末逃离城市，探索自然。这里记录了我征服过的山川和看过的风景。
+    </p>
+
+    <!-- 
+      修改点：
+      1. 删除了 bg-black，改为 bg-base-100 (默认背景色/白色)。
+      2. 保留了 border (边框) 和 shadow (阴影)，这样即使背景是白的，轮播图区域也有个清晰的范围。
+    -->
+    <div class="carousel w-full rounded-xl shadow-lg border border-base-200 h-[500px] bg-base-100">
+      
+      <!-- 第一张 -->
+      <div id="hike-slide1" class="carousel-item relative w-full">
+        <!-- object-contain: 保持图片比例，空白处显示背景色 -->
+        <img src="/hobbies/hike1.jpg" class="w-full h-full object-contain" />
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+          <!-- 按钮改回标准样式，确保在白色背景上也看得见 -->
+          <a href="#hike-slide4" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
+          <a href="#hike-slide2" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
+        </div>
+      </div>
+      
+      <!-- 第二张 -->
+      <div id="hike-slide2" class="carousel-item relative w-full">
+        <img src="/hobbies/hike2.jpg" class="w-full h-full object-contain" />
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+          <a href="#hike-slide1" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
+          <a href="#hike-slide3" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
+        </div>
+      </div>
+      
+      <!-- 第三张 -->
+      <div id="hike-slide3" class="carousel-item relative w-full">
+        <img src="/hobbies/hike3.jpg" class="w-full h-full object-contain" />
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+          <a href="#hike-slide2" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
+          <a href="#hike-slide4" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
+        </div>
+      </div>
+
+      <!-- 第四张 -->
+      <div id="hike-slide4" class="carousel-item relative w-full">
+        <img src="/hobbies/hike4.jpg" class="w-full h-full object-contain" />
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+          <a href="#hike-slide3" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
+          <a href="#hike-slide1" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 2. 运动部分 -->
+  <div class="py-4">
+    <div class="text-xl font-semibold mb-2 flex items-center gap-2">
+      🏀 运动 Sports
+    </div>
+    <p class="text-lg mb-4 text-justify">
+      运动是我保持活力的方式，它让我时刻维持最佳状态。我最喜欢的运动是篮球和游泳。
+    </p>
+
+    <div class="carousel w-full rounded-xl shadow-lg border border-base-200 h-[500px] bg-base-100">
+      
+      <div id="sport-slide1" class="carousel-item relative w-full">
+        <img src="/hobbies/sport1.jpg" class="w-full h-full object-contain" />
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+          <a href="#sport-slide3" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
+          <a href="#sport-slide2" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
+        </div>
+      </div>
+
+      <div id="sport-slide2" class="carousel-item relative w-full">
+        <img src="/hobbies/sport2.jpg" class="w-full h-full object-contain" />
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+          <a href="#sport-slide1" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
+          <a href="#sport-slide3" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
+        </div>
+      </div>
+
+      <div id="sport-slide3" class="carousel-item relative w-full">
+        <img src="/hobbies/sport3.jpg" class="w-full h-full object-contain" />
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+          <a href="#sport-slide2" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
+          <a href="#sport-slide1" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. 游戏部分 -->
+  <div class="py-4">
+    <div class="text-xl font-semibold mb-2 flex items-center gap-2">
+      🎮 游戏 Gaming History
+    </div>
+    <p class="text-lg mb-4 text-justify">
+      我相信游戏不仅仅是娱乐，更是对我们人生经历以外未知世界的探索。我喜欢电影和音乐，电影是一门将画面和音乐结合起来的艺术，如果说电影把人的生命延长了三倍，那么游戏就将人的生命延长了十倍。游戏就像电影在三维层面的延续，我们不只是听到、看到电影主角们的故事，更是参与甚至影响他们的选择，这或许是我们在现实生活从未有过的经历，但却能在虚拟世界中轻易实现。我喜欢作为V在Night City里体验未来赛博世界的生活，和Nathan在印度洋上海盗建立的乌托邦寻找失落的遗产，或是作为一个中世纪骑士和Henry一起参与到波西米亚的历史故事中。我们跨越过去、现在和未来，体验到了不同人物的故事。
+    </p>
+
+    <!-- 游戏部分高度保持 h-96 (384px) 即可，因为游戏截图通常比较宽 -->
+    <div class="carousel w-full rounded-xl shadow-lg border border-base-200 h-80 md:h-96 bg-base-100">
+      
+      <div id="game-slide1" class="carousel-item relative w-full">
+        <img src="/hobbies/game1.jpg" class="w-full h-full object-contain" />
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+          <a href="#game-slide3" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
+          <a href="#game-slide2" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
+        </div>
+      </div>
+
+      <div id="game-slide2" class="carousel-item relative w-full">
+        <img src="/hobbies/game2.png" class="w-full h-full object-contain" />
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+          <a href="#game-slide1" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
+          <a href="#game-slide3" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
+        </div>
+      </div>
+
+      <div id="game-slide3" class="carousel-item relative w-full">
+        <img src="/hobbies/game3.png" class="w-full h-full object-contain" />
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+          <a href="#game-slide2" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
+          <a href="#game-slide1" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<!-- 兴趣爱好板块结束 -->
+
+
+
 
  
 </BaseLayout>

@@ -4,23 +4,56 @@ import TimeLineElement from "../components/cv/TimeLine.astro";
 ---
 
 <BaseLayout title="简历 | 杨黄旭哲" sideBarActiveItemID="cv">
-  <div class="mb-5">
-    <div class="text-3xl w-full font-bold">个人简介 Profile</div>
-  </div>
 
-  <div class="mb-10 text-justify">
-    <p>
-      我是杨黄旭哲，一名计算社会科学方向的硕士研究生。我擅长结合<b>社会学的定性洞察</b>与<b>计算机科学的定量技术</b>。
-      在校期间，我主修定量研究方法与计算建模，拥有丰富的社会调查、数据分析及 Web 开发经验。
-      致力于用数据洞察社会行为，用游戏机制连接人心。
-    </p>
-    <ul class="list-disc md:columns-2 columns-2 mx-6 mt-4">
-      <li>邮箱: huangxuzhe12@163.com</li>
-      <li>电话: 13430811082</li>
-      <li>英语: CET-6 / 雅思 6.5</li>
-      <li>Github: <a href="https://github.com/Xuzheee" target="_blank" class="link">@Xuzheee</a></li>
-    </ul>
+<!-- 个人简介板块开始 -->
+<div class="mb-12">
+  <div class="text-3xl font-bold mb-5">个人简介 Profile</div>
+
+  <!-- Flex 容器：在大屏幕上左右排列(row)，手机上上下排列(col) -->
+  <div class="flex flex-col md:flex-row gap-6 md:gap-10 items-start">
+    
+    <!-- 左侧：文字介绍 -->
+    <div class="flex-1 order-2 md:order-1">
+      <p class="text-lg mb-6 text-justify leading-relaxed">
+        我是杨黄旭哲，一名计算社会科学方向的硕士研究生。我<span class="font-bold text-primary">擅长结合社会学的定性洞察与计算机科学的定量技术</span>。在校期间，我主修定量研究方法与计算建模，拥有丰富的社会调查、数据分析及 Web 开发经验。致力于用数据洞察社会行为，用游戏机制连接人心。
+      </p>
+
+      <!-- 联系方式网格 -->
+      <ul class="grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-4 text-base">
+        <li class="flex items-center gap-2">
+          <span>📧</span> <span class="font-semibold">邮箱:</span> huangxuzhe12@163.com
+        </li>
+        <li class="flex items-center gap-2">
+          <span>🗣️</span> <span class="font-semibold">英语:</span> CET-6 / 雅思 6.5
+        </li>
+        <li class="flex items-center gap-2">
+          <span>📞</span> <span class="font-semibold">电话:</span> 13430811082
+        </li>
+        <li class="flex items-center gap-2">
+          <span>🐙</span> <span class="font-semibold">Github:</span> 
+          <a href="https://github.com/Xuzheee" target="_blank" class="link link-primary hover:text-secondary transition-colors">@Xuzheee</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 右侧：证件照 -->
+    <div class="flex-shrink-0 order-1 md:order-2 w-32 md:w-40 mx-auto md:mx-0">
+      <!-- 
+           aspect-[3/4]: 强制保持 3:4 的证件照比例
+           object-cover: 填满容器
+           shadow-xl: 增加立体感
+           rotate-2: 稍微一点点倾斜，增加设计感（不喜欢可以删掉这个类）
+      -->
+      <div class="aspect-[3/4] w-full relative rounded-xl overflow-hidden shadow-xl border-4 border-white rotate-2 hover:rotate-0 transition-transform duration-300">
+        <!-- 请确保图片放在 public 文件夹下，名字叫 avatar.jpg，或者修改这里的 src -->
+        <img src="/avatar.jpg" alt="杨黄旭哲" class="w-full h-full object-cover" />
+      </div>
+    </div>
+
   </div>
+</div>
+<!-- 个人简介板块结束 -->
+
 
   <div class="mb-5">
     <div class="text-3xl w-full font-bold">教育背景 Education</div>
