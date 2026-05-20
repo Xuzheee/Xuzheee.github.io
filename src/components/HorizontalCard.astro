@@ -1,43 +1,109 @@
 ---
-const { title, img, desc, url, badge, tags, target = "_blank" } = Astro.props;
+const {
+  title,
+  img,
+  desc,
+  url = "#",
+  badge,
+  tags,
+  target = "_blank",
+  role,
+  stack,
+  result,
+  cta = "查看详情",
+} = Astro.props;
 import { Image } from "astro:assets";
 const tag_url = url.split("/").slice(0, -1).join("/") + "/tag";
+const isPlaceholderLink = url === "#";
+import Icon from "./Icon.astro";
 ---
 
-<div
-  class="rounded-lg bg-base-100 hover:shadow-xl transition ease-in-out hover:scale-[102%]"
->
-  <a href={url} target={target}>
-    <div class="hero-content flex-col md:flex-row">
-      {
-        img && (
+<article class="glow-card rounded-lg border border-base-300 bg-base-100 transition ease-in-out">
+  <div class="hero-content flex-col items-start md:flex-row">
+    {
+      img && (
+        <a href={url} target={isPlaceholderLink ? "_self" : target} class="w-full md:w-auto">
           <Image
             src={img}
             width={750}
             height={422}
             format="webp"
             alt={title}
-            class="max-w-full md:max-w-[13rem] rounded-lg"
+            class="project-card__image w-full rounded-lg object-cover md:max-w-[14rem]"
           />
-        )
-      }
-      <div class="grow w-full">
-        <h1 class="text-xl font-bold">
-          {title}
-          {badge && <div class="badge badge-secondary mx-2">{badge}</div>}
-        </h1>
-        <p class="py-1 text-1xl">{desc}</p>
-        <div class="card-actions justify-end">
-          {
-            tags &&
-              tags.map((tag) => (
-                <a href={`${tag_url}/${tag}`} class="badge badge-outline">
-                  {tag}
-                </a>
-              ))
-          }
-        </div>
+        </a>
+      )
+    }
+    <div class="grow w-full">
+      <div class="flex flex-wrap items-center gap-2">
+        <h2 class="text-xl font-bold leading-snug">{title}</h2>
+        {!isPlaceholderLink && <Icon name="externalLink" class="h-4 w-4 text-primary" />}
+        {badge && <span class="badge badge-secondary">{badge}</span>}
+      </div>
+      <p class="py-2 text-base leading-relaxed">{desc}</p>
+
+      {(role || stack || result) && (
+        <dl class="grid gap-2 py-1 text-sm md:grid-cols-3">
+          {role && (
+            <div>
+              <dt class="font-semibold text-base-content/70">角色</dt>
+              <dd>{role}</dd>
+            </div>
+          )}
+          {stack && (
+            <div>
+              <dt class="font-semibold text-base-content/70">技术</dt>
+              <dd>{stack}</dd>
+            </div>
+          )}
+          {result && (
+            <div>
+              <dt class="font-semibold text-base-content/70">亮点</dt>
+              <dd>{result}</dd>
+            </div>
+          )}
+        </dl>
+      )}
+
+      <div class="mt-3 flex flex-wrap items-center gap-2">
+        {
+          tags &&
+            tags.map((tag) => (
+              <a href={`${tag_url}/${tag}`} class="badge badge-outline">
+                {tag}
+              </a>
+            ))
+        }
+        {
+          !isPlaceholderLink && (
+            <a href={url} target={target} class="project-card__cta btn btn-outline btn-sm ml-auto">
+              {cta}<Icon name="arrowRight" class="project-card__arrow h-4 w-4" />
+            </a>
+          )
+        }
       </div>
     </div>
-  </a>
-</div>
+  </div>
+</article>
+
+<style>
+  .project-card__image {
+    transition: transform 220ms ease;
+  }
+
+  article:hover .project-card__image {
+    transform: scale(1.035);
+  }
+
+  .project-card__cta {
+    gap: 0.35rem;
+  }
+
+  .project-card__arrow {
+    transition: transform 180ms ease;
+  }
+
+  .project-card__cta:hover .project-card__arrow {
+    transform: translateX(3px);
+  }
+</style>

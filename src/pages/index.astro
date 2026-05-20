@@ -1,250 +1,209 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HorizontalCard from "../components/HorizontalCard.astro";
+import Icon from "../components/Icon.astro";
+import SkillMarquee from "../components/SkillMarquee.astro";
 import TimeLineElement from "../components/cv/TimeLine.astro";
 import { getCollection } from "astro:content";
 
 const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const last_posts = posts.slice(0, 3);
+
+const highlights = [
+  {
+    value: "30万+",
+    label: "多模态数据样本",
+    icon: "database",
+    desc: "在 URAI Lab 参与应急事件研究数据体系建设，完成新闻与社交媒体多源数据采集、图像信息抽取、结构化标注与模型评测流程设计。",
+  },
+  {
+    value: "10,000+",
+    label: "政务文本分析",
+    icon: "fileSearch",
+    desc: "清洗并分析厦门 12345 平台用户反馈数据，使用 TF-IDF 与 K-means 识别高频诉求主题，为工单分类和分派规则优化提供数据支持。",
+  },
+  {
+    value: "AI Agent",
+    label: "研究工具",
+    icon: "bot",
+    desc: "设计 Deep Research Agent 工作流，将搜索、抓取、证据筛选、结构化生成和质量检查串联成可追溯的产品研究流程。",
+  },
+  {
+    value: "HCI",
+    label: "Human-AI Interaction",
+    icon: "users",
+    desc: "关注 AI 工具如何进入真实工作流，尤其是研究辅助、专注管理、游戏心理、社会模拟和人机协作体验。",
+  },
+];
 ---
 
 <BaseLayout sideBarActiveItemID="home">
-  <!-- 1. 个人介绍区域 -->
-  <div class="pb-12 mt-5">
-    <div class="text-xl py-1">你好 👋</div>
-    <div class="text-5xl font-bold">我是 杨黄旭哲</div>
-    <div class="text-3xl py-3 font-bold">计算社会科学(统计学)硕士研究生</div>
-    <div class="py-2">
-      <text class="text-lg">
-        本科毕业于<b>中国农业大学</b>（社会学），目前在<b>香港中文大学（深圳）</b>攻读计算社会科学硕士。<br/>
-        我擅长结合社会学的定性洞察与计算机科学的定量技术。熟练掌握 Python (Pandas/Numpy/Scikit-learn)、SQL 及 Web 开发，致力于数据分析、自然语言处理、大模型 (LLM) 与社会模拟 (Agent-based Modeling) 的交叉研究。
-      </text>
+  <section class="reveal pb-12 pt-2">
+    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Portfolio</p>
+    <h1 class="mt-4 text-4xl font-bold leading-tight md:text-6xl">你好，我是杨黄旭哲。</h1>
+    <p class="mt-5 max-w-3xl text-2xl font-semibold leading-snug md:text-3xl">
+      计算社会科学（统计学）硕士研究生，关注 AI Agent、数据分析、社会计算与 Human-AI Interaction。
+    </p>
+    <p class="mt-5 max-w-3xl text-lg leading-relaxed text-base-content/80">
+      我擅长把社会科学问题转化为可计算、可验证、可展示的研究与产品流程：从数据采集、文本分析、模型评估，到 AI Agent 工作流设计和 Web 原型开发。
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a class="btn btn-primary" href="/projects">查看项目</a>
+      <a class="btn btn-outline" href="/cv">查看简历</a>
+      <a class="btn btn-ghost" href="/resume.pdf" download>下载 Resume PDF</a>
     </div>
-    <div class="mt-8">
-      <a class="btn" href="mailto:huangxuzhe12@163.com" target="_blank"> 联系我</a>
-      <a class="btn btn-outline ml-5" href="https://github.com/Xuzheee" target="_blank"> GitHub</a>
+  </section>
+
+  <section class="reveal reveal-delay-1 mb-12">
+    <div class="grid gap-4 md:grid-cols-2">
+      {
+        highlights.map((item) => (
+          <div class="glow-card rounded-lg border border-base-300 bg-base-100 p-5">
+            <span class="icon-badge mb-4">
+              <Icon name={item.icon} class="h-5 w-5" />
+            </span>
+            <div class="text-2xl font-bold">{item.value}</div>
+            <div class="mt-1 text-base font-semibold">{item.label}</div>
+            <p class="mt-2 text-sm leading-relaxed text-base-content/70">{item.desc}</p>
+          </div>
+        ))
+      }
     </div>
-  </div>
+  </section>
 
-  <!-- 2. CV (简历) 摘要区域 -->
-  <div class="mb-5">
-    <div class="text-3xl w-full font-bold">简历 Resume</div>
-  </div>
+  <section class="reveal reveal-delay-2 mb-12">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Selected Work</p>
+        <h2 class="mt-2 text-3xl font-bold">精选项目</h2>
+        <p class="mt-3 max-w-3xl leading-relaxed text-base-content/75">
+          这些项目集中展示我如何把社会科学问题、数据分析方法和 AI Agent 技术转化为可运行的工具、研究流程和交互式原型。
+        </p>
+      </div>
+      <a href="/projects" class="btn btn-outline btn-sm">查看全部项目</a>
+    </div>
 
-  <div class="time-line-container grid gap-4 mb-10">
-    <TimeLineElement
-      title="计算社会科学 理学硕士"
-      subtitle="2025.09 - 2027.06 (预计) | 香港中文大学（深圳）"
-    >
-      <p>主修课程：社会计算、数据挖掘、统计模型。研究方向：机器学习与社会计算，大模型驱动的Agent模拟（GABM），游戏制作和心理评估 。</p>
-    </TimeLineElement>
+    <div class="grid gap-2">
+      <HorizontalCard
+        title="HV Deep Research: 产品研究报告工作台"
+        img="/project-hv-deep-research.png"
+        desc="面向 AI 产品研究与竞品分析的 Deep Research Web App，支持并行信息收集、证据筛选、结构化报告生成和质量检查。"
+        url="https://hv-deep-research-web.onrender.com/"
+        badge="AI Agent"
+        role="独立设计与开发"
+        stack="Next.js, FastAPI, LangGraph"
+        result="Evidence Cards、来源分级、Markdown 导出"
+      />
+      <div class="divider my-0"></div>
 
-    <TimeLineElement
-      title="研究助理 (RA)"
-      subtitle="2025.10 - 至今 | URAI Lab (城市韧性与人工智能实验室)"
-    >
-      <p>
-        独立开发 Flask/Django 后端，集成 GPT/Qwen 大模型接口。
-        编写 Scrapy/Selenium 爬虫采集 30万+ 条多模态数据，利用应急事件图片数据构建 Ontology Learning 数据库。
+      <HorizontalCard
+        title="FocusFlow / Inky: AI 桌面专注助手"
+        img="/project-inky.png"
+        desc="面向 ADHD / 易分心用户的桌面效率工具，覆盖任务捕获、专注计时、情绪提醒、宠物化激励和本地持久化。"
+        url="https://github.com/Xuzheee/Inky-app"
+        badge="Human-AI Interaction"
+        role="独立设计与开发"
+        stack="Tauri, React, TypeScript, Rust"
+        result="自然语言任务解析、悬浮窗、迷你宠物模式"
+      />
+      <div class="divider my-0"></div>
+
+      <HorizontalCard
+        title="URAI Lab: 多模态数据标注与评测平台"
+        img="/project3.png"
+        desc="面向应急事件研究场景，构建多源数据采集、LLM 图像分析、结构化标注和模型评测流程。"
+        url="#"
+        badge="Research Tool"
+        role="研究助理 / Web 开发"
+        stack="Scrapy, Selenium, Flask/Django, LLM API"
+        result="30万+ 数据样本、Precision/Recall/F1 评测"
+      />
+      <div class="divider my-0"></div>
+
+      <HorizontalCard
+        title="Seven Angry Man: 多智能体辩论模拟"
+        img="/project1.png"
+        desc="基于经典电影情境构建多名具备不同立场和性格的大模型 Agent，模拟群体讨论、说服和极化过程。"
+        url="https://seven-angry-agent-f6vjdwtdxgluau6qkvfmxv.streamlit.app/"
+        badge="LLM Simulation"
+        role="系统设计与原型开发"
+        stack="LangChain, Streamlit, Prompt Engineering"
+        result="GABM 社会模拟与交互式 Web 原型"
+      />
+    </div>
+  </section>
+
+  <section class="reveal reveal-delay-2 mb-12">
+    <div class="mb-5">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Experience</p>
+      <h2 class="mt-2 text-3xl font-bold">实践经历</h2>
+      <p class="mt-3 max-w-3xl leading-relaxed text-base-content/75">
+        我的经历主要围绕三类问题展开：如何采集和组织复杂数据，如何从文本和多模态信息中提取结构化洞察，以及如何把研究流程做成可被他人使用的工具。
       </p>
-    </TimeLineElement>
-
-    <TimeLineElement
-      title="数据分析实习生"
-      subtitle="2024.07 - 2024.08 | 厦门市信息中心"
-    >
-      <p>
-        负责厦门 12345 平台数据挖掘。基于 TF-IDF 与 K-means 聚类算法处理 10,000+ 条文本数据，建立标准化分类标签体系（准确率 82%），输出可视化报告。
-      </p>
-    </TimeLineElement>
-    
-    <TimeLineElement
-      title="社会学 法学学士"
-      subtitle="2021.09 - 2025.07 | 中国农业大学"
-    >
-       <p>核心课程：社会科学统计分析、定量研究方法、社会政策理论。曾获优秀学生记者奖项。</p>
-    </TimeLineElement>
-  </div>
-  
-  <div class="mb-10">
-    <a href="/cv" class="btn btn-outline">查看完整详细简历 &gt;</a>
-  </div>
-
-  <div class="divider my-0"></div>
-
-  <!-- 3. 项目展示区域 -->
-  <div>
-    <div class="text-3xl w-full font-bold mb-5 mt-10">精选项目 Featured Projects</div>
-  </div>
-
-    <HorizontalCard
-    title="Anti Emo: 心理治愈游戏"
-    img="/project2.png"
-    desc="关注电子游戏与心理健康的结合。合作开发的心理治愈游戏，包含完整的心理学评估模块。使用 Unity 脚本开发与 Web 部署。"
-    url="https://anti-emo.netlify.app/"
-    badge="Game & Psych"
-  />
-<div class="divider my-0"></div>  
-  
-  <HorizontalCard
-    title="Seven Angry Man: 多智能体辩论模拟"
-    img="/project1.png"
-    desc="基于 LangChain 和 Streamlit 开发的 GABM Webapp。基于经典电影《Twelve Angry Man》，构建拥有不同性格特征和经历的大模型 Agent，模拟群体辩论与极化现象。"
-    url="https://zhuanlan.zhihu.com/p/1985132118804829175"
-    badge="LLM Agent"
-  />
-
-
-
-
-
-<!-- 分隔线 -->
-<div class="divider my-0"></div>
-
-<!-- 兴趣爱好板块开始 -->
-<div class="pb-12 mt-5">
-  <div class="text-3xl w-full font-bold mb-5">个人兴趣 & 爱好 Interests</div>
-
-  <!-- 1. 徒步部分 -->
-  <div class="py-4">
-    <div class="text-xl font-semibold mb-2 flex items-center gap-2">
-      🏔️ 徒步 Hiking
     </div>
-    <p class="text-lg mb-4 text-justify">
-      我相信双脚丈量大地的力量。热爱在周末逃离城市，探索自然。这里记录了我征服过的山川和看过的风景。
-    </p>
 
-    <!-- 
-      修改点：
-      1. 删除了 bg-black，改为 bg-base-100 (默认背景色/白色)。
-      2. 保留了 border (边框) 和 shadow (阴影)，这样即使背景是白的，轮播图区域也有个清晰的范围。
-    -->
-    <div class="carousel w-full rounded-xl shadow-lg border border-base-200 h-[500px] bg-base-100">
-      
-      <!-- 第一张 -->
-      <div id="hike-slide1" class="carousel-item relative w-full">
-        <!-- object-contain: 保持图片比例，空白处显示背景色 -->
-        <img src="/hobbies/hike1.jpg" class="w-full h-full object-contain" />
-        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-          <!-- 按钮改回标准样式，确保在白色背景上也看得见 -->
-          <a href="#hike-slide4" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
-          <a href="#hike-slide2" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
-        </div>
-      </div>
-      
-      <!-- 第二张 -->
-      <div id="hike-slide2" class="carousel-item relative w-full">
-        <img src="/hobbies/hike2.jpg" class="w-full h-full object-contain" />
-        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-          <a href="#hike-slide1" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
-          <a href="#hike-slide3" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
-        </div>
-      </div>
-      
-      <!-- 第三张 -->
-      <div id="hike-slide3" class="carousel-item relative w-full">
-        <img src="/hobbies/hike3.jpg" class="w-full h-full object-contain" />
-        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-          <a href="#hike-slide2" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
-          <a href="#hike-slide4" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
-        </div>
-      </div>
+    <div class="time-line-container grid gap-4">
+      <TimeLineElement
+        title="研究助理 | URAI Lab 城市韧性与人工智能实验室"
+        subtitle="2025.10 - 至今 | 香港中文大学（深圳）"
+      >
+        设计多源数据采集方案，构建 30万+ 新闻与社交媒体多模态样本；调用 GPT / Qwen / GLM 等模型实现图像关键信息抽取与结构化标注；搭建 Precision / Recall / F1 评测流程，并独立开发 LabelTool WebApp 完成云端部署。
+      </TimeLineElement>
 
-      <!-- 第四张 -->
-      <div id="hike-slide4" class="carousel-item relative w-full">
-        <img src="/hobbies/hike4.jpg" class="w-full h-full object-contain" />
-        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-          <a href="#hike-slide3" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
-          <a href="#hike-slide1" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
-        </div>
-      </div>
+      <TimeLineElement
+        title="数据分析实习生 | 厦门市信息中心"
+        subtitle="2024.07 - 2024.08"
+      >
+        清洗并分析 10,000+ 条 12345 便民服务平台用户反馈数据，基于 TF-IDF 提取文本特征，使用 K-means 聚类归纳 6 类核心诉求主题，为工单分类与分派规则优化提供支持。
+      </TimeLineElement>
 
+      <TimeLineElement
+        title="研究员 | 农村治理满意度指标验证调研"
+        subtitle="2023.08 - 2023.10 | 农业农村部项目"
+      >
+        主导 800+ 样本问卷与 50+ 农户访谈研究，基于 OLS 回归识别治理效能关键变量，输出 3 项数据驱动的指标优化建议。
+      </TimeLineElement>
     </div>
-  </div>
+  </section>
 
-  <!-- 2. 运动部分 -->
-  <div class="py-4">
-    <div class="text-xl font-semibold mb-2 flex items-center gap-2">
-      🏀 运动 Sports
+  <section class="reveal reveal-delay-3 mb-12">
+    <div class="mb-5">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Skills</p>
+      <h2 class="mt-2 text-3xl font-bold">能力结构</h2>
     </div>
-    <p class="text-lg mb-4 text-justify">
-      运动是我保持活力的方式，它让我时刻维持最佳状态。我最喜欢的运动是篮球和游泳。
-    </p>
-
-    <div class="carousel w-full rounded-xl shadow-lg border border-base-200 h-[500px] bg-base-100">
-      
-      <div id="sport-slide1" class="carousel-item relative w-full">
-        <img src="/hobbies/sport1.jpg" class="w-full h-full object-contain" />
-        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-          <a href="#sport-slide3" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
-          <a href="#sport-slide2" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
-        </div>
+    <SkillMarquee />
+    <div class="grid gap-4 md:grid-cols-2">
+      <div class="glow-card rounded-lg border border-base-300 p-5">
+        <h3 class="font-bold">AI / Agent 应用</h3>
+        <p class="mt-2 text-sm leading-relaxed text-base-content/75">LangChain, LangGraph, Prompt Engineering, RAG, Tool Calling, 结构化输出, Agent 工作流设计与评测。</p>
       </div>
-
-      <div id="sport-slide2" class="carousel-item relative w-full">
-        <img src="/hobbies/sport2.jpg" class="w-full h-full object-contain" />
-        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-          <a href="#sport-slide1" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
-          <a href="#sport-slide3" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
-        </div>
+      <div class="glow-card rounded-lg border border-base-300 p-5">
+        <h3 class="font-bold">数据分析与建模</h3>
+        <p class="mt-2 text-sm leading-relaxed text-base-content/75">Python, Pandas, NumPy, Scikit-learn, SQL, R, 回归 / 分类 / 聚类, A/B 测试, 模型评估与可视化。</p>
       </div>
-
-      <div id="sport-slide3" class="carousel-item relative w-full">
-        <img src="/hobbies/sport3.jpg" class="w-full h-full object-contain" />
-        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-          <a href="#sport-slide2" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
-          <a href="#sport-slide1" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
-        </div>
+      <div class="glow-card rounded-lg border border-base-300 p-5">
+        <h3 class="font-bold">文本与多模态研究</h3>
+        <p class="mt-2 text-sm leading-relaxed text-base-content/75">TF-IDF, 文本分析, 数据清洗, Web Scraping, Scrapy, Selenium, LLM 图像标注与评测。</p>
       </div>
-
+      <div class="glow-card rounded-lg border border-base-300 p-5">
+        <h3 class="font-bold">Web 原型与产品实现</h3>
+        <p class="mt-2 text-sm leading-relaxed text-base-content/75">Flask, Django, Streamlit, React, Tauri, TypeScript, 轻量部署, Claude Code, Cursor, Codex。</p>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- 3. 游戏部分 -->
-  <div class="py-4">
-    <div class="text-xl font-semibold mb-2 flex items-center gap-2">
-      🎮 游戏 Gaming History
+  <section class="reveal reveal-delay-3 mb-12">
+    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Writing</p>
+    <h2 class="mt-2 text-3xl font-bold">最新文章</h2>
+    <div class="mt-4 grid gap-3">
+      {
+        last_posts.map((post) => (
+          <a href={`/blog/${post.slug}/`} class="glow-card rounded-lg border border-base-300 p-4 transition hover:bg-base-200">
+            <div class="font-semibold">{post.data.title}</div>
+            <p class="mt-1 text-sm text-base-content/70">{post.data.description}</p>
+          </a>
+        ))
+      }
     </div>
-    <p class="text-lg mb-4 text-justify">
-      我相信游戏不仅仅是娱乐，更是对我们人生经历以外未知世界的探索。我喜欢电影和音乐，电影是一门将画面和音乐结合起来的艺术，如果说电影把人的生命延长了三倍，那么游戏就将人的生命延长了十倍。游戏就像电影在三维层面的延续，我们不只是听到、看到电影主角们的故事，更是参与甚至影响他们的选择，这或许是我们在现实生活从未有过的经历，但却能在虚拟世界中轻易实现。我喜欢作为V在Night City里体验未来赛博世界的生活，和Nathan在印度洋上海盗建立的乌托邦寻找失落的遗产，或是作为一个中世纪骑士和Henry一起参与到波西米亚的历史故事中。我们跨越过去、现在和未来，体验到了不同人物的故事。
-    </p>
-
-    <!-- 游戏部分高度保持 h-96 (384px) 即可，因为游戏截图通常比较宽 -->
-    <div class="carousel w-full rounded-xl shadow-lg border border-base-200 h-80 md:h-96 bg-base-100">
-      
-      <div id="game-slide1" class="carousel-item relative w-full">
-        <img src="/hobbies/game1.jpg" class="w-full h-full object-contain" />
-        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-          <a href="#game-slide3" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
-          <a href="#game-slide2" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
-        </div>
-      </div>
-
-      <div id="game-slide2" class="carousel-item relative w-full">
-        <img src="/hobbies/game2.png" class="w-full h-full object-contain" />
-        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-          <a href="#game-slide1" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
-          <a href="#game-slide3" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
-        </div>
-      </div>
-
-      <div id="game-slide3" class="carousel-item relative w-full">
-        <img src="/hobbies/game3.png" class="w-full h-full object-contain" />
-        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-          <a href="#game-slide2" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❮</a> 
-          <a href="#game-slide1" class="btn btn-circle btn-sm md:btn-md opacity-70 hover:opacity-100">❯</a>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-</div>
-<!-- 兴趣爱好板块结束 -->
-
-
-
-
- 
+  </section>
 </BaseLayout>
-

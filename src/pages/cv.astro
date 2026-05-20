@@ -3,131 +3,150 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import TimeLineElement from "../components/cv/TimeLine.astro";
 ---
 
-<BaseLayout title="简历 | 杨黄旭哲" sideBarActiveItemID="cv">
+<BaseLayout title="CV | 杨黄旭哲" sideBarActiveItemID="cv">
+  <section class="reveal mb-12">
+    <div class="flex flex-col gap-8 md:flex-row md:items-start">
+      <div class="flex-1">
+        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Curriculum Vitae</p>
+        <h1 class="mt-3 text-4xl font-bold">杨黄旭哲</h1>
+        <p class="mt-4 text-lg leading-relaxed text-base-content/80">
+          我是杨黄旭哲，计算社会科学（统计学）硕士研究生。本科社会学背景让我关注社会行为、组织治理和人群互动，硕士阶段的统计学与计算社会科学训练让我能够用数据、模型和工具化流程分析这些问题。
+        </p>
+        <p class="mt-4 text-lg leading-relaxed text-base-content/80">
+          目前我关注 AI Agent、数据分析、社会计算与 Human-AI Interaction，尤其感兴趣于如何把复杂研究流程转化为可计算、可验证、可复用的系统。
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a class="btn btn-primary" href="/resume.pdf" download>下载 Resume PDF</a>
+          <a class="btn btn-outline" href="mailto:huangxuzhe12@163.com">联系我</a>
+          <a class="btn btn-ghost" href="https://github.com/Xuzheee" target="_blank">GitHub</a>
+        </div>
+      </div>
 
-<!-- 个人简介板块开始 -->
-<div class="mb-12">
-  <div class="text-3xl font-bold mb-5">个人简介 Profile</div>
-
-  <!-- Flex 容器：在大屏幕上左右排列(row)，手机上上下排列(col) -->
-  <div class="flex flex-col md:flex-row gap-6 md:gap-10 items-start">
-    
-    <!-- 左侧：文字介绍 -->
-    <div class="flex-1 order-2 md:order-1">
-      <p class="text-lg mb-6 text-justify leading-relaxed">
-        我是杨黄旭哲，一名计算社会科学方向的硕士研究生。我<span class="font-bold text-primary">擅长结合社会学的定性洞察与计算机科学的定量技术</span>。在校期间，我主修定量研究方法与计算建模，拥有丰富的社会调查、数据分析及 Web 开发经验。致力于用数据洞察社会行为，用游戏机制连接人心。
-      </p>
-
-      <!-- 联系方式网格 -->
-      <ul class="grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-4 text-base">
-        <li class="flex items-center gap-2">
-          <span>📧</span> <span class="font-semibold">邮箱:</span> huangxuzhe12@163.com
-        </li>
-        <li class="flex items-center gap-2">
-          <span>🗣️</span> <span class="font-semibold">英语:</span> CET-6 / 雅思 6.5
-        </li>
-        <li class="flex items-center gap-2">
-          <span>📞</span> <span class="font-semibold">电话:</span> 13430811082
-        </li>
-        <li class="flex items-center gap-2">
-          <span>🐙</span> <span class="font-semibold">Github:</span> 
-          <a href="https://github.com/Xuzheee" target="_blank" class="link link-primary hover:text-secondary transition-colors">@Xuzheee</a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- 右侧：证件照 -->
-    <div class="flex-shrink-0 order-1 md:order-2 w-32 md:w-40 mx-auto md:mx-0">
-      <!-- 
-           aspect-[3/4]: 强制保持 3:4 的证件照比例
-           object-cover: 填满容器
-           shadow-xl: 增加立体感
-           rotate-2: 稍微一点点倾斜，增加设计感（不喜欢可以删掉这个类）
-      -->
-      <div class="aspect-[3/4] w-full relative rounded-xl overflow-hidden shadow-xl border-4 border-white rotate-2 hover:rotate-0 transition-transform duration-300">
-        <!-- 请确保图片放在 public 文件夹下，名字叫 avatar.jpg，或者修改这里的 src -->
-        <img src="/avatar.jpg" alt="杨黄旭哲" class="w-full h-full object-cover" />
+      <div class="w-32 flex-shrink-0 md:w-40">
+        <div class="glow-card aspect-[3/4] w-full overflow-hidden rounded-lg border border-base-300 shadow-lg">
+          <img src="/avatar.jpg" alt="杨黄旭哲" class="h-full w-full object-cover" />
+        </div>
       </div>
     </div>
 
-  </div>
-</div>
-<!-- 个人简介板块结束 -->
+    <ul class="mt-8 grid gap-3 text-base md:grid-cols-2">
+      <li><span class="font-semibold">邮箱：</span>huangxuzhe12@163.com</li>
+      <li><span class="font-semibold">电话：</span>13430811082</li>
+      <li><span class="font-semibold">个人网页：</span>xuzheee.github.io</li>
+      <li><span class="font-semibold">英语：</span>CET-6 / IELTS 6.5</li>
+    </ul>
+  </section>
 
+  <section class="reveal reveal-delay-1 mb-12">
+    <div class="mb-5">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Education</p>
+      <h2 class="mt-2 text-3xl font-bold">教育背景</h2>
+    </div>
 
-  <div class="mb-5">
-    <div class="text-3xl w-full font-bold">教育背景 Education</div>
-  </div>
+    <div class="time-line-container grid gap-4">
+      <TimeLineElement
+        title="计算社会科学（统计学）硕士"
+        subtitle="2025.09 - 2027.06（预计）| 香港中文大学（深圳）"
+      >
+        相关课程：统计建模、机器学习、数据挖掘、文本分析、回归分析、高级统计学。
+      </TimeLineElement>
+      <TimeLineElement
+        title="社会学 法学学士"
+        subtitle="2021.09 - 2025.07 | 中国农业大学"
+      >
+        主修课程：社会科学统计分析、定量研究方法、社会政策理论。曾担任校新闻中心记者，并获优秀学生记者奖项。
+      </TimeLineElement>
+    </div>
+  </section>
 
-  <div class="time-line-container grid gap-4 mb-10">
-    <TimeLineElement
-      title="计算社会科学 (硕士)"
-      subtitle="2025.09 - 2027.06 (预计) | 香港中文大学（深圳）"
-    />
-    <TimeLineElement
-      title="社会学 (学士)"
-      subtitle="2021.09 - 2025.07 | 中国农业大学"
-    >
-      主修课程：计算社会科学应用软件、社会科学统计分析、高级统计模型、定量研究方法、游戏心理学等。
-      <br/>
-      奖项：本科期间担任校新闻中心记者，获优秀学生记者奖项。
-    </TimeLineElement>
-  </div>
+  <section class="reveal reveal-delay-2 mb-12">
+    <div class="mb-5">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Experience</p>
+      <h2 class="mt-2 text-3xl font-bold">实习与研究经历</h2>
+    </div>
 
-  <div class="mb-5">
-    <div class="text-3xl w-full font-bold">实习与研究经历 Experience</div>
-  </div>
+    <div class="time-line-container grid gap-4">
+      <TimeLineElement
+        title="研究助理 | 城市韧性与人工智能实验室（URAI Lab）"
+        subtitle="2025.10 - 至今 | 香港中文大学（深圳）"
+      >
+        面向应急事件研究场景，设计多源数据采集方案，累计构建 30万+ 新闻与社交媒体多模态数据样本；调用 GPT / Qwen / GLM 等模型实现图像关键信息抽取与结构化标注；设计事件要素字段体系，并搭建 Precision / Recall / F1 评测流程；独立开发 LabelTool WebApp 并完成云服务器部署。
+      </TimeLineElement>
 
-  <div class="time-line-container mb-10">
-    <TimeLineElement
-      title="研究助理"
-      subtitle="2025.10 - 至今 | 香港中文大学（深圳）城市韧性与人工智能实验室 (URAI Lab)"
-    >
-      - <b>多模态数据采集</b>：设计并实施 Scrapy/Selenium 爬虫，获取超 30 万条社交媒体与新闻网站应急事件数据。<br/>
-      - <b>数据标注与评估</b>：建立 ontology learning 数据库；基于 GPT/Qwen 等模型输出结果，计算 Precision/Recall/F1-score 评估图片识别质量。<br/>
-      - <b>Web 开发</b>：独立开发 Flask/Django 后端，集成大模型接口，完成云端部署。
-    </TimeLineElement>
+      <TimeLineElement
+        title="数据分析实习生 | 厦门市信息中心"
+        subtitle="2024.07 - 2024.08"
+      >
+        清洗并分析厦门 12345 便民服务平台 10,000+ 条用户反馈数据，基于 TF-IDF 提取文本特征并识别高频诉求模式；使用 K-means 聚类归纳 6 类核心问题主题，建立标准化标签体系，为后续工单分类与分派规则优化提供支持。
+      </TimeLineElement>
 
-    <TimeLineElement
-      title="数据分析实习生"
-      subtitle="2024.07 - 2024.08 | 厦门市信息中心"
-    >
-      - <b>文本挖掘</b>：清洗并分析厦门 12345 平台用户反馈数据，处理 10,000+ 条非结构化文本。<br/>
-      - <b>算法应用</b>：基于 TF-IDF 向量化与 K-means 聚类算法，划分出 6 类高频诉求主题，建立标准化分类标签体系（准确率 82%），支撑工单智能分派机制。
-    </TimeLineElement>
+      <TimeLineElement
+        title="研究员 | 农村居民满意度治理指标验证调研"
+        subtitle="2023.08 - 2023.10 | 农业农村部项目"
+      >
+        主导 800+ 样本问卷与 50+ 农户访谈研究，基于 OLS 回归识别治理效能关键变量，输出 3 项数据驱动的指标优化建议。
+      </TimeLineElement>
 
-    <TimeLineElement
-      title="研究员 - 节水灌溉社会服务研究"
-      subtitle="2024.08 | 江苏省徐州市"
-    >
-      - 探索用户节水行为与政策激励的关联性，调研豫鲁两省 30+ 农户。<br/>
-      - 结合用户访谈与水利局公开数据，总结节水灌溉优缺点。
-    </TimeLineElement>
+      <TimeLineElement
+        title="研究员 | 节水灌溉社会服务研究"
+        subtitle="2024.08 | 江苏省徐州市"
+      >
+        探索用户节水行为与政策激励的关联性，调研豫鲁两省 30+ 农户，结合用户访谈与水利局公开数据，总结节水灌溉优缺点与政策优化方向。
+      </TimeLineElement>
+    </div>
+  </section>
 
-    <TimeLineElement
-      title="研究员 - 农村居民满意度治理指标验证调研"
-      subtitle="2023.08 - 2023.10 | 农业农村部项目"
-    >
-      - <b>问卷设计与执行</b>：主导混合式调查，覆盖四川与河南 800+ 样本，回收率 >85%。<br/>
-      - <b>统计建模</b>：构建多元线性回归模型 (OLS)，识别影响治理效能的关键变量，提出三项指标优化建议。
-    </TimeLineElement>
-  </div>
+  <section class="reveal reveal-delay-2 mb-12">
+    <div class="mb-5">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Selected Projects</p>
+      <h2 class="mt-2 text-3xl font-bold">代表项目</h2>
+    </div>
 
-  <div class="mb-5">
-    <div class="text-3xl w-full font-bold">技能 Skills</div>
-  </div>
+    <div class="grid gap-4">
+      <div class="glow-card rounded-lg border border-base-300 p-5">
+        <h3 class="font-bold">横纵分析 Deep Research Agent | AI 产品研究与竞品分析工具</h3>
+        <p class="mt-2 leading-relaxed text-base-content/80">
+          设计面向 AI 产品研究与竞品分析的 Deep Research Web App，基于“纵向历史演化 + 横向竞品格局”的分析框架，实现输入主题、并行信息收集、证据筛选、结构化报告生成和质量检查的完整流程。
+        </p>
+      </div>
+      <div class="glow-card rounded-lg border border-base-300 p-5">
+        <h3 class="font-bold">FocusFlow / Inky | AI 桌面专注助手</h3>
+        <p class="mt-2 leading-relaxed text-base-content/80">
+          独立设计并实现面向 ADHD / 易分心用户的桌面专注助手，覆盖任务捕获、专注计时、情绪提醒和宠物化激励闭环；接入自然语言解析能力，将用户输入自动转化为结构化任务。
+        </p>
+      </div>
+      <div class="glow-card rounded-lg border border-base-300 p-5">
+        <h3 class="font-bold">Cookie Cats 用户流失预测 & Steam 游戏市场表现分析</h3>
+        <p class="mt-2 leading-relaxed text-base-content/80">
+          基于 90,189 条 Cookie Cats 用户行为数据构建 7 日流失预测模型，XGBoost 测试集 AUC = 0.8940；同时完成 Steam 游戏市场热度与玩家口碑分析框架，输出运营策略建议。
+        </p>
+      </div>
+    </div>
+  </section>
 
-  <ul class="list-disc md:columns-5 columns-2 mx-6">
-    <li>Python (Pandas/Numpy)</li>
-    <li>Scikit-learn</li>
-    <li>TensorFlow</li>
-    <li>R Language</li>
-    <li>SQL</li>
-    <li>Web Scraping (Scrapy)</li>
-    <li>NLP (NLTK/spaCy)</li>
-    <li>Unity Development</li>
-    <li>LangChain</li>
-    <li>Matplotlib/Tableau</li>
-  </ul>
+  <section class="reveal reveal-delay-3 mb-6">
+    <div class="mb-5">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Skills</p>
+      <h2 class="mt-2 text-3xl font-bold">技能</h2>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <div class="glow-card rounded-lg border border-base-300 p-5">
+        <h3 class="font-bold">LLM / Agent 应用</h3>
+        <p class="mt-2 text-sm leading-relaxed">LangChain, LangGraph, Prompt Engineering, 结构化输出, 工具调用, RAG, Agent 工作流设计与评测</p>
+      </div>
+      <div class="glow-card rounded-lg border border-base-300 p-5">
+        <h3 class="font-bold">数据分析与建模</h3>
+        <p class="mt-2 text-sm leading-relaxed">Python, Pandas, NumPy, Scikit-learn, SQL, R, 数据清洗, 文本分析, 特征工程, 回归 / 分类 / 聚类, 模型评估, 可视化</p>
+      </div>
+      <div class="glow-card rounded-lg border border-base-300 p-5">
+        <h3 class="font-bold">应用开发与工具</h3>
+        <p class="mt-2 text-sm leading-relaxed">Flask, Django, Streamlit, Tauri, React, TypeScript, Web Scraping, Scrapy, Selenium, 轻量部署</p>
+      </div>
+      <div class="glow-card rounded-lg border border-base-300 p-5">
+        <h3 class="font-bold">研究方法</h3>
+        <p class="mt-2 text-sm leading-relaxed">问卷设计, 访谈研究, OLS 回归, 社会计算, 游戏心理学, Human-AI Interaction</p>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
-

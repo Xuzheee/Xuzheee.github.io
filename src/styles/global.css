@@ -1,3 +1,94 @@
 .time-line-container>div:last-child .education__time>.education__line {
     display: none;
 }
+
+.glow-card {
+    position: relative;
+    overflow: hidden;
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease,
+        background-color 180ms ease;
+}
+
+.glow-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background:
+        radial-gradient(420px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+            hsl(var(--p) / 0.16),
+            transparent 42%);
+    transition: opacity 180ms ease;
+}
+
+.glow-card:hover,
+.glow-card:focus-within {
+    border-color: hsl(var(--p) / 0.55);
+    box-shadow:
+        0 0 0 1px hsl(var(--p) / 0.12),
+        0 18px 42px hsl(var(--p) / 0.16);
+    transform: translateY(-2px);
+}
+
+.glow-card:hover::before,
+.glow-card:focus-within::before {
+    opacity: 1;
+}
+
+.reveal {
+    animation: fade-up 520ms ease both;
+}
+
+.reveal-delay-1 {
+    animation-delay: 80ms;
+}
+
+.reveal-delay-2 {
+    animation-delay: 160ms;
+}
+
+.reveal-delay-3 {
+    animation-delay: 240ms;
+}
+
+.icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid hsl(var(--b3));
+    background: hsl(var(--b2));
+    color: hsl(var(--p));
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        animation: none;
+    }
+
+    .glow-card {
+        transition: none;
+    }
+
+    .glow-card:hover,
+    .glow-card:focus-within {
+        transform: none;
+    }
+}

@@ -1,20 +1,24 @@
 ---
+import Icon from "./Icon.astro";
 const { sideBarActiveItemID } = Astro.props;
 const activeClass = "bg-base-300"; // 选中时的背景颜色
 ---
 
 <ul class="menu grow shrink menu-md overflow-y-auto">
     <!-- Home -->
-    <li><a class="py-3 text-base" id="home" href="/">Home</a></li>
+    <li><a class="py-3 text-base gap-3" id="home" href="/"><Icon name="home" class="h-4 w-4" />Home</a></li>
     
     <!-- CV (简历) - 放在 Home 之后 -->
-    <li><a class="py-3 text-base" id="cv" href="/cv">CV</a></li>
+    <li><a class="py-3 text-base gap-3" id="cv" href="/cv"><Icon name="fileText" class="h-4 w-4" />CV</a></li>
 
     <!-- Projects (项目) -->
-    <li><a class="py-3 text-base" id="projects" href="/projects">Projects</a></li>
+    <li><a class="py-3 text-base gap-3" id="projects" href="/projects"><Icon name="briefcase" class="h-4 w-4" />Projects</a></li>
+
+    <!-- Interests (兴趣) -->
+    <li><a class="py-3 text-base gap-3" id="interests" href="/interests"><Icon name="sparkles" class="h-4 w-4" />Interests</a></li>
 
     <!-- Blog (博客) -->
-    <li><a class="py-3 text-base" id="blog" href="/blog/">Blog</a></li>
+    <li><a class="py-3 text-base gap-3" id="blog" href="/blog/"><Icon name="penLine" class="h-4 w-4" />Blog</a></li>
     
     <!-- Contact (联系) -->
     <li>
@@ -22,7 +26,7 @@ const activeClass = "bg-base-300"; // 选中时的背景颜色
             class="py-3 text-base"
             href="mailto:huangxuzhe12@163.com"
             target="_blank"
-            referrerpolicy="no-referrer-when-downgrade">Contact</a
+            referrerpolicy="no-referrer-when-downgrade"><Icon name="mail" class="h-4 w-4" />Contact</a
         >
     </li>
 </ul>

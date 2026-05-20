@@ -1,0 +1,145 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<section class="reveal pb-12">
+  <div class="mb-5">
+    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Interests</p>
+    <h2 class="mt-2 text-3xl font-bold">个人兴趣 & 爱好</h2>
+    <p class="mt-4 max-w-3xl text-lg leading-relaxed text-base-content/80">
+      除了研究和项目，我也希望这个网站保留一些更个人化的部分。徒步、运动和游戏是我理解体验、节奏、反馈和情绪的重要来源，也在某种程度上影响了我对游戏心理、专注工具和 Human-AI Interaction 的兴趣。
+    </p>
+  </div>
+
+  <div class="py-4">
+    <div class="mb-2 flex items-center gap-2 text-xl font-semibold">
+      <span class="icon-badge"><Icon name="mountain" class="h-5 w-5" /></span>
+      徒步 Hiking
+    </div>
+    <p class="mb-4 text-lg leading-relaxed text-justify">
+      我相信双脚丈量大地的力量。热爱在周末逃离城市，探索自然。这里记录了我征服过的山川和看过的风景。
+    </p>
+
+    <div class="glow-card carousel h-[500px] w-full rounded-lg border border-base-200 bg-base-100 shadow-lg">
+      <div id="hike-slide1" class="carousel-item relative w-full">
+        <img src="/hobbies/hike1.jpg" alt="徒步照片 1" class="h-full w-full object-contain" />
+        <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+          <a href="#hike-slide4" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❮</a>
+          <a href="#hike-slide2" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❯</a>
+        </div>
+      </div>
+
+      <div id="hike-slide2" class="carousel-item relative w-full">
+        <img src="/hobbies/hike2.jpg" alt="徒步照片 2" class="h-full w-full object-contain" />
+        <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+          <a href="#hike-slide1" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❮</a>
+          <a href="#hike-slide3" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❯</a>
+        </div>
+      </div>
+
+      <div id="hike-slide3" class="carousel-item relative w-full">
+        <img src="/hobbies/hike3.jpg" alt="徒步照片 3" class="h-full w-full object-contain" />
+        <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+          <a href="#hike-slide2" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❮</a>
+          <a href="#hike-slide4" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❯</a>
+        </div>
+      </div>
+
+      <div id="hike-slide4" class="carousel-item relative w-full">
+        <img src="/hobbies/hike4.jpg" alt="徒步照片 4" class="h-full w-full object-contain" />
+        <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+          <a href="#hike-slide3" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❮</a>
+          <a href="#hike-slide1" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❯</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="py-4">
+    <div class="mb-2 flex items-center gap-2 text-xl font-semibold">
+      <span class="icon-badge"><Icon name="activity" class="h-5 w-5" /></span>
+      运动 Sports
+    </div>
+    <p class="mb-4 text-lg leading-relaxed text-justify">
+      运动是我保持活力的方式，它让我时刻维持最佳状态。我最喜欢的运动是篮球和游泳。
+    </p>
+
+    <div class="glow-card carousel h-[500px] w-full rounded-lg border border-base-200 bg-base-100 shadow-lg">
+      <div id="sport-slide1" class="carousel-item relative w-full">
+        <img src="/hobbies/sport1.jpg" alt="运动照片 1" class="h-full w-full object-contain" />
+        <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+          <a href="#sport-slide3" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❮</a>
+          <a href="#sport-slide2" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❯</a>
+        </div>
+      </div>
+
+      <div id="sport-slide2" class="carousel-item relative w-full">
+        <img src="/hobbies/sport2.jpg" alt="运动照片 2" class="h-full w-full object-contain" />
+        <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+          <a href="#sport-slide1" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❮</a>
+          <a href="#sport-slide3" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❯</a>
+        </div>
+      </div>
+
+      <div id="sport-slide3" class="carousel-item relative w-full">
+        <img src="/hobbies/sport3.jpg" alt="运动照片 3" class="h-full w-full object-contain" />
+        <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+          <a href="#sport-slide2" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❮</a>
+          <a href="#sport-slide1" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❯</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="py-4">
+    <div class="mb-2 flex items-center gap-2 text-xl font-semibold">
+      <span class="icon-badge"><Icon name="gamepad" class="h-5 w-5" /></span>
+      游戏 Gaming History
+    </div>
+    <p class="mb-4 text-lg leading-relaxed text-justify">
+      我相信游戏不仅仅是娱乐，它也是一种体验未知世界、理解角色选择和感受交互反馈的媒介。
+    </p>
+    <p class="mb-4 text-lg leading-relaxed text-justify">
+      电影让我们观看他人的生命，而游戏让我们参与其中。作为 V 在 Night City 里体验未来城市，和 Nathan 一起寻找失落的遗产，或作为 Henry 进入波西米亚的历史现场，这些经历让我意识到：游戏可以扩展人的感知边界，也可以成为理解心理、情绪和社会互动的入口。
+    </p>
+    <p class="mb-4 text-lg leading-relaxed text-justify">
+      这也是我关注游戏心理、情绪支持工具和多智能体社会模拟的重要原因。
+    </p>
+
+    <div class="glow-card carousel h-80 w-full rounded-lg border border-base-200 bg-base-100 shadow-lg md:h-96">
+      <div id="game-slide1" class="carousel-item relative w-full">
+        <img src="/hobbies/game1.jpg" alt="游戏截图 1" class="h-full w-full object-contain" />
+        <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+          <a href="#game-slide3" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❮</a>
+          <a href="#game-slide2" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❯</a>
+        </div>
+      </div>
+
+      <div id="game-slide2" class="carousel-item relative w-full">
+        <img src="/hobbies/game2.png" alt="游戏截图 2" class="h-full w-full object-contain" />
+        <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+          <a href="#game-slide1" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❮</a>
+          <a href="#game-slide3" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❯</a>
+        </div>
+      </div>
+
+      <div id="game-slide3" class="carousel-item relative w-full">
+        <img src="/hobbies/game3.png" alt="游戏截图 3" class="h-full w-full object-contain" />
+        <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+          <a href="#game-slide2" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❮</a>
+          <a href="#game-slide1" class="btn btn-circle btn-sm opacity-70 hover:opacity-100 md:btn-md">❯</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .carousel img {
+    transition: transform 240ms ease;
+  }
+
+  .carousel:hover img {
+    transform: scale(1.02);
+  }
+</style>

@@ -37,5 +37,18 @@ const {
       </div>
       {includeSidebar && <SideBar sideBarActiveItemID={sideBarActiveItemID} />}
     </div>
+    <script is:inline>
+      document.addEventListener("pointermove", (event) => {
+        for (const card of document.querySelectorAll(".glow-card")) {
+          const rect = card.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+            card.style.setProperty("--glow-x", `${x}px`);
+            card.style.setProperty("--glow-y", `${y}px`);
+          }
+        }
+      });
+    </script>
   </body>
 </html>

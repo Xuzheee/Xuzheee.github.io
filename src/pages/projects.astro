@@ -3,90 +3,162 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import HorizontalCard from "../components/HorizontalCard.astro";
 ---
 
-<BaseLayout title = "Projects | 杨黄旭哲" sideBarActiveItemID="projects">
-  <div>
-    <div class="text-3xl w-full font-bold mb-5">重点项目 Featured Projects</div>
-  </div>
+<BaseLayout title="Projects | 杨黄旭哲" sideBarActiveItemID="projects">
+  <section class="reveal mb-10">
+    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Projects</p>
+    <h1 class="mt-3 text-4xl font-bold leading-tight">项目作品集</h1>
+    <p class="mt-4 max-w-3xl text-lg leading-relaxed text-base-content/80">
+      这里整理了我在 AI Agent、数据分析、社会计算与 Human-AI Interaction 方向的项目。它们不是单纯的技术练习，而是围绕真实问题展开：定义研究问题，设计数据流程，构建可运行原型，并用指标或案例验证结果。
+    </p>
+    <div class="mt-6 flex flex-wrap gap-2">
+      <a class="btn btn-outline btn-sm" href="#ai-agent">AI Agent</a>
+      <a class="btn btn-outline btn-sm" href="#data-analysis">Data Analysis</a>
+      <a class="btn btn-outline btn-sm" href="#research">Research</a>
+      <a class="btn btn-outline btn-sm" href="#game-hci">Game & HCI</a>
+    </div>
+  </section>
 
-  <!-- 1. Seven Angry Man -->
-  <HorizontalCard
-    title="Seven Angry Man: 多智能体辩论模拟"
-    img="/project1.png"
-    desc="基于 LangChain 和 Streamlit 开发的 GABM (Generative Agent Based Model) 系统。构建多个拥有不同性格与立场的大模型 Agent，模拟群体决策过程与社会互动机制。"
-    url="https://seven-angry-agent-f6vjdwtdxgluau6qkvfmxv.streamlit.app/"
-    badge="LLM Agent"
-  />
-  <div class="divider my-0"></div>
+  <section id="ai-agent" class="reveal reveal-delay-1 mb-12 scroll-mt-8">
+    <div class="mb-5">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">AI Agent & Research Tools</p>
+      <h2 class="mt-2 text-3xl font-bold">AI Agent 与研究工具</h2>
+    </div>
 
-  <!-- 2. URAI Lab -->
-  <HorizontalCard
-    title="URAI Lab: 多模态数据标注平台"
-    img="/project3.png"
-    desc="独立开发 Flask/Django 后端。采集并处理 30万+ 条多模态应急事件数据，构建 Ontology Learning 数据库并进行模型评估。"
-    url="#"
-    badge="Fullstack & AI"
-  />
-  <div class="divider my-0"></div>
+    <HorizontalCard
+      title="HV Deep Research: 产品研究报告工作台"
+      img="/project-hv-deep-research.png"
+      desc="面向 AI 产品研究与竞品分析的 Deep Research Web App。项目基于“纵向历史演化 + 横向竞品格局”的分析框架，将主题输入、并行信息收集、证据筛选、结构化报告生成和质量检查整合为完整研究流程。"
+      url="https://hv-deep-research-web.onrender.com/"
+      badge="Deep Research"
+      role="独立设计与开发"
+      stack="Next.js, FastAPI, LangGraph, Tavily, Firecrawl"
+      result="Evidence Cards、来源分级、风险提示、Markdown 导出"
+    />
+    <div class="divider my-0"></div>
 
-  <!-- 3. Anti Emo -->
-  <HorizontalCard
-    title="Anti Emo: 心理治愈游戏"
-    img="/project2.png"
-    desc="关注电子游戏与心理健康的结合。合作开发的心理治愈游戏，包含完整的心理学评估模块，利用游戏机制缓解负面情绪。"
-    url="https://anti-emo.netlify.app/"
-    badge="Game & Psych"
-  />
-  <div class="divider my-0"></div>
+    <HorizontalCard
+      title="Seven Angry Man: 多智能体辩论模拟"
+      img="/project1.png"
+      desc="基于 LangChain 和 Streamlit 构建的多智能体辩论模拟系统。项目以经典电影情境为原型，为不同 Agent 设置立场、性格和背景，观察群体讨论中的说服、冲突、立场变化与极化过程。"
+      url="https://seven-angry-agent-f6vjdwtdxgluau6qkvfmxv.streamlit.app/"
+      badge="LLM Simulation"
+      role="系统设计与原型开发"
+      stack="LangChain, Streamlit, Prompt Engineering"
+      result="交互式社会模拟 Web 原型"
+    />
+    <div class="divider my-0"></div>
 
-  <!-- 4. Inky -->
-  <HorizontalCard
-    title="Inky: Windows 桌面专注助手"
-    img="/project-inky.png"
-    desc="基于 Tauri 2、React 18、TypeScript 和 Rust 构建的透明置顶桌面小窗，支持任务记录、番茄钟专注、迷你宠物模式、本地持久化与可选 AI 任务解析。"
-    url="https://github.com/Xuzheee/Inky-app"
-    badge="Tauri & React"
-  />
+    <HorizontalCard
+      title="FocusFlow / Inky: AI 桌面专注助手"
+      img="/project-inky.png"
+      desc="面向 ADHD / 易分心用户的 AI 桌面专注助手，覆盖任务捕获、专注计时、情绪提醒、本地持久化和宠物化激励闭环。项目重点探索 AI 如何降低任务管理成本，并通过轻量陪伴式交互提升工具的持续使用感。"
+      url="https://github.com/Xuzheee/Inky-app"
+      badge="AI Tool"
+      role="独立设计与开发"
+      stack="Tauri 2, React 18, TypeScript, Rust, SQLite"
+      result="自然语言任务解析、悬浮窗、迷你宠物、本地任务管理"
+    />
+  </section>
 
-  <div>
-    <div class="text-3xl w-full font-bold mb-5 mt-10">数据分析与研究 Data Analysis & Research</div>
-  </div>
+  <section id="data-analysis" class="reveal reveal-delay-2 mb-12 scroll-mt-8">
+    <div class="mb-5">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Data Analysis & Modeling</p>
+      <h2 class="mt-2 text-3xl font-bold">数据分析与建模</h2>
+    </div>
 
-  <!-- 5. HV Deep Research -->
-  <HorizontalCard
-    title="HV Deep Research: 产品研究报告工作台"
-    img="/project-hv-deep-research.png"
-    desc="Next.js + FastAPI + LangGraph 的 Deep Research 网页应用，集成 Tavily 搜索、Firecrawl 抓取、证据筛选、质量检查与结构化三栏报告生成。"
-    url="https://hv-deep-research-web.onrender.com/"
-    badge="Deep Research"
-  />
-  <div class="divider my-0"></div>
+    <HorizontalCard
+      title="Cookie Cats 用户流失预测"
+      img="/post_img.webp"
+      desc="基于 90,189 条 Cookie Cats 用户行为数据构建 7 日流失预测模型，完成特征工程、模型训练、AUC / ROC 指标评估，并输出高 / 中 / 低风险用户分层。"
+      url="https://github.com/Xuzheee/game_churn_project_plan"
+      badge="Churn Modeling"
+      role="数据分析与建模"
+      stack="Python, Pandas, Scikit-learn, XGBoost"
+      result="XGBoost 测试集 AUC = 0.8940"
+    />
+    <div class="divider my-0"></div>
 
-  <!-- 6. 厦门 12345 分析 -->
-  <HorizontalCard
-    title="厦门 12345 平台文本挖掘"
-    img="/post_img.webp" 
-    desc="对 10,000+ 条非结构化用户反馈数据进行清洗与 TF-IDF 向量化。应用 K-means 聚类算法划分出 6 类高频诉求主题，建立标准化标签体系（准确率 82%）。"
-    url="#"
-    badge="NLP & Clustering"
-  />
-  <div class="divider my-0"></div>
+    <HorizontalCard
+      title="Steam 游戏市场表现分析"
+      img="/post_img.webp"
+      desc="基于 Steam Top Sellers 候选游戏样本，构建市场热度与玩家口碑分析框架，区分“高热度路径”和“高口碑路径”，完成数据清洗、EDA、建模评估和运营策略输出。"
+      url="https://github.com/Xuzheee/steam-strategy-ops-portfolio"
+      badge="Game Analytics"
+      role="数据分析与策略输出"
+      stack="Python, Regression, Classification, EDA"
+      result="热度回归与高口碑识别模型"
+    />
+    <div class="divider my-0"></div>
 
-  <!-- 7. 农村满意度调研 -->
-  <HorizontalCard
-    title="农村居民满意度治理指标验证"
-    img="/post_img.webp"
-    desc="农业农村部项目。设计并执行覆盖 800+ 样本的混合式问卷调查。构建多元线性回归模型 (OLS)，识别影响治理效能的关键变量。"
-    url="#"
-    badge="Statistics (OLS)"
-  />
-  <div class="divider my-0"></div>
+    <HorizontalCard
+      title="厦门 12345 平台文本挖掘"
+      img="/post_img.webp"
+      desc="清洗并分析厦门 12345 便民服务平台 10,000+ 条用户反馈数据，提取文本特征并识别高频诉求模式，为后续工单分类与分派规则优化提供支持。"
+      url="#"
+      badge="NLP"
+      role="数据分析实习生"
+      stack="TF-IDF, K-means, Python"
+      result="归纳 6 类核心问题主题"
+    />
+  </section>
 
-  <!-- 8. 节水灌溉研究 -->
-  <HorizontalCard
-    title="节水灌溉社会服务研究"
-    img="/post_img.webp"
-    desc="探索用户节水行为与政策激励的关联性。调研豫鲁两省 30+ 农户，结合用户访谈与公开数据，分析节水灌溉的社会接受度。"
-    url="#"
-    badge="Qualitative Research"
-  />
+  <section id="research" class="reveal reveal-delay-2 mb-12 scroll-mt-8">
+    <div class="mb-5">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Research & Social Science</p>
+      <h2 class="mt-2 text-3xl font-bold">研究与社会科学项目</h2>
+    </div>
+
+    <HorizontalCard
+      title="URAI Lab: 多模态数据标注与评测平台"
+      img="/project3.png"
+      desc="面向应急事件研究场景的多模态数据标注与评测平台。项目围绕新闻和社交媒体数据采集、LLM 图像信息抽取、结构化事件字段设计和模型效果评估展开，支持团队将数据处理流程在线化。"
+      url="#"
+      badge="Research Tool"
+      role="研究助理 / Web 开发"
+      stack="Scrapy, Selenium, Flask/Django, GPT, Qwen, GLM"
+      result="30万+ 多模态样本、Precision / Recall / F1 评测流程"
+    />
+    <div class="divider my-0"></div>
+
+    <HorizontalCard
+      title="农村居民满意度治理指标验证"
+      img="/post_img.webp"
+      desc="农业农村部项目。参与农村居民满意度治理指标验证调研，主导问卷与访谈研究，基于 OLS 回归识别治理效能关键变量。"
+      url="#"
+      badge="Survey Research"
+      role="研究员"
+      stack="问卷调查, 访谈, OLS 回归"
+      result="800+ 样本、50+ 访谈、3 项指标优化建议"
+    />
+    <div class="divider my-0"></div>
+
+    <HorizontalCard
+      title="节水灌溉社会服务研究"
+      img="/post_img.webp"
+      desc="探索用户节水行为与政策激励的关联性，调研豫鲁两省农户，结合用户访谈与水利局公开数据，分析节水灌溉的社会接受度与实施问题。"
+      url="#"
+      badge="Qualitative Research"
+      role="研究员"
+      stack="田野调研, 访谈, 公开数据分析"
+      result="30+ 农户调研与政策建议整理"
+    />
+  </section>
+
+  <section id="game-hci" class="reveal reveal-delay-3 mb-6 scroll-mt-8">
+    <div class="mb-5">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Game & Human-AI Interaction</p>
+      <h2 class="mt-2 text-3xl font-bold">游戏、心理与交互</h2>
+    </div>
+
+    <HorizontalCard
+      title="Anti Emo: 心理治愈游戏"
+      img="/project2.png"
+      desc="关注电子游戏与心理健康的结合，合作开发包含心理学评估模块的治愈游戏，探索游戏机制在情绪支持和自我觉察中的应用。"
+      url="https://anti-emo.netlify.app/"
+      badge="Game & Psychology"
+      role="游戏机制与 Web 部署协作"
+      stack="Unity, Web Deployment, Psychological Assessment"
+      result="心理评估模块与在线体验"
+    />
+  </section>
 </BaseLayout>
