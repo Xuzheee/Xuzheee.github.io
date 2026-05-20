@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroMotion from "../components/HeroMotion.astro";
 import HorizontalCard from "../components/HorizontalCard.astro";
 import Icon from "../components/Icon.astro";
 import SkillMarquee from "../components/SkillMarquee.astro";
@@ -10,18 +11,6 @@ const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueO
 const last_posts = posts.slice(0, 3);
 
 const highlights = [
-  {
-    value: "30万+",
-    label: "多模态数据样本",
-    icon: "database",
-    desc: "在 URAI Lab 参与应急事件研究数据体系建设，完成新闻与社交媒体多源数据采集、图像信息抽取、结构化标注与模型评测流程设计。",
-  },
-  {
-    value: "10,000+",
-    label: "政务文本分析",
-    icon: "fileSearch",
-    desc: "清洗并分析厦门 12345 平台用户反馈数据，使用 TF-IDF 与 K-means 识别高频诉求主题，为工单分类和分派规则优化提供数据支持。",
-  },
   {
     value: "AI Agent",
     label: "研究工具",
@@ -34,23 +23,43 @@ const highlights = [
     icon: "users",
     desc: "关注 AI 工具如何进入真实工作流，尤其是研究辅助、专注管理、游戏心理、社会模拟和人机协作体验。",
   },
+  {
+    value: "30万+",
+    label: "多模态数据样本",
+    icon: "database",
+    desc: "在 URAI Lab 参与应急事件研究数据体系建设，完成新闻与社交媒体多源数据采集、图像信息抽取、结构化标注与模型评测流程设计。",
+  },
+  {
+    value: "1000+",
+    label: "政务文本分析",
+    icon: "fileSearch",
+    desc: "清洗并分析厦门 12345 平台用户反馈数据，使用 TF-IDF 与 K-means 识别高频诉求主题，为工单分类和分派规则优化提供数据支持。",
+  },
 ];
 ---
 
 <BaseLayout sideBarActiveItemID="home">
-  <section class="reveal pb-12 pt-2">
-    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Portfolio</p>
-    <h1 class="mt-4 text-4xl font-bold leading-tight md:text-6xl">你好，我是杨黄旭哲。</h1>
-    <p class="mt-5 max-w-3xl text-2xl font-semibold leading-snug md:text-3xl">
-      计算社会科学（统计学）硕士研究生，关注 AI Agent、数据分析、社会计算与 Human-AI Interaction。
-    </p>
-    <p class="mt-5 max-w-3xl text-lg leading-relaxed text-base-content/80">
-      我擅长把社会科学问题转化为可计算、可验证、可展示的研究与产品流程：从数据采集、文本分析、模型评估，到 AI Agent 工作流设计和 Web 原型开发。
-    </p>
-    <div class="mt-8 flex flex-wrap gap-3">
-      <a class="btn btn-primary" href="/projects">查看项目</a>
-      <a class="btn btn-outline" href="/cv">查看简历</a>
-      <a class="btn btn-ghost" href="/resume.pdf" download>下载 Resume PDF</a>
+  <section class="reveal grid gap-x-8 gap-y-8 pb-12 pt-2 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] lg:items-center">
+    <div class="max-w-[52rem] lg:pr-4">
+      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Portfolio</p>
+      <h1 class="mt-5 text-4xl font-bold leading-[1.12] md:text-6xl">你好，我是杨黄旭哲 👋</h1>
+      <p class="mt-7 max-w-[36rem] whitespace-nowrap text-xl font-semibold leading-[1.45] md:text-2xl">
+        计算社会科学（统计学）硕士研究生
+      </p>
+    </div>
+    <div class="md:max-w-[28rem] lg:justify-self-end">
+      <HeroMotion />
+    </div>
+    <div class="max-w-[62rem] lg:col-span-2">
+      <p class="max-w-[58rem] text-lg leading-loose text-base-content/80">
+        关注 AI Agent、数据分析、社会计算与 Human-AI Interaction。<br />
+        我擅长把社会科学问题转化为可计算、可验证、可展示的研究与产品流程：从数据采集、文本分析、模型评估，到 AI Agent 工作流设计和 Web 原型开发。
+      </p>
+      <div class="mt-9 flex flex-wrap gap-3">
+        <a class="btn btn-primary" href="/projects">查看项目</a>
+        <a class="btn btn-outline" href="/cv">查看简历</a>
+        <a class="btn btn-ghost" href="/resume.pdf" download>下载 Resume PDF</a>
+      </div>
     </div>
   </section>
 

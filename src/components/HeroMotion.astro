@@ -1,0 +1,193 @@
+<aside class="social-map" aria-label="社会计算网络图案">
+  <svg class="social-map__svg" viewBox="48 34 424 350" role="img" aria-labelledby="social-map-title">
+    <title id="social-map-title">Social computing network pattern</title>
+
+    <defs>
+      <pattern id="social-grid" width="42" height="42" patternUnits="userSpaceOnUse">
+        <path d="M 42 0 L 0 0 0 42" fill="none" stroke="#e4e4e7" stroke-width="1" />
+      </pattern>
+      <radialGradient id="node-glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#6366f1" stop-opacity="0.24" />
+        <stop offset="70%" stop-color="#6366f1" stop-opacity="0.08" />
+        <stop offset="100%" stop-color="#6366f1" stop-opacity="0" />
+      </radialGradient>
+      <linearGradient id="link-gradient" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#a1a1aa" stop-opacity="0.3" />
+        <stop offset="50%" stop-color="#6366f1" stop-opacity="0.55" />
+        <stop offset="100%" stop-color="#a1a1aa" stop-opacity="0.25" />
+      </linearGradient>
+    </defs>
+
+    <rect width="520" height="420" rx="22" fill="transparent" />
+    <rect width="520" height="420" rx="22" fill="url(#social-grid)" opacity="0.46" />
+    <circle cx="260" cy="204" r="142" fill="url(#node-glow)" />
+
+    <g class="social-map__links">
+      <path d="M255 204 L126 104" />
+      <path d="M255 204 L388 102" />
+      <path d="M255 204 L420 252" />
+      <path d="M255 204 L317 335" />
+      <path d="M255 204 L102 292" />
+      <path d="M126 104 L214 62" />
+      <path d="M388 102 L430 176" />
+      <path d="M102 292 L190 350" />
+      <path d="M317 335 L420 252" />
+      <path d="M214 62 L388 102" />
+    </g>
+
+    <g class="social-map__pulse-path">
+      <path pathLength="1" d="M126 104 L255 204 L420 252" />
+      <path pathLength="1" d="M214 62 L388 102 L430 176" />
+      <path pathLength="1" d="M102 292 L255 204 L317 335" />
+    </g>
+
+    <g class="social-map__nodes">
+      <g class="social-map__node social-map__node--core" style="--delay: 0s">
+        <circle cx="255" cy="204" r="34" />
+        <text x="255" y="199">Social</text>
+        <text x="255" y="216">Computing</text>
+      </g>
+
+      <g class="social-map__node" style="--delay: .2s">
+        <circle cx="126" cy="104" r="18" />
+        <text x="126" y="74">Data</text>
+      </g>
+      <g class="social-map__node" style="--delay: .45s">
+        <circle cx="388" cy="102" r="20" />
+        <text x="388" y="72">Agent</text>
+      </g>
+      <g class="social-map__node" style="--delay: .7s">
+        <circle cx="420" cy="252" r="18" />
+        <text x="420" y="286">HCI</text>
+      </g>
+      <g class="social-map__node" style="--delay: .95s">
+        <circle cx="317" cy="335" r="17" />
+        <text x="317" y="372">Model</text>
+      </g>
+      <g class="social-map__node" style="--delay: 1.2s">
+        <circle cx="102" cy="292" r="17" />
+        <text x="102" y="330">Text</text>
+      </g>
+      <g class="social-map__node social-map__node--small" style="--delay: 1.45s">
+        <circle cx="214" cy="62" r="10" />
+      </g>
+      <g class="social-map__node social-map__node--small" style="--delay: 1.7s">
+        <circle cx="430" cy="176" r="10" />
+      </g>
+      <g class="social-map__node social-map__node--small" style="--delay: 1.95s">
+        <circle cx="190" cy="350" r="10" />
+      </g>
+    </g>
+  </svg>
+</aside>
+
+<style>
+  .social-map {
+    position: relative;
+    min-height: 20rem;
+    overflow: hidden;
+    border-radius: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .social-map__svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 20rem;
+  }
+
+  .social-map__links path {
+    fill: none;
+    stroke: url(#link-gradient);
+    stroke-width: 1.4;
+  }
+
+  .social-map__pulse-path path {
+    fill: none;
+    stroke: #4f46e5;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-dasharray: 0.08 0.92;
+    animation: data-flow 3.8s linear infinite;
+    opacity: 0.82;
+  }
+
+  .social-map__pulse-path path:nth-child(2) {
+    animation-delay: 0.9s;
+  }
+
+  .social-map__pulse-path path:nth-child(3) {
+    animation-delay: 1.7s;
+  }
+
+  .social-map__node {
+    animation: node-breathe 3.6s ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+
+  .social-map__node circle {
+    fill: #ffffff;
+    stroke: #4f46e5;
+    stroke-width: 2;
+    filter: drop-shadow(0 8px 12px rgba(79, 70, 229, 0.14));
+  }
+
+  .social-map__node--core circle {
+    fill: #f4f4f5;
+    stroke-width: 2.5;
+  }
+
+  .social-map__node--small circle {
+    fill: #4f46e5;
+    stroke: #ffffff;
+  }
+
+  .social-map__node text {
+    text-anchor: middle;
+    fill: #27272a;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .social-map__node--core text {
+    font-size: 12px;
+  }
+
+  @keyframes data-flow {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes node-breathe {
+    0%, 100% {
+      transform: translateY(0);
+      opacity: 0.92;
+    }
+    50% {
+      transform: translateY(-4px);
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .social-map,
+    .social-map__svg {
+      min-height: 19rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .social-map__pulse-path path,
+    .social-map__node {
+      animation: none;
+    }
+  }
+</style>
