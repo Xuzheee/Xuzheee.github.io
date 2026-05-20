@@ -16,21 +16,27 @@
     content: "";
     position: absolute;
     inset: 0;
+    z-index: 0;
     pointer-events: none;
     opacity: 0;
     background:
         radial-gradient(420px circle at var(--glow-x, 50%) var(--glow-y, 50%),
-            hsl(var(--p) / 0.16),
+            rgba(99, 102, 241, 0.12),
             transparent 42%);
     transition: opacity 180ms ease;
 }
 
+.glow-card>* {
+    position: relative;
+    z-index: 1;
+}
+
 .glow-card:hover,
 .glow-card:focus-within {
-    border-color: hsl(var(--p) / 0.55);
+    border-color: rgba(99, 102, 241, 0.45);
     box-shadow:
-        0 0 0 1px hsl(var(--p) / 0.12),
-        0 18px 42px hsl(var(--p) / 0.16);
+        0 0 0 1px rgba(99, 102, 241, 0.08),
+        0 18px 42px rgba(99, 102, 241, 0.14);
     transform: translateY(-2px);
 }
 
@@ -62,9 +68,9 @@
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 0.5rem;
-    border: 1px solid hsl(var(--b3));
-    background: hsl(var(--b2));
-    color: hsl(var(--p));
+    border: 1px solid #d4d4d8;
+    background: #f4f4f5;
+    color: #4f46e5;
 }
 
 @keyframes fade-up {

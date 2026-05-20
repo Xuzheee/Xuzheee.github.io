@@ -36,5 +36,6 @@ const markup = icons[name] ?? icons.sparkles;
   stroke-linecap="round"
   stroke-linejoin="round"
   aria-hidden="true"
-  set:html={markup}
-/>
+>
+  <Fragment set:html={markup} />
+</svg>
