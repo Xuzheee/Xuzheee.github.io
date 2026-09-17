@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="422" viewBox="0 0 750 422" role="img" aria-labelledby="title desc">
+  <title id="title">客服主动任务工作流示意</title>
+  <desc id="desc">用户理解、策略生成、客服执行、效果反馈四步相连。流程示意，不是内部平台截图。</desc>
+  <rect width="750" height="422" rx="16" fill="#f4f4f5"/>
+  <g font-family="Microsoft YaHei, sans-serif" fill="#27272a">
+    <text x="46" y="63" font-size="18" fill="#6366f1">AI WORKFLOW</text>
+    <text x="46" y="112" font-size="30" font-weight="700">从用户理解，到效果反馈</text>
+    <g stroke="#d4d4d8" fill="#fff">
+      <rect x="46" y="165" width="142" height="105" rx="10"/>
+      <rect x="218" y="165" width="142" height="105" rx="10"/>
+      <rect x="390" y="165" width="142" height="105" rx="10"/>
+      <rect x="562" y="165" width="142" height="105" rx="10"/>
+    </g>
+    <g text-anchor="middle" font-size="22" font-weight="700">
+      <text x="117" y="205">用户理解</text><text x="289" y="205">策略生成</text>
+      <text x="461" y="205">客服执行</text><text x="633" y="205">效果反馈</text>
+    </g>
+    <g text-anchor="middle" font-size="16" fill="#71717a">
+      <text x="117" y="241">标签与行为</text><text x="289" y="241">策略与话术</text>
+      <text x="461" y="241">核对与沟通</text><text x="633" y="241">回复与转化</text>
+    </g>
+    <g stroke="#6366f1" stroke-width="2" fill="none">
+      <path d="M190 218h24m-7-6 7 6-7 6M362 218h24m-7-6 7 6-7 6M534 218h24m-7-6 7 6-7 6"/>
+      <path d="M633 280v34H117v-30m-6 7 6-7 6 7"/>
+    </g>
+    <text x="375" y="353" font-size="18" text-anchor="middle">用真实执行与结果，持续迭代策略</text>
+    <text x="46" y="394" font-size="13" fill="#71717a">流程示意 · 非内部平台截图</text>
+  </g>
+</svg>

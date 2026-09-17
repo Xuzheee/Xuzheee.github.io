@@ -1,0 +1,20 @@
+---
+import { getProject } from "../data/portfolio";
+interface Props { projectId: string; compact?: boolean }
+const { projectId, compact = false } = Astro.props;
+const project = getProject(projectId);
+---
+{project.results && (
+  <div class="not-prose my-4 rounded-lg border border-base-300 p-4" data-results-for={projectId}>
+    <dl class:list={["grid gap-4", !compact && "sm:grid-cols-2"]}>
+      {project.results.map((result) => (
+        <div>
+          <dt class="text-sm text-base-content/70">{result.label}</dt>
+          <dd class:list={["mt-1 font-semibold", !compact && "text-lg"]}>{result.value}</dd>
+          {result.note && <dd class="mt-1 text-sm text-base-content/70">{result.note}</dd>}
+        </div>
+      ))}
+    </dl>
+    {project.resultNote && <p class="mt-4 text-sm leading-relaxed text-base-content/75">{project.resultNote}</p>}
+  </div>
+)}

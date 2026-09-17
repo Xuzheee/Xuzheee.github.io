@@ -1,3 +1,6 @@
+---
+import { profile } from "../data/portfolio";
+---
 <div
   class="block sticky pointer-events-none bottom-10 bg-base-200 justify-center h-12 [mask-image:linear-gradient(transparent,black_10px)]"
 >
@@ -7,7 +10,7 @@
   
   <!-- 1. GitHub 图标 -->
   <a
-    href="https://github.com/Xuzheee"
+    href={profile.github}
     target="_blank"
     class="mx-3"
     aria-label="Github"
@@ -30,7 +33,7 @@
 
   <!-- 2. Email 图标 (替换了原来的 Twitter/Linkedin) -->
   <a
-    href="mailto:huangxuzhe12@163.com"
+    href={`mailto:${profile.email}`}
     target="_blank"
     class="mx-3"
     aria-label="Email"

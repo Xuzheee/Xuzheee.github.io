@@ -1,28 +1,32 @@
 ---
 const {
+  id,
   title,
   img,
   desc,
-  url = "#",
+  url,
   badge,
   tags,
-  target = "_blank",
+  target,
   role,
   stack,
   result,
   cta = "查看详情",
 } = Astro.props;
 import { Image } from "astro:assets";
-const tag_url = url.split("/").slice(0, -1).join("/") + "/tag";
-const isPlaceholderLink = url === "#";
+const isPlaceholderLink = !url || url === "#";
+const isExternal = !isPlaceholderLink && /^https?:\/\//.test(url);
+const linkTarget = target ?? (isExternal ? "_blank" : "_self");
+const tag_url = !isPlaceholderLink ? url.split("/").slice(0, -1).join("/") + "/tag" : "";
+const ImageWrapper = isPlaceholderLink ? "div" : "a";
 import Icon from "./Icon.astro";
 ---
 
-<article class="glow-card rounded-lg border border-base-300 bg-base-100 transition ease-in-out">
+<article id={id} data-project-id={id} class="glow-card rounded-lg border border-base-300 bg-base-100 transition ease-in-out">
   <div class="hero-content flex-col items-start md:flex-row">
     {
       img && (
-        <a href={url} target={isPlaceholderLink ? "_self" : target} class="w-full md:w-auto">
+        <ImageWrapper href={isPlaceholderLink ? undefined : url} target={isPlaceholderLink ? undefined : linkTarget} rel={isExternal ? "noopener noreferrer" : undefined} class="w-full md:w-auto md:shrink-0">
           <Image
             src={img}
             width={750}
@@ -31,13 +35,13 @@ import Icon from "./Icon.astro";
             alt={title}
             class="project-card__image w-full rounded-lg object-cover md:max-w-[14rem]"
           />
-        </a>
+        </ImageWrapper>
       )
     }
-    <div class="grow w-full">
+    <div class="min-w-0 grow w-full">
       <div class="flex flex-wrap items-center gap-2">
         <h2 class="text-xl font-bold leading-snug">{title}</h2>
-        {!isPlaceholderLink && <Icon name="externalLink" class="h-4 w-4 text-primary" />}
+        {isExternal && <Icon name="externalLink" class="h-4 w-4 text-primary" />}
         {badge && <span class="badge badge-secondary">{badge}</span>}
       </div>
       <p class="py-2 text-base leading-relaxed">{desc}</p>
@@ -76,12 +80,13 @@ import Icon from "./Icon.astro";
         }
         {
           !isPlaceholderLink && (
-            <a href={url} target={target} class="project-card__cta btn btn-outline btn-sm ml-auto">
+            <a href={url} target={linkTarget} rel={isExternal ? "noopener noreferrer" : undefined} class="project-card__cta btn btn-outline btn-sm ml-auto">
               {cta}<Icon name="arrowRight" class="project-card__arrow h-4 w-4" />
             </a>
           )
         }
       </div>
+      <slot />
     </div>
   </div>
 </article>

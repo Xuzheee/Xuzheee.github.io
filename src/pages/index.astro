@@ -1,7 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HeroMotion from "../components/HeroMotion.astro";
-import HorizontalCard from "../components/HorizontalCard.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { profile, highlights, featuredProjects, experiences, skills } from "../data/portfolio";
 import Icon from "../components/Icon.astro";
 import SkillMarquee from "../components/SkillMarquee.astro";
 import TimeLineElement from "../components/cv/TimeLine.astro";
@@ -10,41 +11,15 @@ import { getCollection } from "astro:content";
 const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const last_posts = posts.slice(0, 3);
 
-const highlights = [
-  {
-    value: "AI Agent",
-    label: "研究工具",
-    icon: "bot",
-    desc: "设计 Deep Research Agent 工作流，将搜索、抓取、证据筛选、结构化生成和质量检查串联成可追溯的产品研究流程。",
-  },
-  {
-    value: "HCI",
-    label: "Human-AI Interaction",
-    icon: "users",
-    desc: "关注 AI 工具如何进入真实工作流，尤其是研究辅助、专注管理、游戏心理、社会模拟和人机协作体验。",
-  },
-  {
-    value: "30万+",
-    label: "多模态数据样本",
-    icon: "database",
-    desc: "在 URAI Lab 参与应急事件研究数据体系建设，完成新闻与社交媒体多源数据采集、图像信息抽取、结构化标注与模型评测流程设计。",
-  },
-  {
-    value: "1000+",
-    label: "政务文本分析",
-    icon: "fileSearch",
-    desc: "清洗并分析厦门 12345 平台用户反馈数据，使用 TF-IDF 与 K-means 识别高频诉求主题，为工单分类和分派规则优化提供数据支持。",
-  },
-];
 ---
 
 <BaseLayout sideBarActiveItemID="home">
   <section class="reveal grid gap-x-8 gap-y-8 pb-12 pt-2 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] lg:items-center">
     <div class="max-w-[52rem] lg:pr-4">
       <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Portfolio</p>
-      <h1 class="mt-5 text-4xl font-bold leading-[1.12] md:text-6xl">你好，我是杨黄旭哲 👋</h1>
-      <p class="mt-7 max-w-[36rem] whitespace-nowrap text-xl font-semibold leading-[1.45] md:text-2xl">
-        计算社会科学（统计学）硕士研究生
+      <h1 class="mt-5 text-4xl font-bold leading-[1.12] md:text-6xl">你好，我是{profile.name} 👋</h1>
+      <p class="mt-7 max-w-[36rem] text-xl font-semibold leading-[1.45] md:text-2xl">
+        {profile.education}
       </p>
     </div>
     <div class="md:max-w-[28rem] lg:justify-self-end">
@@ -52,13 +27,12 @@ const highlights = [
     </div>
     <div class="max-w-[62rem] lg:col-span-2">
       <p class="max-w-[58rem] text-lg leading-loose text-base-content/80">
-        关注 AI Agent、数据分析、社会计算与 Human-AI Interaction。<br />
-        我擅长把社会科学问题转化为可计算、可验证、可展示的研究与产品流程：从数据采集、文本分析、模型评估，到 AI Agent 工作流设计和 Web 原型开发。
+        {profile.introduction}
       </p>
       <div class="mt-9 flex flex-wrap gap-3">
         <a class="btn btn-primary" href="/projects">查看项目</a>
         <a class="btn btn-outline" href="/cv">查看简历</a>
-        <a class="btn btn-ghost" href="/resume.pdf" download>下载 Resume PDF</a>
+        <a class="btn btn-ghost" href={profile.resume} download>下载 Resume PDF</a>
       </div>
     </div>
   </section>
@@ -86,59 +60,19 @@ const highlights = [
         <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Selected Work</p>
         <h2 class="mt-2 text-3xl font-bold">精选项目</h2>
         <p class="mt-3 max-w-3xl leading-relaxed text-base-content/75">
-          这些项目集中展示我如何把社会科学问题、数据分析方法和 AI Agent 技术转化为可运行的工具、研究流程和交互式原型。
+          从业务策略、桌面产品到研究工具，这三个案例展示我如何定义问题、做出取舍，并检验实际结果。
         </p>
       </div>
       <a href="/projects" class="btn btn-outline btn-sm">查看全部项目</a>
     </div>
 
-    <div class="grid gap-2">
-      <HorizontalCard
-        title="HV Deep Research: 产品研究报告工作台"
-        img="/project-hv-deep-research.png"
-        desc="面向 AI 产品研究与竞品分析的 Deep Research Web App，支持并行信息收集、证据筛选、结构化报告生成和质量检查。"
-        url="https://hv-deep-research-web.onrender.com/"
-        badge="AI Agent"
-        role="独立设计与开发"
-        stack="Next.js, FastAPI, LangGraph"
-        result="Evidence Cards、来源分级、Markdown 导出"
-      />
-      <div class="divider my-0"></div>
-
-      <HorizontalCard
-        title="FocusFlow / Inky: AI 桌面专注助手"
-        img="/project-inky.png"
-        desc="面向 ADHD / 易分心用户的桌面效率工具，覆盖任务捕获、专注计时、情绪提醒、宠物化激励和本地持久化。"
-        url="https://github.com/Xuzheee/Inky-app"
-        badge="Human-AI Interaction"
-        role="独立设计与开发"
-        stack="Tauri, React, TypeScript, Rust"
-        result="自然语言任务解析、悬浮窗、迷你宠物模式"
-      />
-      <div class="divider my-0"></div>
-
-      <HorizontalCard
-        title="URAI Lab: 多模态数据标注与评测平台"
-        img="/project3.png"
-        desc="面向应急事件研究场景，构建多源数据采集、LLM 图像分析、结构化标注和模型评测流程。"
-        url="#"
-        badge="Research Tool"
-        role="研究助理 / Web 开发"
-        stack="Scrapy, Selenium, Flask/Django, LLM API"
-        result="30万+ 数据样本、Precision/Recall/F1 评测"
-      />
-      <div class="divider my-0"></div>
-
-      <HorizontalCard
-        title="Seven Angry Man: 多智能体辩论模拟"
-        img="/project1.png"
-        desc="基于经典电影情境构建多名具备不同立场和性格的大模型 Agent，模拟群体讨论、说服和极化过程。"
-        url="https://seven-angry-agent-f6vjdwtdxgluau6qkvfmxv.streamlit.app/"
-        badge="LLM Simulation"
-        role="系统设计与原型开发"
-        stack="LangChain, Streamlit, Prompt Engineering"
-        result="GABM 社会模拟与交互式 Web 原型"
-      />
+    <div class="grid gap-2" data-featured-projects>
+      {featuredProjects.map((project, index) => (
+        <>
+          {index > 0 && <div class="divider my-0"></div>}
+          <ProjectCard project={project} />
+        </>
+      ))}
     </div>
   </section>
 
@@ -147,31 +81,17 @@ const highlights = [
       <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Experience</p>
       <h2 class="mt-2 text-3xl font-bold">实践经历</h2>
       <p class="mt-3 max-w-3xl leading-relaxed text-base-content/75">
-        我的经历主要围绕三类问题展开：如何采集和组织复杂数据，如何从文本和多模态信息中提取结构化洞察，以及如何把研究流程做成可被他人使用的工具。
+        从网易的 AI 策略运营，到实验室的数据与模型评测，再到政务文本分析，我持续把研究方法用于具体业务和产品问题。
       </p>
     </div>
 
     <div class="time-line-container grid gap-4">
-      <TimeLineElement
-        title="研究助理 | URAI Lab 城市韧性与人工智能实验室"
-        subtitle="2025.10 - 至今 | 香港中文大学（深圳）"
-      >
-        设计多源数据采集方案，构建 30万+ 新闻与社交媒体多模态样本；调用 GPT / Qwen / GLM 等模型实现图像关键信息抽取与结构化标注；搭建 Precision / Recall / F1 评测流程，并独立开发 LabelTool WebApp 完成云端部署。
-      </TimeLineElement>
-
-      <TimeLineElement
-        title="数据分析实习生 | 厦门市信息中心"
-        subtitle="2024.07 - 2024.08"
-      >
-        清洗并分析 10,000+ 条 12345 便民服务平台用户反馈数据，基于 TF-IDF 提取文本特征，使用 K-means 聚类归纳 6 类核心诉求主题，为工单分类与分派规则优化提供支持。
-      </TimeLineElement>
-
-      <TimeLineElement
-        title="研究员 | 农村治理满意度指标验证调研"
-        subtitle="2023.08 - 2023.10 | 农业农村部项目"
-      >
-        主导 800+ 样本问卷与 50+ 农户访谈研究，基于 OLS 回归识别治理效能关键变量，输出 3 项数据驱动的指标优化建议。
-      </TimeLineElement>
+      {experiences.filter((item) => item.home).map((item) => (
+        <TimeLineElement title={item.title} subtitle={[item.project.period, item.organization].filter(Boolean).join(" | ")}>
+          {item.project.description} {item.project.id === "urai-lab" && item.project.result + "。"}
+          {item.project.hasCase && <a class="ml-2 text-primary underline underline-offset-4" href={`/projects/${item.project.id}/`}>阅读案例</a>}
+        </TimeLineElement>
+      ))}
     </div>
   </section>
 
@@ -182,22 +102,12 @@ const highlights = [
     </div>
     <SkillMarquee />
     <div class="grid gap-4 md:grid-cols-2">
-      <div class="glow-card rounded-lg border border-base-300 p-5">
-        <h3 class="font-bold">AI / Agent 应用</h3>
-        <p class="mt-2 text-sm leading-relaxed text-base-content/75">LangChain, LangGraph, Prompt Engineering, RAG, Tool Calling, 结构化输出, Agent 工作流设计与评测。</p>
-      </div>
-      <div class="glow-card rounded-lg border border-base-300 p-5">
-        <h3 class="font-bold">数据分析与建模</h3>
-        <p class="mt-2 text-sm leading-relaxed text-base-content/75">Python, Pandas, NumPy, Scikit-learn, SQL, R, 回归 / 分类 / 聚类, A/B 测试, 模型评估与可视化。</p>
-      </div>
-      <div class="glow-card rounded-lg border border-base-300 p-5">
-        <h3 class="font-bold">文本与多模态研究</h3>
-        <p class="mt-2 text-sm leading-relaxed text-base-content/75">TF-IDF, 文本分析, 数据清洗, Web Scraping, Scrapy, Selenium, LLM 图像标注与评测。</p>
-      </div>
-      <div class="glow-card rounded-lg border border-base-300 p-5">
-        <h3 class="font-bold">Web 原型与产品实现</h3>
-        <p class="mt-2 text-sm leading-relaxed text-base-content/75">Flask, Django, Streamlit, React, Tauri, TypeScript, 轻量部署, Claude Code, Cursor, Codex。</p>
-      </div>
+      {skills.map((skill) => (
+        <div class="glow-card rounded-lg border border-base-300 p-5">
+          <h3 class="font-bold">{skill.title}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-base-content/75">{skill.description}</p>
+        </div>
+      ))}
     </div>
   </section>
 

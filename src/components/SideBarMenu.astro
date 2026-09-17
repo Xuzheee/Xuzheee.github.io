@@ -1,5 +1,6 @@
 ---
 import Icon from "./Icon.astro";
+import { profile } from "../data/portfolio";
 const { sideBarActiveItemID } = Astro.props;
 const activeClass = "bg-base-300"; // 选中时的背景颜色
 ---
@@ -24,7 +25,7 @@ const activeClass = "bg-base-300"; // 选中时的背景颜色
     <li>
         <a
             class="py-3 text-base"
-            href="mailto:huangxuzhe12@163.com"
+            href={`mailto:${profile.email}`}
             target="_blank"
             referrerpolicy="no-referrer-when-downgrade"><Icon name="mail" class="h-4 w-4" />Contact</a
         >

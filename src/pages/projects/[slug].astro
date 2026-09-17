@@ -1,0 +1,47 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { profile, getProject } from "../../data/portfolio";
+
+export async function getStaticPaths() {
+  const cases = await getCollection("cases");
+  return cases.map((entry) => {
+    const project = getProject(entry.data.projectId);
+    if (!project.hasCase || project.id !== entry.slug) throw new Error(`Invalid case mapping: ${entry.id}`);
+    return { params: { slug: project.id }, props: { entry } };
+  });
+}
+const { entry } = Astro.props;
+const project = getProject(entry.data.projectId);
+const { Content } = await entry.render();
+const date = entry.data.updatedDate.toISOString().slice(0, 10);
+---
+<BaseLayout title={`${project.title} | ${profile.name}`} description={project.description} image={project.img} sideBarActiveItemID="projects" ogType="article">
+  <article class="case-study max-w-[750px]" data-case-study={project.id}>
+    <a href={`/projects#${project.id}`} class="text-sm text-primary underline underline-offset-4">← 返回项目总览</a>
+    <header class="mb-8 mt-6">
+      <span class="badge badge-secondary">{project.badge}</span>
+      <h1 class="mt-4 text-3xl font-bold leading-tight md:text-4xl">{project.title}</h1>
+      <p class="mt-5 text-lg leading-relaxed text-base-content/80">{project.description}</p>
+      <dl class="mt-6 grid gap-3 rounded-lg border border-base-300 p-4 text-sm sm:grid-cols-2">
+        <div><dt class="text-base-content/65">我的职责</dt><dd class="mt-1">{project.role}</dd></div>
+        {project.period && <div><dt class="text-base-content/65">项目经历</dt><dd class="mt-1">{project.period}</dd></div>}
+        <div><dt class="text-base-content/65">状态</dt><dd class="mt-1">{project.status}</dd></div>
+        <div><dt class="text-base-content/65">案例更新</dt><dd class="mt-1"><time datetime={date}>{date}</time></dd></div>
+      </dl>
+      {project.links && <div class="mt-5 flex flex-wrap gap-3">{project.links.map((link) => <a class="btn btn-outline btn-sm" href={link.url} target="_blank" rel="noopener noreferrer">{link.label} ↗</a>)}</div>}
+    </header>
+    <div class="prose prose-lg max-w-none prose-headings:scroll-mt-20 prose-a:text-primary">
+      <Content />
+    </div>
+    <footer class="mt-10 flex flex-wrap gap-3 border-t border-base-300 pt-6">
+      <a href="/projects" class="btn btn-outline btn-sm">查看全部项目</a>
+      <a href="/cv" class="btn btn-outline btn-sm">查看简历</a>
+      <a href={`mailto:${profile.email}`} class="btn btn-primary btn-sm">联系我</a>
+    </footer>
+  </article>
+</BaseLayout>
+<style>
+  .case-study { min-width: 0; overflow-wrap: anywhere; }
+  .case-study :global(img) { max-width: 100%; height: auto; }
+</style>

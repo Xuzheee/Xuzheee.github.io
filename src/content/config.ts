@@ -29,8 +29,12 @@ export type StoreSchema = z.infer<typeof storeSchema>;
 
 const blogCollection = defineCollection({ schema: blogSchema });
 const storeCollection = defineCollection({ schema: storeSchema });
+const casesCollection = defineCollection({
+    schema: z.object({ projectId: z.string(), updatedDate: z.coerce.date() })
+});
 
 export const collections = {
     'blog': blogCollection,
-    'store': storeCollection
+    'store': storeCollection,
+    'cases': casesCollection
 }

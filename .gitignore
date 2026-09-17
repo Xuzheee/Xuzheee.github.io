@@ -20,3 +20,7 @@ pnpm-debug.log*
 
 # Astro
 .astro/
+
+# Local preview verification artifacts
+.playwright-cli/
+output/playwright/
