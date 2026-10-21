@@ -1,0 +1,16 @@
+/* Approved B covers: real product UI and simple project concepts. */
+.m-home .m-home-work .m-desk { aspect-ratio: 3 / 2; background: #e9e6de; }
+.m-home .m-home-work .m-desk-scene { width: 100%; height: 100%; object-fit: contain; }
+.m-home .m-home-work-side article > a:first-child { display: block; }
+.m-home .m-home-work .m-work-poster {
+  display: block;
+  width: 100%;
+  height: clamp(100px, calc(22svh - 60px), 160px);
+  object-fit: contain;
+  object-position: center;
+  background: #e9e6de;
+  filter: none;
+}
+@media (max-width: 900px) {
+  .m-home .m-home-work .m-work-poster { height: auto; aspect-ratio: 3 / 1; }
+}

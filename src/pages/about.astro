@@ -1,0 +1,31 @@
+---
+import MoriLayout from '../layouts/MoriLayout.astro';
+import Arrow from '../components/mori/Arrow.astro';
+import Lanyard from '../components/mori/Lanyard.astro';
+import { profile } from '../data/portfolio';
+import '../styles/mori-about.css';
+---
+<MoriLayout title="关于我 · Mori" active="about" pageClass="m-about-page">
+  <section class="m-about m-scene" aria-labelledby="about-title">
+    <div class="m-about-copy">
+      <p class="m-about-eyebrow">关于我</p>
+      <h1 class="m-about-greeting" id="about-title">你好，我是<span>MORI</span></h1>
+      <p class="m-about-name">杨黄旭哲</p>
+      <div class="m-biography"><p>我喜欢在游戏和电影里体验不同的故事，<br />也喜欢听音乐，尤其是 R&amp;B、Jazz 和 Hip-Hop。</p><p>我对理解行为和复杂系统很好奇。<br />这里记录我的作品、兴趣，以及探索过程中的一些想法。</p></div>
+    </div>
+    <Lanyard />
+  </section>
+  <section class="m-about-education" aria-labelledby="education-title">
+    <h2 id="education-title">教育经历</h2>
+    <div class="m-about-schools">
+      <article><h3>中国农业大学</h3><p class="m-school-degree">社会学法学学士</p><p class="m-school-period"><time datetime="2021-09">2021.9</time>–<time datetime="2025-07">2025.7</time></p></article>
+      <article><h3>香港中文大学（深圳）</h3><p class="m-school-degree">计算社会科学（统计学）理学硕士</p><p class="m-school-period"><time datetime="2025-09">2025.9</time>–<time datetime="2027-07">2027.7</time></p></article>
+    </div>
+  </section>
+  <section class="m-experience m-scene" id="experience" aria-labelledby="experience-title">
+    <h2 class="m-display" id="experience-title">实习与实践</h2>
+    <article class="m-experience-row"><div><p class="m-experience-label">实习经历</p><h3>网易</h3><h4>AI 策略运营</h4><p class="m-experience-description">参与游戏用户分层、AI 辅助触达与效果评估。</p><a class="m-button" href="/projects/#netease-ai-workflow">查看网易案例 <Arrow /></a></div><div class="m-experience-flow" aria-label="用户理解，策略，反馈"><span>用户理解</span><Arrow /><span>策略</span><Arrow /><span>反馈</span></div></article>
+    <article class="m-experience-row"><div><p class="m-experience-label">研究经历</p><h3>URAI Lab</h3><h4>研究助理</h4><p class="m-experience-description">参与多模态数据流程、模型比较与质量评测。</p><a class="m-button" href="/projects/#urai-lab">查看 URAI 案例 <Arrow /></a></div><img class="m-labeltool" src="/project3.png" alt="LabelTool 标注与复核工具真实截图" loading="lazy" /></article>
+    <footer class="m-about-contact"><div><h2>保持联系</h2><button data-copy={profile.email}>{profile.email}</button><a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub / Xuzheee</a></div><div class="m-resume"><a class="m-button" href="/resume.pdf" download="杨黄旭哲_简历.pdf">下载简历 <Arrow /></a><small>现有版本 · 2026.09.16</small></div></footer>
+  </section>
+</MoriLayout>

@@ -1,128 +1,23 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import HeroMotion from "../components/HeroMotion.astro";
-import ProjectCard from "../components/ProjectCard.astro";
-import { profile, highlights, featuredProjects, experiences, skills } from "../data/portfolio";
-import Icon from "../components/Icon.astro";
-import SkillMarquee from "../components/SkillMarquee.astro";
-import TimeLineElement from "../components/cv/TimeLine.astro";
-import { getCollection } from "astro:content";
-
-const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-const last_posts = posts.slice(0, 3);
-
+import MoriLayout from '../layouts/MoriLayout.astro';
+import Arrow from '../components/mori/Arrow.astro';
+import HomeSections from '../components/mori/HomeSections.astro';
+import MechHero from '../components/mori/MechHero.astro';
+import '../styles/mori-home.css';
+import '../styles/mori-bookends.css';
+import '../styles/mori-work-posters.css';
 ---
-
-<BaseLayout sideBarActiveItemID="home">
-  <section class="reveal grid gap-x-8 gap-y-8 pb-12 pt-2 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] lg:items-center">
-    <div class="max-w-[52rem] lg:pr-4">
-      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Portfolio</p>
-      <h1 class="mt-5 text-4xl font-bold leading-[1.12] md:text-6xl">你好，我是{profile.name} 👋</h1>
-      <p class="mt-7 max-w-[36rem] text-xl font-semibold leading-[1.45] md:text-2xl">
-        {profile.education}
-      </p>
+<MoriLayout pageClass="m-home">
+  <section class="m-hero m-hero-mech m-scene" aria-label="你好，我是 Mori">
+    <MechHero />
+    <div class="m-hero-name" aria-hidden="true">MORI</div>
+    <div class="m-hero-intro">
+      <h1>你好，我是杨黄旭哲<br />也可以叫我 <span>Mori。</span></h1>
+      <p lang="en">A little logic. A little chaos.</p>
+      <a class="m-button m-hero-cta" href="/projects/">看看我的作品 <Arrow /></a>
     </div>
-    <div class="md:max-w-[28rem] lg:justify-self-end">
-      <HeroMotion />
-    </div>
-    <div class="max-w-[62rem] lg:col-span-2">
-      <p class="max-w-[58rem] text-lg leading-loose text-base-content/80">
-        {profile.introduction}
-      </p>
-      <div class="mt-9 flex flex-wrap gap-3">
-        <a class="btn btn-primary" href="/projects">查看项目</a>
-        <a class="btn btn-outline" href="/cv">查看简历</a>
-        <a class="btn btn-ghost" href={profile.resume} download>下载 Resume PDF</a>
-      </div>
-    </div>
+    <a class="m-hero-scroll" href="#explore">向下探索互动空间 <Arrow direction="down" /></a>
   </section>
-
-  <section class="reveal reveal-delay-1 mb-12">
-    <div class="grid gap-4 md:grid-cols-2">
-      {
-        highlights.map((item) => (
-          <div class="glow-card rounded-lg border border-base-300 bg-base-100 p-5">
-            <span class="icon-badge mb-4">
-              <Icon name={item.icon} class="h-5 w-5" />
-            </span>
-            <div class="text-2xl font-bold">{item.value}</div>
-            <div class="mt-1 text-base font-semibold">{item.label}</div>
-            <p class="mt-2 text-sm leading-relaxed text-base-content/70">{item.desc}</p>
-          </div>
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="reveal reveal-delay-2 mb-12">
-    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Selected Work</p>
-        <h2 class="mt-2 text-3xl font-bold">精选项目</h2>
-        <p class="mt-3 max-w-3xl leading-relaxed text-base-content/75">
-          从业务策略、桌面产品到研究工具，这三个案例展示我如何定义问题、做出取舍，并检验实际结果。
-        </p>
-      </div>
-      <a href="/projects" class="btn btn-outline btn-sm">查看全部项目</a>
-    </div>
-
-    <div class="grid gap-2" data-featured-projects>
-      {featuredProjects.map((project, index) => (
-        <>
-          {index > 0 && <div class="divider my-0"></div>}
-          <ProjectCard project={project} />
-        </>
-      ))}
-    </div>
-  </section>
-
-  <section class="reveal reveal-delay-2 mb-12">
-    <div class="mb-5">
-      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Experience</p>
-      <h2 class="mt-2 text-3xl font-bold">实践经历</h2>
-      <p class="mt-3 max-w-3xl leading-relaxed text-base-content/75">
-        从网易的 AI 策略运营，到实验室的数据与模型评测，再到政务文本分析，我持续把研究方法用于具体业务和产品问题。
-      </p>
-    </div>
-
-    <div class="time-line-container grid gap-4">
-      {experiences.filter((item) => item.home).map((item) => (
-        <TimeLineElement title={item.title} subtitle={[item.project.period, item.organization].filter(Boolean).join(" | ")}>
-          {item.project.description} {item.project.id === "urai-lab" && item.project.result + "。"}
-          {item.project.hasCase && <a class="ml-2 text-primary underline underline-offset-4" href={`/projects/${item.project.id}/`}>阅读案例</a>}
-        </TimeLineElement>
-      ))}
-    </div>
-  </section>
-
-  <section class="reveal reveal-delay-3 mb-12">
-    <div class="mb-5">
-      <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Skills</p>
-      <h2 class="mt-2 text-3xl font-bold">能力结构</h2>
-    </div>
-    <SkillMarquee />
-    <div class="grid gap-4 md:grid-cols-2">
-      {skills.map((skill) => (
-        <div class="glow-card rounded-lg border border-base-300 p-5">
-          <h3 class="font-bold">{skill.title}</h3>
-          <p class="mt-2 text-sm leading-relaxed text-base-content/75">{skill.description}</p>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <section class="reveal reveal-delay-3 mb-12">
-    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/60">Writing</p>
-    <h2 class="mt-2 text-3xl font-bold">最新文章</h2>
-    <div class="mt-4 grid gap-3">
-      {
-        last_posts.map((post) => (
-          <a href={`/blog/${post.slug}/`} class="glow-card rounded-lg border border-base-300 p-4 transition hover:bg-base-200">
-            <div class="font-semibold">{post.data.title}</div>
-            <p class="mt-1 text-sm text-base-content/70">{post.data.description}</p>
-          </a>
-        ))
-      }
-    </div>
-  </section>
-</BaseLayout>
+  <HomeSections />
+</MoriLayout>
+<script>import '../scripts/home-paging';</script>

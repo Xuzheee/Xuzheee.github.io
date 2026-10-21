@@ -6,5 +6,6 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   site: 'https://Xuzheee.github.io',
   base: '/',
+  devToolbar: { enabled: false },
   integrations: [mdx(), tailwind()],
 });

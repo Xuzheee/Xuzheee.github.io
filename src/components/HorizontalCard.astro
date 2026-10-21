@@ -22,7 +22,7 @@ const ImageWrapper = isPlaceholderLink ? "div" : "a";
 import Icon from "./Icon.astro";
 ---
 
-<article id={id} data-project-id={id} class="glow-card rounded-lg border border-base-300 bg-base-100 transition ease-in-out">
+<article id={id} data-project-id={id} class="catalog-project glow-card rounded-lg border border-base-300 bg-base-100 transition ease-in-out">
   <div class="hero-content flex-col items-start md:flex-row">
     {
       img && (
@@ -44,10 +44,10 @@ import Icon from "./Icon.astro";
         {isExternal && <Icon name="externalLink" class="h-4 w-4 text-primary" />}
         {badge && <span class="badge badge-secondary">{badge}</span>}
       </div>
-      <p class="py-2 text-base leading-relaxed">{desc}</p>
+      <p class="catalog-description py-2 text-base leading-relaxed">{desc}</p>
 
       {(role || stack || result) && (
-        <dl class="grid gap-2 py-1 text-sm md:grid-cols-3">
+        <dl class="catalog-details grid gap-2 py-1 text-sm md:grid-cols-3">
           {role && (
             <div>
               <dt class="font-semibold text-base-content/70">角色</dt>

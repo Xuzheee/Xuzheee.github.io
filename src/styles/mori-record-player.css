@@ -1,0 +1,5 @@
+.m-turntable { width: 100%; margin: 36px auto 0; }
+.m-turntable iframe { display: block; width: 100%; border: 0; }
+.m-turntable noscript p { padding-top: 20px; font-size: 16px; }
+.m-turntable noscript a { text-decoration: underline; }
+@media (max-width: 600px) { .m-turntable { margin-top: 24px; } }

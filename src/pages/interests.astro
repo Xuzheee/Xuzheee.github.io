@@ -1,8 +1,28 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import InterestsGallery from "../components/InterestsGallery.astro";
+import MoriLayout from '../layouts/MoriLayout.astro';
+import Arrow from '../components/mori/Arrow.astro';
+import RecordPlayer from '../components/mori/RecordPlayer.astro';
+import {albums,recordTracks,games,photos} from '../data/mori';
 ---
-
-<BaseLayout title="Interests | 杨黄旭哲" sideBarActiveItemID="interests">
-  <InterestsGallery />
-</BaseLayout>
+<MoriLayout title="兴趣爱好 · Mori" active="interests">
+ <section class="m-games m-scene" id="games" aria-labelledby="games-title" data-games>
+  <h1 class="m-display" id="games-title">喜欢的游戏</h1><p class="m-subtitle">我喜欢在游戏和电影里体验不同的故事。</p>
+  <div class="m-game-stage" tabindex="0" role="region" aria-label="游戏画廊，使用左右方向键切换" data-game-stage>
+   {games.map((game,i)=><button class:list={['m-game-art',{'is-active':i===1}]} data-game={i} data-position={i-1} aria-label={`选择 ${game.title}`} aria-pressed={i===1}><img src={game.image} alt={`${game.title} 官方封面`} draggable="false" /></button>)}
+  </div>
+  <div class="m-game-titles">{games.map((game,i)=><button data-game={i} class:list={[{'is-active':i===1}]} aria-pressed={i===1}><strong>{game.title}</strong><span>{game.genre}</span></button>)}</div>
+  <div class="m-game-controls"><div class="m-game-pagination"><button data-game-prev aria-label="上一个游戏"><Arrow direction="left" /></button><span data-game-counter>02 / 03</span><button data-game-next aria-label="下一个游戏"><Arrow /></button><span class="m-drag-label">拖动浏览</span></div><div><a class="m-button" data-game-link href={games[1].url} target="_blank" rel="noopener noreferrer">查看游戏 <Arrow /></a><a class="m-link m-music-jump" href="#music">最近在听</a></div></div>
+ </section>
+ <section class="m-music m-scene" id="music" aria-labelledby="music-title" data-music>
+  <div class="m-section-top"><h2 class="m-display" id="music-title">最近在听</h2><span>R&amp;B / Jazz / Hip-Hop</span></div>
+  <div class="m-music-body"><div class="m-record"><img class="m-record-vinyl" src="/mori/vinyl.png" alt="黑胶唱片" loading="lazy" /><img class="m-record-cover" data-album-cover src={albums[0].image} alt={`${albums[0].title} 专辑封面`} loading="lazy" /></div><div class="m-album-list" aria-label="专辑选择">{albums.map((album,i)=><button data-album={i} class:list={[{'is-active':i===0}]} aria-pressed={i===0}><img src={album.image} alt="" loading="lazy" /><span><strong>{album.title}</strong><small>{album.artist}</small></span></button>)}</div></div>
+  <div class="m-music-bottom"><div aria-live="polite"><h3 data-album-title>{albums[0].title}</h3><p data-album-artist>{albums[0].artist}</p></div><a class="m-link" data-album-link href={albums[0].url} target="_blank" rel="noopener noreferrer">打开播放链接 <Arrow /></a></div>
+ </section>
+ <section class="m-music m-scene" id="record-player" aria-labelledby="record-player-title">
+  <div class="m-section-top"><h2 class="m-display" id="record-player-title">listen with me</h2></div>
+  <RecordPlayer albums={recordTracks} />
+ </section>
+ <section class="m-life m-scene" id="life" aria-labelledby="life-title"><div class="m-photo-grid">{photos.map((photo,i)=><figure><button data-photo={i} aria-label={`放大查看${photo.title}照片`}><img src={photo.src} alt={photo.alt} loading="lazy" /><span class="m-photo-open"><span class="m-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v18M3 12h18" /></svg></span>点击照片查看</span></button><figcaption>{photo.title}</figcaption></figure>)}</div><div class="m-life-bottom"><h2 class="m-display" id="life-title">篮球与徒步</h2><p>屏幕之外，我喜欢打篮球、<br />去徒步。</p></div></section>
+ <footer class="m-small-footer"><a href="/about/">关于我 <Arrow direction="diagonal" /></a><a href="/#contact">保持联系 <Arrow /></a><a href="#top">回到顶部 <Arrow direction="up" /></a></footer>
+ <dialog class="m-lightbox" aria-label="生活照片查看器"><div class="m-lightbox-head"><span data-photo-caption>球场</span><button data-photo-close aria-label="关闭照片">关闭 <span aria-hidden="true">Esc</span></button></div><img data-photo-full src={photos[0].src} alt={photos[0].alt} /><div class="m-lightbox-controls"><button data-photo-prev aria-label="上一张照片"><Arrow direction="left" /></button><span data-photo-counter>1 / 3</span><button data-photo-next aria-label="下一张照片"><Arrow /></button></div></dialog>
+</MoriLayout>

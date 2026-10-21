@@ -1,0 +1,27 @@
+---
+import Arrow from './Arrow.astro';
+import { homeSkills } from '../../data/home-skills';
+import '../../styles/mori-skills.css';
+---
+<section class="m-skills m-scene" id="skills" aria-labelledby="skills-title" data-skills>
+  <div class="m-skills-copy">
+    <h2 id="skills-title">我掌握的<span>技能</span></h2>
+    <p class="m-skills-intro">从理解数据，到搭建 AI 工作流，<br />再把想法做成可以使用的东西。</p>
+  </div>
+  <div class="m-skills-stage" data-skills-stage role="group" aria-label="技能与工具">
+    <button type="button" class="m-skills-sculpture" data-sculpture aria-label="旋转轨道球体">
+      <svg viewBox="0 0 180 180" aria-hidden="true">
+        <circle cx="90" cy="90" r="44" fill="#e5ded0" />
+        <ellipse cx="90" cy="90" rx="78" ry="29" transform="rotate(-28 90 90)" fill="none" stroke="#a8a198" stroke-width="6" />
+        <ellipse cx="90" cy="90" rx="29" ry="78" transform="rotate(-25 90 90)" fill="none" stroke="#b9b2a8" stroke-width="6" />
+        <circle cx="149" cy="59" r="8" fill="#bd503b" />
+      </svg>
+    </button>
+    {homeSkills.map((skill,index) => <button type="button" class="m-skill-token" data-skill={skill.id} aria-label={`${skill.name}，点击旋转`} aria-pressed={index === 0 ? 'true' : 'false'} style={`--token-x:${50+skill.x*10}%;--token-y:${50-skill.y*10}%;--token-turn:${skill.turn}rad`}>
+      <span class="m-skill-token-face"><img src={`/mori/skills/${skill.id}.svg`} width="100" height="100" alt="" loading="lazy" /></span>
+      <span class="m-skill-token-label">{skill.name}</span>
+    </button>)}
+  </div>
+  <div class="m-skills-footer"><span>数据分析 / AI 工作流 / 原型开发</span><a class="m-link" href="/projects/">在作品中看它们如何应用 <Arrow /></a></div>
+</section>
+<script>import '../../scripts/home-skills';</script>

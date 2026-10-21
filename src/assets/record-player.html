@@ -1,0 +1,855 @@
+<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>
+<script>
+/* ============================================================
+   Colorfigures core: projection, shapes, shading, ink, labels, page shell.
+   A figure page includes this file (scripts/build.py inlines it), then calls mountFigure({...}).
+   See SKILL.md for the drawing contract and conventions.
+   One fixed view (front-left-top) and one fixed light (from above, behind the viewer's right shoulder: the front is lit,
+   the left side is in shade, and cast shadows fall toward the lower left of the screen).
+   ============================================================ */
+
+/* ---------- palettes ---------- */
+const PALS = {
+  mustard: { l:'#f4b829', m:'#d49c1f', d:'#4e4a18' },
+  tomato:  { l:'#ef6a4c', m:'#cf5038', d:'#4a2219' },
+  mint:    { l:'#93d3b0', m:'#71b693', d:'#1f4034' },
+  cobalt:  { l:'#76a0e2', m:'#5a82c6', d:'#1c2948' },
+  blush:   { l:'#f3a6bb', m:'#d8869c', d:'#4b2430' },
+};
+const METAL   = { l:'#eef0f0', m:'#c6ccce', d:'#8f989b' };
+const CLEAR   = { l:'#e4f2f4', m:'#c4dfe4', d:'#97b9c0' };
+const CERAMIC = { l:'#fbfaf3', m:'#e3e0d2', d:'#bdb8a6' };
+const DARK    = { l:'#55504a', m:'#3d3935', d:'#272421' };
+const INK = '#231e16';
+const SHADOW = '#41538f';
+
+/* ---------- projection (x = depth toward viewer-right, y = toward viewer-left, z = up) ---------- */
+const C = Math.cos(Math.PI/6), S = Math.sin(Math.PI/6);
+let OX = 0, OY = 0;
+/* VIEW turns the object in 90° steps about a vertical axis through its centre (RC):
+   0 = front (+x) and left (+y) faces toward the viewer, 1 = turned once (the +y side becomes the front)…
+   Figures keep modelling in their own coordinates; P / Dv / vis / tone / depthOf all apply the turn. */
+let VIEW = 0, RC = [0, 0];
+const VIEW_NAMES = ['front', 'left side', 'back', 'right side'];
+const TURNS = [0, 2];                 // the views the UI offers: front and back (figures still draw correctly in all four)
+const rotV = ([x,y,z]) => { switch (VIEW & 3){ case 1: return [y,-x,z]; case 2: return [-x,-y,z]; case 3: return [-y,x,z]; default: return [x,y,z]; } };
+const rotXY = (x,y) => { const r = rotV([x-RC[0], y-RC[1], 0]); return [r[0]+RC[0], r[1]+RC[1]]; };
+const P0 = (x,y,z) => [(x-y)*C + OX, (x+y)*S - z + OY];                       // raw iso, no turn
+const P  = (x,y,z) => { const [a,b] = rotXY(x,y); return [(a-b)*C + OX, (a+b)*S - z + OY]; };
+const Dv = (x,y,z) => { const [a,b,c] = rotV([x,y,z]); return [(a-b)*C, (a+b)*S - c]; };
+// distance toward the viewer in the current view: draw parts with smaller depth first
+const depthOf = p => { const [a,b] = rotXY(p[0],p[1]); return a + b + p[2]; };
+// sort [{at:[x,y,z], svg}] back-to-front for the current view and join
+const byDepth = parts => parts.filter(Boolean).sort((p,q) => depthOf(p.at) - depthOf(q.at)).map(p => p.svg).join('');
+const f  = v => v.toFixed(1);
+const pd = (pts, close=true) => 'M' + pts.map(p => { const q = P(p[0],p[1],p[2]); return f(q[0])+' '+f(q[1]); }).join('L') + (close ? 'Z' : '');
+const sp = pts => 'M' + pts.map(q => f(q[0])+' '+f(q[1])).join('L') + 'Z';
+
+/* ---------- 2D shapes in a plane's (u,v) coords (v up), mapped to 3D by a plane ---------- */
+const arcUV  = (cu,cv,r,a0,a1,n=7) => { const o=[]; for (let i=0;i<=n;i++){ const a=(a0+(a1-a0)*i/n)*Math.PI/180; o.push([cu+r*Math.cos(a), cv+r*Math.sin(a)]); } return o; };
+const rrUV   = (u0,v0,u1,v1,r,n=7) => r <= 0 ? rectUV(u0,v0,u1,v1) : [...arcUV(u1-r,v0+r,r,-90,0,n), ...arcUV(u1-r,v1-r,r,0,90,n), ...arcUV(u0+r,v1-r,r,90,180,n), ...arcUV(u0+r,v0+r,r,180,270,n)];
+const rectUV = (u0,v0,u1,v1) => [[u0,v0],[u1,v0],[u1,v1],[u0,v1]];
+const ellUV  = (cu,cv,ru,rv,n=24) => Array.from({length:n}, (_,i) => { const a=i/n*2*Math.PI; return [cu+ru*Math.cos(a), cv+rv*Math.sin(a)]; });
+const PX = x => ([u,v]) => [x,u,v];      // front-facing plane x = const   (u = y, v = z)
+const PY = y => ([u,v]) => [u,y,v];      // side plane y = const           (u = x, v = z)
+const PZ = z => ([u,v]) => [u,v,z];      // horizontal plane z = const     (u = x, v = y)
+const on = (plane, uv) => uv.map(plane);
+
+/* ---------- vectors + shading ---------- */
+const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]], dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+const norm=a=>{ const l=Math.hypot(...a)||1; return a.map(v=>v/l); };
+const avg=ps=>ps.reduce((s,p)=>[s[0]+p[0]/ps.length,s[1]+p[1]/ps.length,s[2]+p[2]/ps.length],[0,0,0]);
+const vis = n => { const r = rotV(n); return r[0]+r[1]+r[2] > 1e-6; };   // viewer looks from (+1,+1,+1) after the turn
+const facing = vis;                                                       // readable alias: is this face toward the viewer?
+const SHADOW_K = 0.85, AZ_MIN = 20, AZ_MAX = 160;
+// cast shadows are drawn shorter than the shading light implies (0.45 × height instead of 0.85 ×): long shadows of tall
+// parts on thin supports (a lamp shade, a fan head) land far from the object and read as separate blobs
+const SHADOW_LEN = 0.45;
+let L = [0,0,1], SH = [0,0];
+function setLight(deg){ const a=deg*Math.PI/180; SH=[SHADOW_K*Math.cos(a), SHADOW_K*Math.sin(a)]; L=norm([-SH[0],-SH[1],1]); }
+const LIN = norm([.6,.2,1]);                       // fixed light for interiors / small props
+const tone  = (n,m) => { const d=dot(rotV(n),L);   return d>-.15 ? m.l : d>-.45 ? m.m : m.d; };   // exterior, follows the sun
+const toneI = (n,m) => { const d=dot(rotV(n),LIN); return d>.6 ? m.l : d>.05 ? m.m : m.d; };      // interior / props
+const mix = (a,b,t) => '#' + [1,3,5].map(i => Math.round(parseInt(a.substr(i,2),16)*(1-t) + parseInt(b.substr(i,2),16)*t).toString(16).padStart(2,'0')).join('');
+const matOf = hex => ({ l:hex, m:mix(hex,'#000000',.16), d:mix(hex,'#000000',.42) });
+const ease = t => t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
+
+/* ---------- drawing primitives (all return SVG strings) ---------- */
+const ink   = (d,w=1.0) => `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"/>`;
+const fill  = (d,c,extra='') => `<path d="${d}" fill="${c}" ${extra}/>`;
+const face  = (d,c) => `<path d="${d}" fill="${c}" stroke="${c}" stroke-width=".7" stroke-linejoin="round"/>`;
+const shape = (pts,c,w=.9) => fill(pd(pts),c) + (w ? ink(pd(pts),w) : '');
+const line  = (pts,w=.9) => ink(pd(pts,false),w);
+// Loft between two rings of equal length (closed). colour(n) picks each strip's fill; flip = seen from inside.
+function loft(A, B, colour, flip=false){
+  const n=A.length, cen=avg(A.concat(B)); let s='';
+  for (let i=0;i<n;i++){
+    const a0=A[i], a1=A[(i+1)%n], b1=B[(i+1)%n], b0=B[i];
+    let nr = norm(cross(sub(a1,a0), sub(b0,a0)));
+    if (!isFinite(nr[0])) continue;
+    if (dot(nr, sub(avg([a0,a1,b1,b0]), cen)) < 0) nr = nr.map(v=>-v);
+    if (flip) nr = nr.map(v=>-v);
+    if (vis(nr)) s += face(pd([a0,a1,b1,b0]), colour(nr));
+  }
+  return s;
+}
+function hull(pts){
+  pts = pts.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+  const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]); const lo=[], up=[];
+  for (const p of pts){ while(lo.length>=2 && cr(lo[lo.length-2],lo[lo.length-1],p)<=0) lo.pop(); lo.push(p); }
+  for (const p of pts.reverse()){ while(up.length>=2 && cr(up[up.length-2],up[up.length-1],p)<=0) up.pop(); up.push(p); }
+  lo.pop(); up.pop(); return lo.concat(up);
+}
+// Silhouette ink, weighted by how thick the part is on screen (like a hand inker): the w you pass is the most it gets.
+// Thickness = 2 × area / perimeter of the outline (a rod's diameter, about half a box's width), as a share of the
+// frame width. A long thin rod, a handle or a knob stays light (~1–1.5); a grinder, kettle or machine body gets the
+// heavy ~2.4–2.8. Thin parts stay thin and parts keep air between them.
+const hullInk = (pts3, w=1.4) => { const h = hull(pts3.map(p=>P(...p))); let a = 0, per = 0;
+  for (let i = 0; i < h.length; i++){ const p = h[i], q = h[(i+1) % h.length]; a += p[0]*q[1] - q[0]*p[1]; per += Math.hypot(q[0]-p[0], q[1]-p[1]); }
+  const thick = per ? Math.abs(a) / per / (INK_K * INK_REF_VB) : 0;
+  return ink(sp(h), Math.min(w, .9 + 20*thick)); };
+// Axis-aligned box: three visible faces, shaded, each outlined. shade = tone (sunlit) or toneI (interior).
+function box(x0,y0,z0,x1,y1,z1,m,shade=toneI,w=.9){
+  // all six faces, drawn only when they face the viewer (sides first, then top) — correct in every VIEW
+  const F = [
+    [[0,1,0],  [[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]]],
+    [[1,0,0],  [[x1,y0,z0],[x1,y1,z0],[x1,y1,z1],[x1,y0,z1]]],
+    [[0,-1,0], [[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1]]],
+    [[-1,0,0], [[x0,y0,z0],[x0,y1,z0],[x0,y1,z1],[x0,y0,z1]]],
+    [[0,0,1],  [[x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]]] ];
+  return F.filter(([n]) => vis(n)).map(([n,q]) => shape(q, shade(n,m), w)).join('');
+}
+// Rounded-profile extrusion: profile (u=y, v=z) swept along x from x0 to x1. Body of most machines.
+function extrude(profileUV, x0, x1, m, shade=tone){ return loft(on(PX(x0),profileUV), on(PX(x1),profileUV), n=>shade(n,m)); }
+// Vertical cylinder (axis z) centred (x,y), radius r from z0 to z1, with top cap.
+function cyl(x,y,z0,z1,r,m,shade=toneI,w=1.2,n=24){
+  const A=on(PZ(z0),ellUV(x,y,r,r,n)), B=on(PZ(z1),ellUV(x,y,r,r,n));
+  return loft(A,B,nr=>shade(nr,m)) + fill(pd(B),shade([0,0,1],m)) + hullInk([...A,...B],w) + ink(pd(B),w*.8);
+}
+// Cylinder lying along x (e.g. a knob or dial sticking out of a front face): centred (y,z), from x0 to x1.
+function cylX(x0,x1,y,z,r,m,shade=toneI,w=1.1,n=20){
+  const A=on(PX(x0),ellUV(y,z,r,r,n)), B=on(PX(x1),ellUV(y,z,r,r,n));
+  // cap on whichever end faces the viewer (the +x end in VIEW 0)
+  const capB = vis([1,0,0]), cap = capB ? B : A, cn = capB ? [1,0,0] : [-1,0,0];
+  return loft(A,B,nr=>shade(nr,m)) + (vis(cn) ? fill(pd(cap),shade(cn,m)) : '') + hullInk([...A,...B],w) + (vis(cn) ? ink(pd(cap),w*.8) : '');
+}
+// Cylinder between any two 3D points a and b (a lamp arm, a rod, a pipe at an angle, a handle bar), radius r.
+// The end facing the viewer gets a cap. For a tapered part (a cone, a lamp shade) pass r1 for the radius at b.
+function rod(a, b, r, m, shade=toneI, w=1, r1=r, n=16){
+  const d = norm(sub(b, a)), u = norm(cross(d, Math.abs(d[2]) < .9 ? [0,0,1] : [1,0,0])), v = cross(d, u);
+  const ring = (p, rr) => Array.from({length:n}, (_,i) => { const t = i/n*2*Math.PI, c = Math.cos(t)*rr, s2 = Math.sin(t)*rr;
+    return [p[0] + u[0]*c + v[0]*s2, p[1] + u[1]*c + v[1]*s2, p[2] + u[2]*c + v[2]*s2]; });
+  const A = ring(a, r), B = ring(b, r1), capB = vis(d), cap = capB ? B : A, cn = capB ? d : d.map(x => -x);
+  return loft(A, B, nr => shade(nr, m)) + (Math.max(r, r1) > 0 ? fill(pd(cap), shade(cn, m)) + ink(pd(cap), w*.8) : '') + hullInk([...A, ...B], w);
+}
+// Text lying flat on a front plane x = const, centred at (y,z) baseline; reads left-to-right on screen.
+const txM = (o, U, V) => `matrix(${U[0].toFixed(4)} ${U[1].toFixed(4)} ${V[0].toFixed(4)} ${V[1].toFixed(4)} ${f(o[0])} ${f(o[1])})`;
+const tx = (x,y,z,str,size,col=INK,weight=700) => { const o=P(x,y,z);
+  return `<text transform="${txM(o, Dv(0,-1,0), Dv(0,0,-1))}" font-size="${size}" fill="${col}" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-weight="${weight}" letter-spacing=".04em">${str}</text>`; };
+// Text on a side plane y = const, centred at (x,z).
+const txY = (x,y,z,str,size,col=INK,weight=700) => { const o=P(x,y,z);
+  return `<text transform="${txM(o, Dv(1,0,0), Dv(0,0,-1))}" font-size="${size}" fill="${col}" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-weight="${weight}" letter-spacing=".04em">${str}</text>`; };
+// Cast shadow of a set of 3D points (any outline of the object), pushed along the light onto z = 0.
+// the light stays put relative to the viewer, so the shadow is cast in turned coordinates
+// z0: the surface it falls on (a board, a counter); clip it to that surface with clipTo(...) if it could spill off.
+// clip: the 3D outline of the surface it falls on (e.g. boardTop(...)), so it can't spill over the edge.
+const castShadow = (pts3, z0=0, clip=null) => { const k = SHADOW_LEN / SHADOW_K;
+  const s = fill(sp(hull(pts3.map(([x,y,z]) => { const [a,b] = rotXY(x,y); return P0(a+(z-z0)*SH[0]*k, b+(z-z0)*SH[1]*k, z0); }))), SHADOW);
+  return clip ? clipTo(clip, s) : s; };
+// A board for the object to stand on (a tray, a desk top, a counter): a rounded slab from (x0,y0) to (x1,y1), h thick.
+// Draw it first; then castShadow(points, h, boardTop(x0,y0,x1,y1,h,r)) so shadows lie on it and stop at its edge.
+const BOARD = { l:'#e6e1d4', m:'#cfc8b8', d:'#aaa293' }, WOOD = { l:'#d9a86c', m:'#bf8a4f', d:'#8e6236' };
+const boardTop = (x0,y0,x1,y1,h=3,r=5) => on(PZ(h), rrUV(x0,y0,x1,y1,r));
+function board(x0,y0,x1,y1,h=3,r=5,m=BOARD){
+  const A = on(PZ(0), rrUV(x0,y0,x1,y1,r)), B = boardTop(x0,y0,x1,y1,h,r);
+  return loft(A, B, n => toneI(n, m)) + fill(pd(B), m.l) + ink(pd(B), 1) + hullInk([...A, ...B], 1.8);
+}
+// Group helpers: clickable target, clip to an opening.
+const act  = (name, inner, data='') => `<g data-act="${name}" ${data}>${inner}</g>`;
+let _clipN = 0;
+// Part label (for "how does it work" figures): a cream pill with a leader line to a 3D point on the part.
+// dx, dy = where the pill sits, in screen units at the reference zoom (they scale with the figure like stroke widths).
+// on = that part is working right now (the pill turns the accent colour). Labels can be hidden with the Labels switch.
+function tag(p3, dx, dy, text, on=false){
+  const k = INK_K, [X,Y] = P(...p3), fs = 8.6*k, w = text.length*fs*.62 + fs*1.5, h = fs*1.8, cx = X + dx*k, cy = Y + dy*k;
+  return `<g class="tag${on ? ' on' : ''}"><path d="M${f(X)} ${f(Y)}L${f(cx)} ${f(cy)}" fill="none" stroke="${INK}" stroke-width="1"/>`
+    + `<circle cx="${f(X)}" cy="${f(Y)}" r="${f(1.3*k)}" fill="${INK}"/>`
+    + `<rect x="${f(cx-w/2)}" y="${f(cy-h/2)}" width="${f(w)}" height="${f(h)}" rx="${f(h/2)}" fill="${on ? 'var(--accent,#f4b829)' : '#fff4d6'}" stroke="${INK}" stroke-width="1.2"/>`
+    + `<text x="${f(cx)}" y="${f(cy+fs*.36)}" font-size="${f(fs)}" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-weight="800" letter-spacing=".04em" fill="${INK}">${text}</text></g>`;
+}
+const clipTo = (pts3, inner) => { const id = 'k' + (++_clipN); return `<clipPath id="${id}"><path d="${pd(pts3)}"/></clipPath><g clip-path="url(#${id})">${inner}</g>`; };
+
+/* ---------- constant on-screen line weight ----------
+   Stroke widths are written in model units, and each figure is zoomed to fill the frame, so a small
+   object would get fat lines. INK_K rescales every stroke-width (and the wobble/grain filter) so all
+   figures match the reference zoom of the booth / vending machine (viewBox ≈ 585 units wide). */
+const INK_REF_VB = 585;
+let INK_K = 1;
+const inkScale = svg => INK_K === 1 ? svg : svg.replace(/stroke-width="([\d.]+)"/g, (_, w) => `stroke-width="${(+w * INK_K).toFixed(2)}"`);
+
+/* ---------- page shell ---------- */
+const CORE_CSS = `
+  :root{--paper:#f2efe7;--ink:#231e16;--muted:#857d6e;--rule:#ddd6c8}
+  *{box-sizing:border-box} html,body{margin:0;height:100%}
+  body{background-color:var(--paper);
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .42  0 0 0 0 .39  0 0 0 0 .33  .16 0 0 0 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>");
+    overflow-x:hidden;color:var(--ink);font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;display:flex;flex-direction:column;align-items:center;padding:24px 16px 32px}
+  header{width:100%;max-width:760px;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+  header h1{font-size:13px;font-weight:600;margin:0;letter-spacing:.02em} header span{color:var(--muted)}
+  #fig{width:100%;max-width:760px;height:auto;display:block;margin:4px 0 8px;user-select:none;overflow:visible}
+  #fig [data-act]{cursor:pointer}
+  #readout, .idea{display:none}   /* status line + big idea are off: the buttons and motion tell the story */
+  .idea{width:100%;max-width:760px;margin:-6px 0 16px;font-size:12.5px;line-height:1.5;text-align:center;color:var(--ink)}
+  .idea strong{letter-spacing:.12em;text-transform:uppercase;font-size:11px;margin-right:8px}
+  #readout{position:relative;min-height:1.4em;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;text-align:center;text-shadow:0 0 3px var(--paper),0 0 6px var(--paper),0 0 10px var(--paper)}
+  .stage{position:relative;width:100%;max-width:760px}
+  .actions{position:absolute;top:4px;left:0;display:flex;flex-direction:column;align-items:flex-start;gap:8px;z-index:2;max-width:220px}
+  .actions .cap{color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin:0 0 2px}
+  html.nolabels #fig .tag{display:none}
+  .ctl[hidden]{display:none}
+  /* ui.flash(text): a short note under the buttons ("the can is empty — refill it"); the status line itself stays hidden */
+  .toast{position:absolute;left:0;z-index:3;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;background:var(--paper);
+    border:1.5px solid var(--ink);border-radius:8px;padding:4px 9px;box-shadow:2px 2px 0 var(--ink);opacity:0;transition:opacity .2s;pointer-events:none;max-width:240px}
+  .toast.show{opacity:1}
+  .made-with{width:100%;max-width:760px;margin-top:18px;text-align:right;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  .made-with a{color:var(--muted);text-decoration:none} .made-with a:hover{color:var(--ink)}
+  .stats{position:absolute;top:4px;right:0;display:flex;flex-direction:column;align-items:flex-end;gap:10px;z-index:2;text-align:right}
+  .stat .k{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .stat .v{font-size:34px;font-weight:800;line-height:1.05;letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .stat.small .v{font-size:20px}
+  .stat .v.bump{animation:bump .35s ease-out}
+  @keyframes bump{0%{transform:scale(1.18)}100%{transform:none}}
+  .stepwrap{position:relative;display:flex;align-items:center;gap:8px}
+  .act{font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer;white-space:nowrap}
+  .act:hover{background:color-mix(in srgb,var(--paper) 92%,var(--ink))}
+  .act .car{margin-left:6px;font-size:10px}
+  .act:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .chips{display:none;flex-wrap:wrap;gap:6px;background:var(--paper);border:2px solid var(--ink);border-radius:12px;box-shadow:3px 3px 0 var(--ink);
+    padding:8px;width:max-content;max-width:min(300px,62vw);position:absolute;left:calc(100% + 10px);top:-4px;z-index:3}
+  .stepwrap.open .chips{display:flex}
+  .chip{white-space:nowrap;font:inherit;font-size:11.5px;font-weight:700;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;padding:4px 8px;cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+  .chip:hover{background:var(--accent,#f4b829);transform:translate(-1px,-1px)}
+  .chip.current{background:var(--ink);color:var(--paper)} .chip.current:hover{background:var(--ink);transform:none}
+  .chip.off{opacity:.45} .chip.off:hover{transform:none;background:var(--paper)}
+
+  @media (max-width:560px){body{padding:14px 12px 24px}header span,.actions .cap{display:none}.actions{flex-direction:row;flex-wrap:wrap;gap:6px}.act{font-size:12px;padding:4px 11px}.stats{position:static;flex-direction:row;justify-content:flex-end;gap:18px;margin-bottom:4px}.actions{position:static;max-width:none;margin:6px 0 4px}.chips{left:0;top:calc(100% + 8px)}}
+  .controls{width:100%;max-width:760px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px 28px;border-top:1px solid var(--rule);padding-top:16px}
+  .ctl{display:flex;flex-direction:column;gap:6px}
+  .ctl label{color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  input[type=range]{width:100%;accent-color:var(--ink)}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  button{font:inherit;color:var(--ink);background:transparent;border:1.5px solid var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer}
+  button:hover{background:#0000000d}
+  .sw{width:26px;height:26px;padding:0;border-radius:50%} .sw[aria-pressed=true]{outline:2px solid var(--ink);outline-offset:2px}`;
+
+const filterFor = k => `<filter id="hand" x="-3%" y="-3%" width="106%" height="106%" color-interpolation-filters="sRGB">
+  <feTurbulence type="fractalNoise" baseFrequency="${(0.045/k).toFixed(4)}" numOctaves="2" seed="4" result="warp"/>
+  <feDisplacementMap id="wob" in="SourceGraphic" in2="warp" scale="${(2.4*k).toFixed(2)}" xChannelSelector="R" yChannelSelector="G" result="wob"/>
+  <feTurbulence type="fractalNoise" baseFrequency="${(0.9/k).toFixed(4)}" numOctaves="3" seed="11" result="n1"/>
+  <feColorMatrix in="n1" type="matrix" values=".3 0 0 0 .84  .3 0 0 0 .84  .3 0 0 0 .84  0 0 0 0 1" result="grain"/>
+  <feTurbulence type="fractalNoise" baseFrequency="${(0.012/k).toFixed(4)}" numOctaves="2" seed="7" result="n2"/>
+  <feColorMatrix in="n2" type="matrix" values=".3 0 0 0 .85  .3 0 0 0 .85  .3 0 0 0 .85  0 0 0 0 1" result="blot"/>
+  <feBlend in="wob" in2="grain" mode="multiply" result="g1"/><feBlend in="g1" in2="blot" mode="multiply" result="g2"/>
+  <feComposite in="g2" in2="wob" operator="in"/></filter>`;
+
+/* mountFigure({
+     fig:'03', title:'Photo booth', hint:'click the curtain…',
+     size:[W,D,H],                 // bounding box, used to frame the view (shadow range included)
+     palette:'mustard',            // default PALS key
+     state:{...},                  // figure state (st.pal is built in)
+     scene: (st, m) => svgString,  // m = current palette {l,m,d}
+     readout: st => 'text',        // status line under the figure
+     buttons: [{label, onClick(st, ui)}      // listed in the order the user should do them
+               | {label, choices: st => [{label, onClick(st,ui), current?, disabled?, why?}]}],   // opens a picker
+     stats: st => [{label, value, small?}],   // optional: big numbers top-right (credit, change, score)
+     credit: false,                // optional: hide the small "Made with Colorfigures" link
+     acts: { name(st, el, ui){} },  // clicks on act(name, …) groups; el has dataset
+     params(st, q){}               // optional: read URLSearchParams for screenshot states
+   })  -> ui = { st, render, animate(stepFn), flash(text,ms) }
+   animate(step): calls step(dt seconds) every frame and re-renders until step returns false. */
+addEventListener('error', e => { document.documentElement.dataset.errors = (document.documentElement.dataset.errors || '') + ' ' + e.message + ';'; });
+function mountFigure(cfg){
+  document.title = cfg.title;
+  const style = document.createElement('style'); style.textContent = CORE_CSS; document.head.appendChild(style);
+  document.body.innerHTML = `
+    <div class="stage">
+      ${cfg.buttons && cfg.buttons.length ? `<div class="actions" id="btns"></div>` : ''}
+      ${cfg.stats ? '<div class="stats" id="stats"></div>' : ''}
+      <div class="toast" id="toast" role="status"></div>
+      <svg id="fig" role="img" aria-label="${cfg.title}"><defs id="fdefs"></defs><g id="art" filter="url(#hand)"></g></svg>
+    </div>
+    <div id="readout"></div>
+    ${cfg.idea ? `<p class="idea"><strong>The big idea</strong>${cfg.idea}</p>` : ''}
+    <div class="controls">
+      <div class="ctl"><label for="wb">Hand-drawn wobble</label><input id="wb" type="range" min="0" max="7" step="0.1" value="2.4"></div>
+      <div class="ctl"><label>Colour</label><div class="row" id="pals"></div></div>
+      <div class="ctl" id="lblctl" hidden><label>Labels</label><div class="row"><button id="lbl" aria-pressed="true">On</button></div></div>
+    </div>
+    ${cfg.credit === false ? '' : '<footer class="made-with"><a href="https://april-zhu.com/colorfigures" target="_blank" rel="noopener">Made with Colorfigures ↗</a></footer>'}`;
+  const st = cfg.state || {};            // kept as the same object, so a figure may hold on to it
+  if (!st.pal) st.pal = cfg.palette || 'mustard';
+  if (st.az == null) st.az = 105;
+  const q = new URLSearchParams(location.search);
+  if (PALS[q.get('pal')]) st.pal = q.get('pal');
+  if (cfg.params) cfg.params(st, q);
+
+  // frame on the object itself: centred, filling ~60% of the width / ~78% of the height of a 4:3 view.
+  // The cast shadow is allowed to spill outside the frame (svg overflow is visible).
+  const [W,D,H] = cfg.size, pts = [];
+  OX = OY = 0; RC = cfg.center || [W/2, D/2];
+  VIEW = 0;
+  for (const x of [0,W]) for (const y of [0,D]) for (const z of [0,H]) pts.push(P(x,y,z));
+  const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+  const bw = Math.max(...xs)-Math.min(...xs), bh = Math.max(...ys)-Math.min(...ys);
+  // the object fills ~74% of the width / ~88% of the height, nudged right of centre so the buttons (top left) stay clear
+  const vbW = Math.max(bw/.74, bh/.88/.75), vbH = vbW*.75;
+  OX = (vbW-bw)/2 + vbW*.06 - Math.min(...xs); OY = vbH*.04 - Math.min(...ys);   // sit a little high: shadows fall downward
+  const svg = document.getElementById('fig');
+  svg.setAttribute('viewBox', `0 0 ${f(vbW)} ${f(vbH)}`);
+  svg.setAttribute('tabindex', '0');
+  svg.setAttribute('role', 'group');
+  svg.setAttribute('aria-label', 'listen with me，按回车或空格暂停或继续播放');
+  svg.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault(); cfg.acts.arm(st, svg, ui); ui.render();
+  });
+  INK_K = vbW / INK_REF_VB;
+  document.getElementById('fdefs').innerHTML = filterFor(INK_K);
+
+  const art = document.getElementById('art'), readout = document.getElementById('readout');
+  const ui = { st };
+  ui.render = () => { _clipN = 0; document.documentElement.style.setProperty('--accent', PALS[st.pal].l); art.innerHTML = inkScale(cfg.scene(st, PALS[st.pal])); if (!ui._flash) readout.textContent = cfg.readout ? cfg.readout(st) : ''; if (ui.drawStats) ui.drawStats(); };
+  // big numbers in the top-right corner (credit, change, score…); a value that changes gets a little bump
+  const statsEl = document.getElementById('stats'), prevStats = {};
+  ui.drawStats = () => { if (!statsEl) return;
+    const list = cfg.stats(st).filter(Boolean), html = list.map(x => `<div class="stat${x.small ? ' small' : ''}"><div class="k">${x.label}</div><div class="v" data-k="${x.label}">${x.value}</div></div>`).join('');
+    if (statsEl._html !== html){ statsEl._html = html; statsEl.innerHTML = html;
+      statsEl.querySelectorAll('.v').forEach(v => { if (prevStats[v.dataset.k] != null && prevStats[v.dataset.k] !== v.textContent) v.classList.add('bump'); prevStats[v.dataset.k] = v.textContent; }); } };
+  let flashT = 0;
+  const toast = document.getElementById('toast');
+  ui.flash = (text, ms=1600) => { ui._flash = true; readout.textContent = text; toast.textContent = text;
+    toast.style.top = ((document.getElementById('btns') ? document.getElementById('btns').offsetTop + document.getElementById('btns').offsetHeight : 0) + 8) + 'px'; toast.classList.add('show');
+    clearTimeout(flashT); flashT = setTimeout(() => { ui._flash = false; toast.classList.remove('show'); ui.render(); }, ms); };
+  // animations run on a ~60 fps timer rather than requestAnimationFrame, so they also run in headless test shots
+  ui.animate = step => { let last = performance.now();
+    const loop = () => { const now = performance.now(), dt = Math.max(0, Math.min(.05,(now-last)/1000)); last = now; const more = step(dt) !== false; ui.render(); if (more) setTimeout(loop, 16); };
+    setTimeout(loop, 16); };
+
+  // clickable parts react on press, not on click: while something animates, the scene is redrawn every frame, so the
+  // element under the pointer is replaced between press and release and a 'click' would never fire
+  svg.addEventListener('pointerdown', e => { if (e.button) return; const a = e.target.closest('[data-act]'); if (!a || !cfg.acts || !cfg.acts[a.dataset.act]) return;
+    e.preventDefault(); cfg.acts[a.dataset.act](st, a, ui); ui.render(); });
+  const btns = document.getElementById('btns');
+  const stepEls = [];
+  if (btns) cfg.buttons.forEach((b, i) => {
+    const wrap = document.createElement('div'); wrap.className = 'stepwrap';
+    const el = document.createElement('button'); el.className = 'act';
+    el.innerHTML = `${b.label}${b.choices ? '<span class="car">▾</span>' : ''}`;
+    wrap.appendChild(el); btns.appendChild(wrap); stepEls.push(el);
+    if (!b.choices){ el.onclick = () => { closeChips(); b.onClick(st, ui); ui.render(); }; return; }
+    const chips = document.createElement('div'); chips.className = 'chips'; wrap.appendChild(chips);
+    el.onclick = e => { e.stopPropagation(); const open = !wrap.classList.contains('open'); closeChips();
+      if (!open) return;
+      chips.innerHTML = '';
+      // every choice stays clickable, so nothing silently ignores a press:
+      //   current:true  = the one in use (shown selected); a press just says so
+      //   disabled:true = not possible right now (shown faded); a press says why (c.why, or a generic note)
+      for (const c of b.choices(st)){ const ch = document.createElement('button'); ch.className = 'chip' + (c.current ? ' current' : c.disabled ? ' off' : ''); ch.textContent = c.label;
+        if (c.current) ch.setAttribute('aria-pressed', 'true');
+        ch.onclick = ev => { ev.stopPropagation(); closeChips();
+          if (c.current) return ui.flash(`${c.label} — already set`);
+          if (c.disabled) return ui.flash(c.why || `${c.label} isn't possible right now`);
+          c.onClick(st, ui); ui.render(); }; chips.appendChild(ch); }
+      wrap.classList.add('open'); };
+  });
+  function closeChips(){ document.querySelectorAll('.stepwrap.open').forEach(w => w.classList.remove('open')); }
+  document.addEventListener('click', closeChips);
+
+  document.getElementById('wb').oninput = e => document.getElementById('wob').setAttribute('scale', (e.target.value * INK_K).toFixed(2));
+  const pals = document.getElementById('pals');
+  for (const [k,p] of Object.entries(PALS)){
+    const b = document.createElement('button'); b.className='sw'; b.title=k; b.style.background=p.l; b.setAttribute('aria-pressed', k===st.pal);
+    b.onclick = () => { st.pal=k; [...pals.children].forEach(c=>c.setAttribute('aria-pressed', c===b)); ui.render(); };
+    pals.appendChild(b);
+  }
+  // labels: the switch appears when the figure draws any tag(); ?labels=0 starts with them hidden
+  const lblctl = document.getElementById('lblctl'), lbl = document.getElementById('lbl');
+  const setLabels = on => { document.documentElement.classList.toggle('nolabels', !on); lbl.textContent = on ? 'On' : 'Off'; lbl.setAttribute('aria-pressed', on); };
+  lbl.onclick = () => setLabels(document.documentElement.classList.contains('nolabels'));
+  if (q.get('labels') === '0') setLabels(false);
+  // testing: ?press=Label@ms,Label@ms clicks the buttons whose text starts with Label at those times after load
+  // (any order, repeats allowed); Label>Choice picks a choice from a picker button (?press=Speed>3@300).
+  // Script errors and unknown labels are recorded on <html data-errors="…">
+  window.__st = st;
+  const noteErr = m => { document.documentElement.dataset.errors = (document.documentElement.dataset.errors || '') + ' ' + m + ';'; };
+  const starts = (el, t) => el.textContent.trim().toLowerCase().startsWith(t.trim().toLowerCase());
+  if (q.has('press')) q.get('press').split(',').forEach(item => { const [what, ms] = item.split('@'), [label, choice] = what.split('>');
+    setTimeout(() => { const b = [...document.querySelectorAll('.act')].find(b => starts(b, label));
+      if (!b) return noteErr(`no button "${label}"`);
+      b.click(); if (choice == null) return;
+      const c = [...b.parentElement.querySelectorAll('.chip')].find(c => starts(c, choice));
+      if (c && !c.disabled) c.click(); else noteErr(`no choice "${choice}" in "${label}"`); }, +ms || 0); });
+  setLight(st.az); ui.render();
+  if (art.querySelector('.tag')) lblctl.hidden = false;
+  return ui;
+}
+
+</script>
+<script>
+/* ================= 你的音乐 =================
+   把三首歌的音频文件放在这个 HTML 旁边的 music/ 文件夹里，文件名和下面的 src 一致，就会播放原曲：
+     music/blue.mp3   music/heibai.mp3   music/closed-on-sunday.mp3
+   也可以把 src 换成完整网址。找不到文件时（比如在 Notion 里预览），会改放一段内置的占位旋律。
+   页面里的「换成我的音乐」可以临时选择本地文件试听。 */
+const TRACKS = [
+  { key:'BLUE',             artist:'DANIEL CAESAR', cn:'Blue',             src:'music/blue.mp3' },
+  { key:'HEI BAI',          artist:'KHALIL FONG',   cn:'黑白',             src:'music/heibai.mp3' },
+  { key:'CLOSED ON SUNDAY', artist:'KANYE WEST',    cn:'Closed on Sunday', src:'music/closed-on-sunday.mp3' },
+];
+
+/* ---------- geometry (x = depth, y = width, z = up) ---------- */
+const Z0 = 2.5, BX = 43, BY = 90;                                    // wooden shelf
+const TX0 = 3, TX1 = 39, TY0 = 3, TY1 = 49, TZB = Z0 + 1.2, TZT = Z0 + 12.5;   // plinth
+const OUTP = rrUV(TY0, TZB, TY1, TZT, 2.2);
+const PLT = { x:21, y:30, r:14.5, z0:TZT, z1:TZT + 2 };              // platter
+const REC_R = 14, REC_T = .35, RZ = PLT.z1 + REC_T;                   // record top
+const PIV = [9.5, 9], ARM_L = 22, ARM_Z = TZT + 4.6, REST_TH = -1.5*Math.PI/180;
+const R_LEAD = 13.3, R_END = 5.8;
+const SPK = { y:41, z:(TZB + TZT)/2, r:4.3 };
+const CR = { x0:6, x1:32, y0:55, y1:87, h:13 };                       // record crate
+const SLV = { y0:56.5, y1:85.5, z0:Z0 + .8, xs:[27, 21, 15] };        // sleeve front faces, record i in sleeve i
+const SLV_Y = (SLV.y0 + SLV.y1)/2, SLV_ZC = SLV.z0 + 14.5;
+const RUBBER = { l:'#5a5752', m:'#403d39', d:'#2a2825' };
+const CRATE = { l:'#f1d7a6', m:'#d8b77f', d:'#a7854f' };
+const VINYL = '#1f1c1a', GREEN = '#43c25c';
+const LABELS = ['#7fb2ec', '#fbf7ea', '#f4b829'];
+const SLEEVES = ['#24407e', '#f6f2e6', '#f2c14a'];
+const OM33 = 100/3 * 2*Math.PI/60, VOLS = [.3, .65, 1];
+
+/* ---------- songs (built-in, synthesised) ---------- */
+const NN = { C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11 };
+const midiOf = s => { const m = s.match(/^([A-G]#?)(\d)$/); return 12*(+m[2] + 1) + NN[m[1]]; };
+function seqAdd(out, str, beat, vel, t0=0, fifth=false){
+  let t = t0;
+  for (const tok of str.trim().split(/\s+/)){ const [n, b] = tok.split(':'), d = (b ? +b : 1)*beat;
+    if (n !== 'R'){ out.push([t, d, midiOf(n), vel]); if (fifth) out.push([t, d, midiOf(n) + 7, vel*.55]); } t += d; }
+  return t;
+}
+// placeholder tunes (original chord loops, played only when the audio file is missing)
+function chordAt(o, t, ns, d, v, roll=.03){ ns.forEach((n, k) => o.push([t + k*roll, d, midiOf(n), v*(k ? .8 : 1)])); }
+function padBlue(){ const o = [], b = .78; let t = 0;
+  const C = [['F2','A3','C4','E4'], ['E2','G3','B3','D4'], ['D2','F3','A3','C4'], ['C2','E3','G3','B3']];
+  const top = [['A4','G4'], ['G4','B4'], ['F4','E4'], ['E4','D4']];
+  for (let r = 0; r < 2; r++) C.forEach((c, k) => { chordAt(o, t, c, 4*b, .42, .07); chordAt(o, t + 2*b, c.slice(1), 2*b, .25, .05);
+    o.push([t + b, 1.5*b, midiOf(top[k][0]), .5]); o.push([t + 2.5*b, 1.5*b, midiOf(top[k][1]), .45]); t += 4*b; });
+  return { notes:o.sort((p,q) => p[0]-q[0]), len:t + 2 }; }
+function padHeiBai(){ const o = [], b = .5; let t = 0;
+  const C = [['G#2','C4','D#4','G4'], ['G2','B3','F4','G4'], ['C3','D#4','G4','A#4'], ['F2','D#4','G#4','C5']];
+  for (let r = 0; r < 3; r++) C.forEach(c => { o.push([t, 3*b, midiOf(c[0]), .55]);
+    for (const at of [0, 1.5, 3]) chordAt(o, t + at*b, c.slice(1), .9*b, .4, .015);
+    o.push([t + 2.5*b, b, midiOf(c[0]) + 12, .35]); t += 4*b; });
+  return { notes:o.sort((p,q) => p[0]-q[0]), len:t + 1.6 }; }
+function padSunday(){ const o = [], u = .3; let t = 0;
+  const C = [['G2','D3','G3','B3','D4'], ['C3','G3','C4','E4','G4'], ['D3','A3','D4','F#4','A4'], ['E2','B2','E3','G3','B3'],
+             ['C3','G3','C4','E4','G4'], ['B2','G3','D4','G4','B4'], ['A2','E3','A3','C4','E4'], ['D3','A3','D4','F#4','C5']];
+  for (let r = 0; r < 2; r++) C.forEach(c => { [0,1,2,3,4,3,2,1].forEach((k, i) => o.push([t + i*u, (8 - i)*u, midiOf(c[k]), i ? .45 : .6])); t += 8*u; });
+  return { notes:o.sort((p,q) => p[0]-q[0]), len:t + 2 }; }
+const SONGS = [padBlue(), padHeiBai(), padSunday()];
+
+/* ---------- audio ---------- */
+const AU = { ctx:null, els:{} };
+function audioCtx(){
+  try {
+    if (!AU.ctx){ const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+      const c = AU.ctx = new AC();
+      AU.master = c.createGain(); AU.master.gain.value = VOLS[ui.st.vol];
+      AU.tone = c.createBiquadFilter(); AU.tone.type = 'lowpass'; AU.tone.frequency.value = 3600;
+      AU.an = c.createAnalyser(); AU.an.fftSize = 256; AU.data = new Uint8Array(256);
+      AU.tone.connect(AU.master); AU.master.connect(AU.an); AU.an.connect(c.destination);
+      const n = c.sampleRate*2, buf = c.createBuffer(1, n, c.sampleRate), d = buf.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = (Math.random() < .0007 ? (Math.random()*2-1)*.8 : 0) + (Math.random()*2-1)*.01;
+      AU.noise = buf; }
+    if (AU.ctx.state === 'suspended') AU.ctx.resume();
+    return AU.ctx;
+  } catch (e){ return null; }
+}
+function trackEl(i){ const tr = TRACKS[i]; if (!tr.src || tr.bad) return null;
+  let el = AU.els[i]; if (!el || el._src !== tr.src){ el = new Audio(tr.src); el._src = tr.src; el.preload = 'auto'; el.preservesPitch = false; el.mozPreservesPitch = false; el.webkitPreservesPitch = false; el.addEventListener('error', () => { if (el._src === tr.src) tr.bad = true; }); AU.els[i] = el; }
+  return el; }
+// called inside a click, so the browser lets the page make sound later
+function unlock(st){ audioCtx(); const i = st.rec != null ? st.rec : null; if (i == null) return;
+  const el = trackEl(i); if (el && el.paused && !st.down){ el.muted = true; el.play().then(() => { if (!st.down){ el.pause(); } el.muted = false; }).catch(() => {}); } }
+function playNote(m, when, dur, vel, rate){
+  const c = AU.ctx, fq = 440*Math.pow(2, (m - 69)/12)*rate, end = when + Math.max(.3, dur) + .5;
+  const o1 = c.createOscillator(), o2 = c.createOscillator(), g = c.createGain(), g2 = c.createGain();
+  o1.type = 'triangle'; o1.frequency.value = fq; o2.type = 'sine'; o2.frequency.value = fq*2; g2.gain.value = .25;
+  g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(vel*.3, when + .01);
+  g.gain.exponentialRampToValueAtTime(vel*.11, when + .15); g.gain.exponentialRampToValueAtTime(.0004, end);
+  o1.connect(g); o2.connect(g2); g2.connect(g); g.connect(AU.bus);
+  o1.start(when); o2.start(when); o1.stop(end + .05); o2.stop(end + .05);
+}
+function startAudio(st){
+  st.pos = 0; st.ni = 0;
+  const el = trackEl(st.rec);
+  if (el){ st.custom = true; el.muted = false; el.currentTime = 0; el.volume = VOLS[st.vol]; el.playbackRate = 1;
+    el.play().catch(e => { if (e && e.name === 'NotAllowedError') return ui.flash('浏览器拦截了声音，再点一次「放下唱针」');
+      TRACKS[st.rec].bad = true; if (st.down && st.custom){ st.custom = false; startSynth(st); } });
+    st.len = 0; return; }
+  startSynth(st);
+}
+function startSynth(st){
+  st.custom = false; st.pos = 0; st.ni = 0;
+  if (TRACKS[st.rec].src) ui.flash('没找到音频文件，先放占位旋律', 2200);
+  st.len = SONGS[st.rec].len;
+  const c = audioCtx(); if (!c) return;
+  AU.bus = c.createGain(); AU.bus.connect(AU.tone);
+  const cr = c.createBufferSource(); cr.buffer = AU.noise; cr.loop = true; const cg = c.createGain(); cg.gain.value = .5;
+  cr.connect(cg); cg.connect(AU.bus); cr.start(); AU.crackle = cr;
+}
+function stopAudio(){
+  const c = AU.ctx;
+  if (AU.bus && c){ const b = AU.bus, cr = AU.crackle; b.gain.setTargetAtTime(0, c.currentTime, .04);
+    setTimeout(() => { try { cr && cr.stop(); b.disconnect(); } catch (e){} }, 400); AU.bus = null; AU.crackle = null; }
+  Object.values(AU.els).forEach(el => { try { el.pause(); } catch (e){} });
+}
+function pumpAudio(st, rate){
+  if (st.custom){ const el = trackEl(st.rec); if (!el) return;
+    if (rate < .3){ if (!el.paused) el.pause(); }
+    else { if (Math.abs(el.playbackRate - rate) > .02) el.playbackRate = Math.min(4, rate); if (el.paused && !el.ended) el.play().catch(() => {}); }
+    st.pos = el.currentTime; st.len = isFinite(el.duration) ? el.duration : 0; return; }
+  if (!AU.ctx || !AU.bus || rate < .15) return;
+  if (AU.crackle) AU.crackle.playbackRate.value = Math.max(.1, rate);
+  const notes = SONGS[st.rec].notes;
+  while (st.ni < notes.length && notes[st.ni][0] < st.pos + .25*rate){
+    const [t, d, m, v] = notes[st.ni++];
+    if (t < st.pos - .05) continue;
+    playNote(m, AU.ctx.currentTime + Math.max(0, (t - st.pos)/rate), d/rate, v, rate); }
+}
+function levelNow(st, t){
+  if (!st.down || st.omega < .5) return 0;
+  if (AU.an && !st.custom){ AU.an.getByteTimeDomainData(AU.data); let s = 0; for (const v of AU.data) s += ((v - 128)/128)**2; return Math.min(1, Math.sqrt(s/AU.data.length)*5); }
+  return .45 + .35*Math.sin(t*9) * Math.sin(t*2.3);
+}
+
+/* ---------- tonearm ---------- */
+const armTip = th => [PIV[0] + ARM_L*Math.cos(th), PIV[1] + ARM_L*Math.sin(th)];
+function thForR(r){ let a = REST_TH, b = Math.atan2(PLT.y - PIV[1], PLT.x - PIV[0]);
+  for (let i = 0; i < 40; i++){ const md = (a + b)/2, p = armTip(md); if (Math.hypot(p[0] - PLT.x, p[1] - PLT.y) > r) a = md; else b = md; }
+  return (a + b)/2; }
+function obox(c, th, len, wid, z0, z1, m, w=.9){
+  const u = [Math.cos(th), Math.sin(th), 0], v = [-Math.sin(th), Math.cos(th), 0];
+  const Q = (a, b, z) => [c[0] + u[0]*a + v[0]*b, c[1] + u[1]*a + v[1]*b, z], a0 = -len/2, a1 = len/2, b0 = -wid/2, b1 = wid/2;
+  const F = [[u, [Q(a1,b0,z0),Q(a1,b1,z0),Q(a1,b1,z1),Q(a1,b0,z1)]], [u.map(x => -x), [Q(a0,b0,z0),Q(a0,b1,z0),Q(a0,b1,z1),Q(a0,b0,z1)]],
+    [v, [Q(a0,b1,z0),Q(a1,b1,z0),Q(a1,b1,z1),Q(a0,b1,z1)]], [v.map(x => -x), [Q(a0,b0,z0),Q(a1,b0,z0),Q(a1,b0,z1),Q(a0,b0,z1)]],
+    [[0,0,1], [Q(a0,b0,z1),Q(a1,b0,z1),Q(a1,b1,z1),Q(a0,b1,z1)]]];
+  return F.filter(([n]) => vis(n)).map(([n, q]) => shape(q, toneI(n, m), w)).join('');
+}
+const REST_POST = (() => { const k = ARM_L*.78; return [PIV[0] + k*Math.cos(REST_TH), PIV[1] + k*Math.sin(REST_TH)]; })();
+function tonearm(st, m){
+  const th = st.armTh, d = [Math.cos(th), Math.sin(th), 0], sd = [Math.sin(th), -Math.cos(th), 0];
+  const hz = RZ + .9 + 1.6*st.lift, zAt = a => ARM_Z + (hz - ARM_Z)*a/ARM_L;
+  const at = (a, z, side=0) => [PIV[0] + d[0]*a + sd[0]*side, PIV[1] + d[1]*a + sd[1]*side, z];
+  const CW = matOf('#8f989b'), HEAD = matOf('#3d3935');
+  let s = '';
+  s += rod(at(0, ARM_Z), at(-2.4, ARM_Z), .5, METAL, toneI, .9);
+  s += rod(at(-2.4, ARM_Z), at(-6.4, ARM_Z), 1.7, CW, toneI, 1.2);
+  s += cyl(PIV[0], PIV[1], TZT, TZT + 1.3, 2.8, METAL, toneI, 1.1, 24);
+  s += cyl(PIV[0], PIV[1], TZT + 1.3, ARM_Z + .5, 1.1, METAL, toneI, 1, 16);
+  s += rod(at(.8, ARM_Z), at(ARM_L - 1.6, zAt(ARM_L - 1.6)), .42, METAL, toneI, 1);
+  s += obox(at(ARM_L - .7, 0), th, 3.6, 2, hz - .15, hz + .3, HEAD, .9);
+  s += rod(at(ARM_L - .7, hz + .1, .9), at(ARM_L - .7, hz + .1, 2.4), .25, METAL, toneI, .8);
+  s += obox(at(ARM_L - .5, 0), th, 1.9, 1.2, hz - .9, hz - .15, matOf('#e2483d'), .8);
+  s += line([at(ARM_L + .3, hz - .9), at(ARM_L + .3, hz - 1.0 - .02)], .9);
+  return act('arm', s);
+}
+
+/* ---------- records ---------- */
+function disc(ctr, e2, ang, i){
+  const e1 = [0, 1, 0], nrm = norm(cross(e2, e1)).map(v => v*REC_T/2);
+  const pt = (r, t, o=[0,0,0]) => [ctr[0] + r*(Math.cos(t)*e1[0] + Math.sin(t)*e2[0]) + o[0], ctr[1] + r*(Math.cos(t)*e1[1] + Math.sin(t)*e2[1]) + o[1], ctr[2] + r*(Math.cos(t)*e1[2] + Math.sin(t)*e2[2]) + o[2]];
+  const ring = (r, n=48, a0=0, o) => Array.from({length:n}, (_, k) => pt(r, a0 + k/n*2*Math.PI, o));
+  const neg = nrm.map(v => -v);
+  let s = loft(ring(REC_R, 48, 0, neg), ring(REC_R, 48, 0, nrm), () => '#2c2926');
+  const top = vis(nrm) ? nrm : neg;
+  const R = (r, n, a0) => ring(r, n, a0, top);
+  s += fill(pd(R(REC_R)), VINYL);
+  s += `<path d="${[12.4, 10.6, 8.6, 6.8].map(r => pd(R(r))).join('')}" fill="none" stroke="#45403b" stroke-width=".55"/>`;
+  for (const [a0, a1] of [[.5, 1.2], [3.64, 4.34]]){             // sheen stays put while the record turns
+    const arcP = (r, a, b) => Array.from({length:9}, (_, k) => pt(r, a + (b - a)*k/8, top));
+    s += fill(pd([...arcP(13.2, a0, a1), ...arcP(5.6, a1, a0)]), '#ffffff', 'opacity=".14"'); }
+  s += fill(pd(R(4.7, 28)), LABELS[i]);
+  if (i === 1) s += fill(pd(Array.from({length:15}, (_, k) => pt(4.7, ang + k/14*Math.PI, top))), '#24201c');
+  else { s += fill(pd(Array.from({length:10}, (_, k) => pt(4.7, ang + k/9*1.6, top)).concat([pt(1.3, ang + 1.6, top), pt(1.3, ang, top)])), mix(LABELS[i], '#ffffff', .45));
+    s += `<path d="${pd(R(3.4, 24))}" fill="none" stroke="${mix(LABELS[i], '#000000', .35)}" stroke-width=".6"/>`; }
+  s += ink(pd(R(4.7, 28)), .7);
+  s += fill(pd(R(.55, 12)), '#d8dcdc');
+  s += ink(pd(R(REC_R)), 1.1);
+  return s;
+}
+// where record i is during a move (q: 0 = in its sleeve, 1 = on the platter)
+function recPose(i, q){
+  const xs = SLV.xs[i] - .35;
+  if (q < .3){ const a = ease(q/.3); return { ctr:[xs, SLV_Y, SLV_ZC + 10*a], e2:[0,0,1], inCrate:true }; }
+  const b = ease((q - .3)/.7), S0 = [xs, SLV_Y, SLV_ZC + 10], E0 = [PLT.x, PLT.y, PLT.z1 + REC_T/2], tl = Math.min(1, b*1.35);
+  return { ctr:[S0[0] + (E0[0] - S0[0])*b, S0[1] + (E0[1] - S0[1])*b, S0[2] + (E0[2] - S0[2])*b + 6*Math.sin(Math.PI*b)], e2:norm([-tl, 0, 1 - tl]), inCrate:false };
+}
+const moveQ = st => st.move ? (st.move.dir === 'out' ? st.move.T : 1 - st.move.T) : null;
+
+/* ---------- crate with sleeves ---------- */
+function sleeveArt(i, xs){
+  const X = PX(xs + .05), zb = SLV.z0, yc = SLV_Y, y0 = SLV.y0, y1 = SLV.y1;
+  let s = '', tc = '#fbf7ea', ac = '#fbf7ea';
+  if (i === 0){                                      // BLUE: a pale moon over three waves
+    s += shape(on(X, ellUV(yc + 6, zb + 17, 4.2, 4.2, 28)), '#cfe2f7', .9);
+    [[zb + 11.5, '#3d63ad'], [zb + 9, '#5a82c6'], [zb + 6.5, '#7fb2ec']].forEach(([z, c]) => {
+      const pts = []; for (let k = 0; k <= 24; k++){ const y = y1 - .2 - k*(y1 - y0 - .4)/24; pts.push([y, z + 1.1*Math.sin(k*.8 + z)]); }
+      s += shape(on(X, [...pts, [y0 + .2, zb + .3], [y1 - .2, zb + .3]]), c, .8); });
+    ac = '#cfe2f7'; }
+  if (i === 1){                                      // HEI BAI: white above, black below, a circle split down the middle
+    s += fill(pd(on(X, rectUV(y0, zb, y1, zb + 13))), '#24201c');
+    s += fill(pd(on(X, arcUV(yc, zb + 13, 6, -90, 90, 14))), '#24201c') + fill(pd(on(X, arcUV(yc, zb + 13, 6, 90, 270, 14))), '#f6f2e6');
+    s += ink(pd(on(X, ellUV(yc, zb + 13, 6, 6, 28))), 1);
+    tc = INK; ac = '#fbf7ea'; }
+  if (i === 2){                                      // CLOSED ON SUNDAY: a low sun with rays over a field
+    for (let k = 0; k < 9; k++){ const a = (20 + k*17.5)*Math.PI/180;
+      s += line([[xs + .06, yc + 6.5*Math.cos(a), zb + 9 + 6.5*Math.sin(a)], [xs + .06, yc + 10*Math.cos(a), zb + 9 + 10*Math.sin(a)]], 1.2); }
+    s += shape(on(X, arcUV(yc, zb + 9, 5.2, 0, 180, 16)), '#e2573f', .9);
+    s += shape(on(X, rectUV(y0 + .2, zb + .3, y1 - .2, zb + 9)), '#8a6a2f', .8);
+    tc = INK; ac = '#4e4a18'; }
+  if (i === 2){ s += tx(xs + .1, yc, zb + 25.6, 'CLOSED ON', 2.5, tc, 800) + tx(xs + .1, yc, zb + 22.6, 'SUNDAY', 2.5, tc, 800); }
+  else s += tx(xs + .1, yc, zb + 25.2, TRACKS[i].key, 2.6, tc, 800);
+  s += tx(xs + .1, yc, zb + (i === 2 ? 19.8 : 22.4), TRACKS[i].artist, 1.9, i === 1 ? '#6a6658' : i === 2 ? '#4e4a18' : '#cfe2f7', 700);
+  return s;
+}
+function crate(st){
+  const { x0, x1, y0, y1, h } = CR, q = moveQ(st);
+  let s = box(x0 + 1, y0 + 1, Z0, x1 - 1, y1 - 1, Z0 + .8, CRATE, toneI, .8);
+  s += box(x0, y0, Z0, x0 + 1, y1, Z0 + h, CRATE, toneI, 1);
+  s += box(x0, y0, Z0, x1, y0 + 1, Z0 + h, CRATE, toneI, 1);
+  s += hullInk([[x0,y0,Z0],[x1,y0,Z0],[x0,y1,Z0],[x1,y1,Z0],[x0,y0,Z0+h],[x1,y0,Z0+h],[x0,y1,Z0+h],[x1,y1,Z0+h]], 2.2);
+  [2, 1, 0].forEach(i => {
+    const xs = SLV.xs[i];
+    if (st.move && st.move.i === i && q < .3){ const p = recPose(i, q); s += disc(p.ctr, p.e2, 0, i); }
+    s += act('sleeve', box(xs - .7, SLV.y0, SLV.z0, xs, SLV.y1, SLV.z0 + 29, matOf(SLEEVES[i]), toneI, 1) + sleeveArt(i, xs), `data-i="${i}"`);
+  });
+  s += box(x1 - 1, y0, Z0, x1, y1, Z0 + h, CRATE, toneI, 1.1);
+  s += box(x0, y1 - 1, Z0, x1, y1, Z0 + h, CRATE, toneI, 1.1);
+  s += line([[x1 + .05, y0 + .5, Z0 + 6.5], [x1 + .05, y1 - .5, Z0 + 6.5]], .8);
+  s += line([[x0 + .5, y1 + .05, Z0 + 4.5], [x1 - .5, y1 + .05, Z0 + 4.5]], .8);
+  s += shape(on(PY(y1 + .06), rrUV(13, Z0 + 8, 25, Z0 + 10.8, 1.3)), '#5a4426', .9);
+  s += ink(pd([[x1,y0,Z0+h],[x1,y0,Z0],[x1,y1,Z0],[x0,y1,Z0],[x0,y1,Z0+h]], false), 2.2);
+  return s;
+}
+
+/* ---------- the turntable ---------- */
+function platter(st){
+  const { x, y, r, z0, z1 } = PLT;
+  let s = cyl(x, y, z0, z1, r, METAL, toneI, 1.2, 48);
+  let dots = '';
+  for (let k = 0; k < 40; k++){ const a = -st.ang + k/40*2*Math.PI;
+    if (Math.cos(a) + Math.sin(a) < .25) continue;
+    const q = (da, z) => [x + (r + .02)*Math.cos(a + da), y + (r + .02)*Math.sin(a + da), z];
+    dots += pd([q(-.035, z0 + .55), q(.035, z0 + .55), q(.035, z1 - .55), q(-.035, z1 - .55)]); }
+  s += `<path d="${dots}" fill="#6c7477"/>`;
+  s += fill(pd(on(PZ(z1 + .03), ellUV(x, y, 13.6, 13.6, 40))), '#3b3835') + ink(pd(on(PZ(z1 + .03), ellUV(x, y, 13.6, 13.6, 40))), .7);
+  s += cyl(x, y, z1, z1 + 1.4, .45, METAL, toneI, .8, 10);
+  return s;
+}
+function speaker(st){
+  const X = PX(TX1), { y, z, r } = SPK, lv = st.level || 0;
+  const c = ellUV(y, z, r, r, 32);
+  let s = fill(pd(on(X, c)), '#2a2622');
+  s += fill(pd(on(PX(TX1 - .2), ellUV(y, z, r*.86*(1 + .05*lv), r*.86*(1 + .05*lv), 28))), '#4a4540');
+  s += ink(pd(on(PX(TX1 - .2), ellUV(y, z, r*.6*(1 + .06*lv), r*.6*(1 + .06*lv), 24))), .6);
+  const dc = r*.3*(1 + .18*lv);
+  s += fill(pd(on(PX(TX1 - .1), ellUV(y, z, dc, dc, 18))), '#5f5850') + fill(pd(on(PX(TX1 - .05), ellUV(y + dc*.3, z + dc*.3, dc*.35, dc*.35, 10))), '#ffffff', 'opacity=".25"');
+  return clipTo(on(X, c), s);
+}
+function frontControls(st){
+  const F = TX1, zc = 10, lab = '#4a463c';
+  let s = '';
+  // speaker bezel
+  s += `<path d="${pd(on(PX(F + .15), ellUV(SPK.y, SPK.z, SPK.r + .8, SPK.r + .8, 32)))}${pd(on(PX(F + .15), ellUV(SPK.y, SPK.z, SPK.r, SPK.r, 32)))}" fill="${METAL.l}" fill-rule="evenodd"/>`;
+  s += ink(pd(on(PX(F + .15), ellUV(SPK.y, SPK.z, SPK.r + .8, SPK.r + .8, 32))), 1) + ink(pd(on(PX(F + .15), ellUV(SPK.y, SPK.z, SPK.r, SPK.r, 32))), 1.2);
+  // speed switch 33 | 45
+  s += shape(on(PX(F + .1), rrUV(26.3, zc - .9, 33.7, zc + .9, .9)), '#2a2622', .8);
+  const ky = st.speed === 33 ? 32 : 28;
+  s += act('speed', box(F, ky - 1.1, zc - 1.2, F + 1.3, ky + 1.1, zc + 1.2, CERAMIC, toneI, .9));
+  s += tx(F + .2, 32, zc + 2.4, '33', 2, st.speed === 33 ? INK : '#8d8574', 800) + tx(F + .2, 28, zc + 2.4, '45', 2, st.speed === 45 ? INK : '#8d8574', 800);
+  s += tx(F + .2, 30, zc - 5.2, 'RPM', 1.9, lab, 800);
+  // volume
+  const va = (225 - st.vol*90)*Math.PI/180;
+  for (let k = 0; k < 3; k++){ const a = (225 - k*90)*Math.PI/180; s += fill(pd(on(PX(F + .15), ellUV(19.5 - 3.4*Math.cos(a), zc + 3.4*Math.sin(a), .4, .4, 8))), k <= st.vol ? INK : '#b5b2a6'); }
+  s += act('vol', cylX(F + .1, F + 2.1, 19.5, zc, 2.4, CERAMIC, toneI, 1.1, 24) + line([[F + 2.15, 19.5 - .6*Math.cos(va), zc + .6*Math.sin(va)], [F + 2.15, 19.5 - 2*Math.cos(va), zc + 2*Math.sin(va)]], 1.2));
+  s += tx(F + .2, 19.5, zc - 5.2, 'VOL', 1.9, lab, 800);
+  // power
+  s += fill(pd(on(PX(F + .15), ellUV(5.9, zc, .8, .8, 12))), st.motor ? GREEN : '#b5b2a6') + ink(pd(on(PX(F + .15), ellUV(5.9, zc, .8, .8, 12))), .7);
+  s += act('power', cylX(F + .1, F + (st.motor ? .9 : 1.6), 10, zc, 1.8, CERAMIC, toneI, 1.1, 20));
+  s += tx(F + .2, 9, zc - 5.2, 'POWER', 1.9, lab, 800);
+  return s;
+}
+function musicNote(n, col){
+  const k = n.age/2.2, x = 36, y = 7 + n.dy + Math.sin(n.age*2.6 + n.ph)*1.6 - k*9, z = RZ + 7 + k*16;
+  const op = k < .15 ? k/.15 : 1 - (k - .15)/.85, sc = n.sc, hd = on(PX(x), ellUV(y, z, 1.15*sc, .85*sc, 14));
+  let s = line([[x, y - 1.05*sc, z + .1], [x, y - 1.05*sc, z + 3.9*sc], [x, y - 2.3*sc, z + 2.8*sc], [x, y - 2.5*sc, z + 1.7*sc]], 1.3);
+  s += fill(pd(hd), col) + ink(pd(hd), 1.1);
+  return `<g opacity="${f(Math.max(0, op))}">${s}</g>`;
+}
+
+/* ---------- scene ---------- */
+function scene(st, m){
+  const BT = boardTop(0, 0, BX, BY, Z0, 4);
+  let s = board(0, 0, BX, BY, Z0, 4, WOOD);
+  const platTop = on(PZ(PLT.z1), ellUV(PLT.x, PLT.y, PLT.r, PLT.r, 16));
+  s += castShadow([...on(PX(TX0), OUTP), ...on(PX(TX1), OUTP), ...platTop, [PIV[0], PIV[1], ARM_Z]], Z0, BT);
+  const { x0, x1, y0, y1, h } = CR;
+  s += castShadow([[x0,y0,Z0],[x1,y0,Z0],[x0,y1,Z0],[x1,y1,Z0],[x0,y0,Z0+h],[x1,y0,Z0+h],[x0,y1,Z0+h],[x1,y1,Z0+h],
+    [SLV.xs[2]-.7, SLV.y0, SLV.z0+29],[SLV.xs[0], SLV.y0, SLV.z0+29],[SLV.xs[2]-.7, SLV.y1, SLV.z0+29],[SLV.xs[0], SLV.y1, SLV.z0+29]], Z0, BT);
+  // feet
+  s += byDepth([[TX0+3, TY0+3], [TX0+3, TY1-3], [TX1-3, TY0+3], [TX1-3, TY1-3]].map(([x, y]) => ({ at:[x, y, Z0], svg:cyl(x, y, Z0, TZB + .3, 1.5, RUBBER, toneI, .9, 14) })));
+  // body: speaker seen through its hole, front face with the hole, swept body, side + top details
+  s += speaker(st);
+  s += `<path d="${pd(on(PX(TX1), OUTP))}${pd(on(PX(TX1), ellUV(SPK.y, SPK.z, SPK.r, SPK.r, 32)))}" fill="${tone([1,0,0], m)}" fill-rule="evenodd"/>`;
+  s += extrude(OUTP, TX0, TX1, m);
+  s += shape(on(PZ(TZT + .04), rrUV(TX0 + 1.6, TY0 + 1.6, TX1 - 1.6, TY1 - 1.6, 2)), mix(m.l, '#ffffff', .55), .8);
+  const sm = tone([0,1,0], m);
+  s += txY((TX0 + TX1)/2, TY1 + .25, 7.6, 'COLORTONE', 3.4, sm === m.l ? m.m : m.d, 800);
+  s += ink(pd(on(PX(TX1), OUTP)), 2.2);
+  s += hullInk([...on(PX(TX0), OUTP), ...on(PX(TX1), OUTP)], 2.8);
+  // on top: platter, record, tonearm
+  s += platter(st);
+  if (st.rec != null && !st.move) s += disc([PLT.x, PLT.y, PLT.z1 + REC_T/2 + .05], [1,0,0], st.ang, st.rec);
+  s += cyl(REST_POST[0], REST_POST[1], TZT, RZ + .9 + 1.6 + (ARM_Z - RZ - 2.5)*.22 - .55, .7, METAL, toneI, .9, 12);
+  s += tonearm(st, m);
+  s += frontControls(st);
+  // the crate (nearer the viewer), then a record in the air, then notes
+  s += crate(st);
+  if (st.move){ const q = moveQ(st); if (q >= .3){ const p = recPose(st.move.i, q); s += disc(p.ctr, p.e2, 0, st.move.i); } }
+  for (const n of st.notes) s += musicNote(n, m.l);
+  return s;
+}
+
+/* ---------- behaviour ---------- */
+let ui, LOOP = false, CLOCK = 0;
+const TASKS = [];
+function task(fn){ TASKS.push(fn); wake(); }
+function wake(){ if (LOOP) return; LOOP = true;
+  ui.animate(dt => { step(ui.st, dt); const st = ui.st;
+    const busy = TASKS.length > 0 || st.motor || st.omega > 0 || st.notes.length > 0 || st.want != null;
+    if (!busy) LOOP = false; return busy; }); }
+function tween(dur, fn, done){ let t = 0; task(dt => { t = Math.min(1, t + dt/dur); fn(ease(t)); if (t >= 1){ done && done(); return false; } return true; }); }
+function step(st, dt){
+  CLOCK += dt;
+  for (let i = TASKS.length - 1; i >= 0; i--) if (TASKS[i](dt) === false) TASKS.splice(i, 1);
+  const target = st.motor ? st.speed/60*2*Math.PI : 0;
+  st.omega = st.omega < target ? Math.min(target, st.omega + 4.2*dt) : Math.max(target, st.omega - 2.6*dt);
+  st.ang += st.omega*dt;
+  if (st.down && st.rec != null){
+    const rate = st.omega/OM33;
+    if (!st.custom) st.pos += dt*rate;
+    pumpAudio(st, rate);
+    const len = st.len || 200, k = Math.min(1, st.pos/len);
+    st.armTh = thForR(R_LEAD - (R_LEAD - R_END)*k);
+    const el = st.custom ? trackEl(st.rec) : null;
+    if ((!st.custom && st.pos >= st.len) || (el && el.ended)) endSide(st);
+    if (rate > .6){ st.noteT -= dt*rate; if (st.noteT <= 0){ st.noteT = .55; st.notes.push({ age:0, dy:(Math.random() - .5)*4, ph:Math.random()*6, sc:1.6 + Math.random()*.6 }); } }
+  }
+  if (st.want != null && !isBusy(st)){ const w = st.want; st.want = null; pickRecord(st, ui, w); }
+  st.notes.forEach(n => n.age += dt); st.notes = st.notes.filter(n => n.age < 2.2);
+  st.level = (st.level || 0)*.6 + levelNow(st, CLOCK)*.4;
+}
+const busyMsg = '唱片机正忙，稍等一下';
+const isBusy = st => !!(st.move || st.armBusy || st.chain);
+function swingTo(st, th, then){ const a = st.armTh; tween(.9, k => st.armTh = a + (th - a)*k, then); }
+function liftTo(st, v, then){ const a = st.lift; tween(.35, k => st.lift = a + (v - a)*k, then); }
+function dropNeedle(st, ui){
+  unlock(st);
+  if (st.chain || st.move){ st.wantDrop = true; return ui.flash('好的，唱片放好就放下唱针'); }
+  if (st.rec == null) return ui.flash('先选一张唱片放到转盘上');
+  if (st.down) return ui.flash('唱针已经在唱片上了');
+  if (st.armBusy) return ui.flash(busyMsg);
+  if (!st.motor){ st.motor = true; wake(); ui.flash('先启动转盘…'); }
+  st.armBusy = true;
+  swingTo(st, thForR(R_LEAD), () => liftTo(st, 0, () => { st.armBusy = false; st.down = true; st.noteT = .3; startAudio(st); wake(); }));
+}
+function liftNeedle(st, ui, then, inChain=false){
+  if (st.armBusy || (st.chain && !inChain)) return ui && ui.flash(busyMsg);
+  if (!st.down && Math.abs(st.armTh - REST_TH) < 1e-3){ if (then) then(); else ui && ui.flash('唱针已经在架子上了'); return; }
+  st.down = false; stopAudio(); st.armBusy = true;
+  liftTo(st, 1, () => swingTo(st, REST_TH, () => { st.armBusy = false; then && then(); }));
+}
+function endSide(st){ st.down = false; stopAudio(); ui.flash('这一面放完了 — 唱臂自动回位', 2400);
+  st.armBusy = true; liftTo(st, 1, () => swingTo(st, REST_TH, () => { st.armBusy = false; st.motor = false; })); }
+function toggleMotor(st, ui){
+  if (st.chain || st.move) return ui.flash('正在换唱片，稍等一下');
+  audioCtx(); st.motor = !st.motor; wake();
+  if (!st.motor && st.down) ui.flash('转盘停了，音乐也慢慢停下');
+}
+function waitStill(st, then){ task(() => { if (st.omega > 0) return true; then(); return false; }); }
+function fetchRecord(st, i){ st.move = { i, dir:'out', T:0 };
+  task(dt => { st.move.T = Math.min(1, st.move.T + dt/2.1); if (st.move.T >= 1){ st.move = null; st.rec = i; st.chain = false;
+      if (st.want == null && st.wantDrop){ st.wantDrop = false; setTimeout(() => dropNeedle(st, ui), 250); } else ui.flash('放好了 — 放下唱针就能听', 2000);
+      return false; } return true; }); }
+function returnRecord(st, then){ const i = st.rec; if (i == null){ then && then(); return; } st.rec = null; st.move = { i, dir:'in', T:0 };
+  task(dt => { st.move.T = Math.min(1, st.move.T + dt/1.8); if (st.move.T >= 1){ st.move = null; then && then(); return false; } return true; }); }
+function pickRecord(st, ui, i){
+  unlock(st);
+  st.wantDrop = true;
+  if (isBusy(st)){ st.want = i; wake(); return ui.flash(`好的，马上换成 ${TRACKS[i].cn}`, 1800); }
+  st.want = null;
+  if (st.rec === i){ st.wantDrop = false; return st.down ? ui.flash(`${TRACKS[i].cn} 正在播放`) : dropNeedle(st, ui); }
+  st.chain = true;
+  const latest = () => { if (st.want != null){ const w = st.want; st.want = null; return w; } return i; };   // a newer choice wins
+  if (st.rec == null){ if (st.motor || st.omega > 0){ st.motor = false; waitStill(st, () => fetchRecord(st, latest())); } else fetchRecord(st, latest()); return; }
+  ui.flash('先把这张收回去…', 1800);
+  liftNeedle(st, null, () => { st.motor = false; waitStill(st, () => returnRecord(st, () => fetchRecord(st, latest()))); }, true);
+}
+function setVol(st, v){ st.vol = v; if (AU.master) AU.master.gain.setTargetAtTime(VOLS[v], AU.ctx.currentTime, .05); Object.values(AU.els).forEach(el => el.volume = VOLS[v]); }
+function setSpeed(st, ui, sp){ st.speed = sp; wake(); if (st.down) ui.flash(sp === 45 ? '45 转：更快，音调也更高' : '33 转：回到正常速度'); }
+
+// file picker for "use my own music"
+let fileFor = 0;
+function chooseFile(i){ fileFor = i; document.getElementById('pick').click(); }
+
+ui = mountFigure({
+  fig:'07', title:'listen with me', credit:false,
+  size:[BX, BY, 42], palette:'tomato',
+  state:{ rec:null, move:null, motor:false, omega:0, ang:0, speed:33, vol:1, armTh:REST_TH, lift:1, down:false, armBusy:false,
+          pos:0, len:0, ni:0, notes:[], noteT:0, level:0, custom:false, chain:false, want:null, wantDrop:false },
+  scene,
+  buttons:[
+    { label:'选一张唱片', choices: st => TRACKS.map((t, i) => ({ label:`${t.cn} · ${t.artist}`, current: st.rec === i && !st.move && !st.chain && st.down, onClick:(st, ui) => pickRecord(st, ui, i) })) },
+    { label:'转速', choices: st => [33, 45].map(sp => ({ label:`${sp} RPM`, current: st.speed === sp, onClick:(st, ui) => setSpeed(st, ui, sp) })) },
+    { label:'音量', choices: st => ['小', '中', '大'].map((l, v) => ({ label:l, current: st.vol === v, onClick:(st) => setVol(st, v) })) },
+  ],
+  stats: st => [{ label:'RPM', value: String(Math.round(st.omega/(2*Math.PI)*60)) },
+                { label:'唱片', value: st.rec != null ? (TRACKS[st.rec].file || TRACKS[st.rec].cn) : '—', small:true }],
+  acts:{
+    power:(st, el, ui) => toggleMotor(st, ui),
+    arm:(st, el, ui) => st.down ? liftNeedle(st, ui) : dropNeedle(st, ui),
+    vol:(st) => setVol(st, (st.vol + 1) % 3),
+    speed:(st, el, ui) => setSpeed(st, ui, st.speed === 33 ? 45 : 33),
+    sleeve:(st, el, ui) => pickRecord(st, ui, +el.dataset.i),
+  },
+  params:(st, q) => {
+    if (q.has('rec')) st.rec = +q.get('rec');
+    if (q.get('speed') === '45') st.speed = 45;
+    if (q.has('vol')) st.vol = +q.get('vol');
+    if (q.get('motor') === '1'){ st.motor = true; st.omega = st.speed/60*2*Math.PI; }
+    if (q.get('play') === '1'){ if (st.rec == null) st.rec = 0; st.motor = true; st.omega = st.speed/60*2*Math.PI; st.down = true; st.lift = 0;
+      st.len = SONGS[st.rec].len; st.pos = (+q.get('t') || 0)*st.len; st.ni = SONGS[st.rec].notes.findIndex(n => n[0] >= st.pos);
+      st.armTh = thForR(R_LEAD - (R_LEAD - R_END)*st.pos/st.len); st.notes = [{ age:.5, dy:0, ph:0, sc:1.9 }, { age:1.3, dy:2, ph:2, sc:1.6 }]; }
+    if (q.has('move')){ st.move = { i:+(q.get('mi') || 0), dir:'out', T:+q.get('move') }; st.rec = null; }
+    if (q.has('arm')){ st.armTh = thForR(+q.get('arm')); st.lift = 1; }
+  },
+});
+(() => { const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'audio/*'; inp.id = 'pick'; inp.hidden = true; document.body.appendChild(inp);
+  inp.onchange = () => { const fl = inp.files && inp.files[0]; if (!fl) return; const st = ui.st;
+    if (st.down && st.rec === fileFor) liftNeedle(st, ui);
+    TRACKS[fileFor].src = URL.createObjectURL(fl); TRACKS[fileFor].bad = false; TRACKS[fileFor].file = fl.name.replace(/\.[^.]+$/, '').slice(0, 14);
+    ui.flash(`${TRACKS[fileFor].cn} 换成了「${TRACKS[fileFor].file}」`, 2400); ui.render(); inp.value = ''; }; })();
+TRACKS.forEach((t, i) => { const el = trackEl(i); if (el) el.load(); });
+if (ui.st.motor || ui.st.move) wake();
+if (ui.st.move){ const T0 = ui.st.move.T; ui.st.move.T = T0; TASKS.length = 0; }
+</script></body></html>

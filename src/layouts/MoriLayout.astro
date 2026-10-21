@@ -1,0 +1,32 @@
+---
+import '../styles/mori.css';
+import '../styles/mori-reading.css';
+import Arrow from '../components/mori/Arrow.astro';
+const { title = 'Mori · 杨黄旭哲', active = 'home', pageClass = '', description = '喜欢游戏、音乐、电影，也喜欢和 AI 伙伴一起动手做点东西。这里是 Mori 的个人网站。' } = Astro.props;
+const navigation = [{id:'home',href:'/',name:'首页'},{id:'about',href:'/about/',name:'关于我'},{id:'projects',href:'/projects/',name:'作品'},{id:'interests',href:'/interests/',name:'兴趣爱好'}];
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#F6F4EE" />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/mori-chinese.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/anton.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="canonical" href={new URL(Astro.url.pathname, 'https://xuzheee.github.io')} />
+  </head>
+  <body class:list={['mori-site', { 'm-home-site': pageClass === 'm-home' }]}>
+    <a class="m-skip" href="#main">跳到正文</a>
+    <header class="m-header" id="top">
+      <a class="m-logo" href="/" aria-label="Mori 首页">Mori</a>
+      <nav aria-label="主导航">{navigation.map(item => <a href={item.href} aria-label={item.name} aria-current={active === item.id ? 'page' : undefined}>{item.name}</a>)}</nav>
+      <a class="m-header-contact" href="/#contact">联系我 <Arrow direction="diagonal" /></a>
+    </header>
+    <main id="main" class={pageClass} tabindex="-1"><slot /></main>
+    <div class="m-toast" role="status" aria-live="polite"></div>
+    <script>import '../scripts/mori';</script>
+  </body>
+</html>

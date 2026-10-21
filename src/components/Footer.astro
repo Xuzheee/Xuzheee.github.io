@@ -1,12 +1,16 @@
 ---
+import { profile } from "../data/portfolio";
 const today = new Date();
 ---
-
-<footer class="footer footer-center block mb-5 pt-10">
-  <div class="pb-2">
-    &copy; {today.getFullYear()} Xuzhe Huang
+<footer class="site-footer">
+  <div class="footer-top">
+    <p>聊聊产品、研究，<br />或一个值得尝试的想法。</p>
+    <div class="footer-links">
+      <a href={`mailto:${profile.email}`}>{profile.email}</a>
+      <a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href={profile.resume} download>下载简历 PDF</a>
+    </div>
   </div>
-  <div class="inline opacity-75">
-    Developed by <a href="https://github.com/Xuzheee" target="_blank" class="font-bold">Xuzhe Huang</a>
-  </div>
+  <p class="footer-name" aria-hidden="true">Xuzheee</p>
+  <div class="footer-bottom"><span>© {today.getFullYear()} {profile.name}</span><a href="#main-content">回到顶部</a></div>
 </footer>

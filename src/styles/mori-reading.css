@@ -1,0 +1,255 @@
+/* Comfortable desktop reading scale. Keeps Mori's content and visual identity. */
+:root {
+  --reading-width: 1200px;
+  --reading-title: clamp(42px, 4.2vw, 64px);
+  --reading-head: clamp(27px, 2.3vw, 34px);
+  --reading-body: 18px;
+}
+.m-header {
+  height: 72px;
+  max-width: 1400px;
+  margin: 22px auto 36px;
+  width: calc(100% - 64px);
+  padding: 0 26px;
+  border-radius: 16px;
+  background: var(--panel);
+  gap: 26px;
+}
+.m-logo { margin-right: auto; font-size: 23px; }
+.m-header nav { gap: 0; }
+.m-header nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 0;
+}
+.m-header nav a + a::before {
+  content: '/';
+  margin: 0 22px;
+  color: #9a958d;
+  font-size: 24px;
+  font-weight: 400;
+}
+.m-header nav a::after { content: none; }
+.m-header nav a[aria-current], .m-header nav a:hover { color: var(--red); }
+.m-header-contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 46px;
+  padding: 10px 18px;
+  border: 2px solid var(--ink);
+  border-bottom: 5px solid var(--red);
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  transition: color .2s, background .2s;
+}
+.m-header-contact:hover { background: var(--red); color: var(--paper); }
+.m-hero h1 span, .m-biography strong { text-decoration: none; }
+.m-direct-links, .m-experience-row, .m-small-footer { border: 0; }
+.m-sleeve-cover, .m-record-cover, .m-hotspot::before, .m-workflow-step>span { }
+.m-button, .m-circle, .m-view-bubble { background: #ce3c2b; }
+.m-workflow-step>span, .m-workflow.is-detailed .m-workflow-step>span { }
+
+@media (min-width: 901px) {
+  .mori-site main {
+    width: calc(100% - 112px);
+    max-width: var(--reading-width);
+    margin-inline: auto;
+  }
+  .m-scene { min-height: 0; padding: 88px 0; }
+  .m-scene .m-display { font-size: var(--reading-title); line-height: 1.12; letter-spacing: -.035em; }
+  .m-subtitle, .m-archive .m-subtitle, .m-offscreen .m-subtitle { font-size: 20px; line-height: 1.6; }
+  .m-button { font-size: 17px; min-height: 48px; padding: 13px 24px; gap: 24px; }
+  .m-link { font-size: 16px; gap: 16px; }
+
+  .m-hero {
+    height: clamp(560px, 76svh, 700px);
+    min-height: 0;
+    padding: 0;
+    overflow: visible;
+  }
+  .m-hero-photo {
+    left: 54%; right: auto; top: 16px;
+    width: 46%; height: calc(100% - 50px);
+  }
+  .m-hero-intro { top: 44px; left: 0; max-width: 52%; }
+  .m-hero h1 { font-size: clamp(34px, 3.1vw, 46px); line-height: 1.35; letter-spacing: -.04em; font-weight: 800; }
+  .m-hero-intro p { font-size: 19px; line-height: 1.8; font-weight: 500; margin-top: 26px; letter-spacing: 0; }
+  .m-hero-cta { left: 0; top: 292px; width: auto; }
+  .m-hero-name { left: -4px; bottom: 54px; font-size: clamp(144px, 12vw, 180px); transform: none; }
+  .m-hero-scroll { left: 0; bottom: 8px; font-size: 15px; gap: 12px; }
+
+  .m-hub { padding-top: 104px; }
+  .m-hub .m-subtitle { margin-top: 22px; }
+  .m-model-stage { min-height: 380px; margin-top: 32px; }
+  .m-model-stage>img { width: 76%; left: 12%; }
+  .m-hotspot strong { font-size: 20px; }
+  .m-hotspot small { font-size: 15px; }
+  .m-model-note { font-size: 14px; margin: 28px 0 12px; }
+  .m-direct-links { padding: 20px 0 0; gap: 32px; }
+  .m-direct-links .m-link { font-size: 16px; }
+
+  .m-home-work { grid-template-columns: minmax(0, 1.48fr) minmax(0, 1fr); gap: 64px; }
+  .m-home-work .m-subtitle { margin: 20px 0 30px; }
+  .m-desk { margin-top: 0; }
+  .m-project-caption { display: block; padding-top: 24px; }
+  .m-project-caption h3 { font-size: var(--reading-head); }
+  .m-project-caption p { font-size: 16px; line-height: 1.7; }
+  .m-project-caption-link { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+  .m-home-work-side { padding-top: 6px; }
+  .m-home-work-side h3 { font-size: 28px; margin-top: 22px; }
+  .m-home-work-side h4 { font-size: 18px; line-height: 1.6; margin: 7px 0; }
+  .m-home-work-side p { font-size: 16px; }
+  .m-home-work-side article+article { margin-top: 40px; }
+  .m-home-work-side article:nth-child(2)>p { max-width: none; }
+  .m-jury-link { position: static; display: inline-flex; margin-top: 16px; font-size: 16px; }
+  .m-all-work { margin-top: 30px; font-size: 16px; }
+  .m-workflow { height: 200px; }
+  .m-workflow-steps { padding: 12px; gap: 6px; }
+  .m-workflow-step>span { padding: 15px 8px; font-size: 12px; }
+  .m-workflow-step>.m-arrow { font-size: 18px; }
+  .m-jury-image { height: 200px; }
+  .m-workflow figcaption { font-size: 12px; }
+
+  .m-favorites { width: calc(100% + 80px); margin: 40px -40px; padding: 68px 40px; }
+  .m-favorites-grid { margin-top: 44px; grid-template-columns: 60% 40%; }
+  .m-favorites h3 { font-size: 23px; }
+  .m-sleeves { height: 320px; margin-top: 32px; }
+  .m-sleeve strong { font-size: 20px; }
+  .m-favorite-games { padding-left: 50px; }
+  .m-favorite-games>a { font-size: 26px; margin-top: 30px; }
+  .m-favorites-bottom { margin-top: 32px; font-size: 16px; }
+  .m-offscreen { grid-template-columns: 44% 46%; gap: 10%; align-items: center; }
+  .m-offscreen .m-display { font-size: 76px; }
+  .m-offscreen .m-subtitle { margin: 24px 0 32px; white-space: normal; }
+  .m-offscreen-left figure img { height: 280px; }
+  .m-offscreen-coast img { height: 580px; }
+  .m-offscreen figcaption { font-size: 15px; }
+  .m-contact { padding-top: 100px; padding-bottom: 36px; }
+  .m-contact-intro { font-size: 23px; line-height: 1.7; font-weight: 500; margin-top: 28px; }
+  .m-contact .m-email { font-size: clamp(38px, 5.4vw, 76px); transform: none; margin-top: 40px; }
+  .m-contact-actions { font-size: 17px; margin-top: 24px; }
+  .m-contact-actions .m-circle { width: 44px; height: 44px; }
+  .m-footer { margin-top: 72px; }
+  .m-footer-name { font-size: 190px; transform: none; margin-left: -3px; }
+  .m-footer nav { font-size: 16px; gap: 25px; padding-bottom: 8px; }
+
+  .m-about { grid-template-columns: 56% 36%; gap: 48px 8%; padding-top: 28px; }
+  .m-about .m-display { font-size: 76px; }
+  .m-biography { font-size: 20px; line-height: 1.85; margin-top: 34px; letter-spacing: 0; }
+  .m-biography p+p { margin-top: 20px; }
+  .m-about-photo { height: 470px; }
+  .m-education { margin: 0; padding: 30px 36px; }
+  .m-education>h2 { font-size: 16px; }
+  .m-education-route { margin: 26px 0 12px; }
+  .m-education h3 { font-size: 28px; }
+  .m-education p { font-size: 19px; }
+  .m-education>.m-link { font-size: 15px; }
+  .m-experience-row { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); padding: 36px 0; gap: 48px; }
+  .m-experience-row h3 { font-size: 40px; }
+  .m-experience-row h4 { font-size: 23px; }
+  .m-experience-description { font-size: 18px; line-height: 1.8; }
+  .m-experience-label { font-size: 15px; }
+  .m-experience-flow { font-size: clamp(24px, 2.3vw, 32px); gap: 16px; }
+  .m-experience-flow .m-arrow { width: 32px; }
+  .m-labeltool { height: auto; object-fit: contain; }
+  .m-about-contact { padding-top: 44px; }
+  .m-about-contact h2 { font-size: 38px; }
+  .m-about-contact button { font-size: 30px; }
+  .m-about-contact>div>a, .m-about-contact .m-resume>a { font-size: 17px; }
+
+  .m-featured { grid-template-columns: 19% 81%; padding-top: 30px; }
+  .m-works-index .m-display { width: auto; transform: none; font-size: 62px; margin-top: 0; }
+  .m-works-index>p { font-size: 17px; line-height: 1.8; margin-top: 22px; }
+  .m-works-index nav { font-size: 16px; gap: 18px; margin-top: 34px; }
+  .m-featured-rows { padding-left: 34px; }
+  .m-featured-row { grid-template-columns: 43% 57%; min-height: 230px; margin-bottom: 64px; }
+  .m-featured-copy { padding-right: 26px; }
+  .m-featured-copy h2, .m-featured-row:first-child h2 { font-size: 28px; white-space: normal; line-height: 1.35; }
+  .m-featured-copy h3 { font-size: 21px; line-height: 1.5; }
+  .m-project-label { font-size: 14px; margin-top: 12px; }
+  .m-project-question, .m-project-description { font-size: 16px; line-height: 1.75; }
+  .m-featured-copy>a { font-size: 16px; margin-top: 20px; }
+  .m-featured-media { height: 230px; align-self: center; }
+  .m-featured-row:nth-child(2) .m-featured-media { height: auto; aspect-ratio: 3; }
+  .m-urai-media { height: auto; aspect-ratio: 2.5; }
+  .m-workflow.is-detailed .m-workflow-step>span { font-size: 13px; padding: 14px 6px; }
+  .m-workflow.is-detailed .m-workflow-step>.m-arrow { font-size: 12px; }
+  .m-workflow.is-detailed .m-workflow-steps { gap: 4px; padding: 8px; }
+  .m-archive .m-subtitle { margin-top: 20px; }
+  .m-archive-columns { margin-top: 48px; gap: 8%; grid-template-columns: 54% 38%; }
+  .m-archive-column>h3 { font-size: 23px; margin-bottom: 22px; }
+  .m-archive-entry { min-height: 110px; padding-block: 22px; }
+  .m-archive-entry h4 { font-size: 23px; }
+  .m-archive-entry p { font-size: 16px; line-height: 1.75; }
+  .m-view-options { font-size: 17px; gap: 24px; }
+
+  .m-games { padding-top: 28px; }
+  .m-games .m-subtitle { font-size: 20px; font-weight: 500; margin-top: 20px; }
+  .m-game-stage { margin-top: 42px; height: 310px; }
+  .m-game-titles { margin-top: 26px; }
+  .m-game-titles strong { font-size: 18px; }
+  .m-game-titles span { font-size: 14px; }
+  .m-game-controls { font-size: 16px; margin-top: 32px; }
+  .m-music-body { margin-top: 44px; }
+  .m-album-list strong { font-size: 24px; }
+  .m-album-list small { font-size: 17px; }
+  .m-music-bottom h3 { font-size: 36px; }
+  .m-music-bottom p { font-size: 20px; }
+  .m-music .m-section-top>span, .m-music-bottom .m-link { font-size: 17px; }
+  .m-music-bottom { margin-top: 32px; }
+  .m-life .m-display { font-size: var(--reading-title); }
+  .m-life-bottom>p { font-size: 22px; line-height: 1.7; }
+  .m-small-footer { padding: 36px 0; font-size: 16px; }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .m-header { width: calc(100% - 40px); padding-inline: 20px; gap: 18px; margin-top: 18px; }
+  .m-header nav a { font-size: 14px; }
+  .m-header nav a + a::before { margin-inline: 12px; font-size: 20px; }
+  .m-header-contact { font-size: 14px; padding-inline: 12px; gap: 8px; }
+  .m-logo { font-size: 21px; }
+  .m-hero { height: 680px; min-height: 0; }
+  .m-hero-name { font-size: min(20vw, 160px); bottom: 50px; }
+  .m-hero-scroll { bottom: 15px; }
+  .m-home-work-side p, .m-project-caption p { font-size: 14px; }
+  .m-home-work-side h4 { font-size: 16px; }
+  .m-home-work-side h3 { font-size: 24px; }
+  .m-scene .m-display { font-size: clamp(40px, 7vw, 64px); }
+  .m-workflow-step>span { font-size: 12px; padding: 12px 6px; }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .m-featured { display: block; }
+  .m-works-index { position: static; display: flex; align-items: center; gap: 32px; margin-bottom: 44px; }
+  .m-works-index>p { margin-top: 0; }
+  .m-works-index nav { margin-top: 0; margin-left: auto; font-size: 14px; }
+  .m-featured-rows { padding-left: 0; }
+  .m-home-work { gap: 36px; }
+  .m-workflow-steps { gap: 3px; padding: 8px; }
+  .m-workflow-step>span { font-size: 11px; padding-inline: 5px; }
+  .m-workflow-step>.m-arrow { font-size: 14px; }
+  .m-favorite-games { padding-left: 24px; }
+  .m-favorite-games>a { font-size: 21px; }
+  .m-education h3 { font-size: 23px; }
+}
+@media (max-width: 600px) {
+  .m-header { width: calc(100% - 32px); height: auto; min-height: 110px; margin: 16px auto 22px; padding: 13px 16px 7px; display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; border-radius: 14px; }
+  .m-logo { font-size: 21px; }
+  .m-header-contact { grid-column: 2; grid-row: 1; min-height: 40px; font-size: 13px; padding: 7px 12px; gap: 8px; border-bottom-width: 4px; }
+  .m-header nav { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; }
+  .m-header nav a { font-size: 13px; min-height: 42px; }
+  .m-header nav a + a::before { margin-right: 17px; margin-left: 0; font-size: 18px; }
+  .m-hero { min-height: 0; padding-top: 18px; }
+  .m-hero h1 { font-size: 28px; font-weight: 800; }
+  .m-hero-intro p { font-weight: 500; line-height: 1.8; }
+  .m-hero-photo { height: 320px; }
+  .m-hero-name { font-size: 33vw; }
+  .m-scene .m-display { font-size: clamp(40px, 12vw, 54px); }
+  .m-offscreen .m-display { font-size: 64px; }
+  .m-hotspot small, .m-model-note { font-size: 13px; }
+}

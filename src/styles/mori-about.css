@@ -1,0 +1,75 @@
+.mori-site main.m-about-page { width:min(1264px,calc(100% - 112px)); max-width:1264px; margin-inline:auto; --about-badge-height:clamp(520px,calc(100svh - 338px),720px); }
+.m-about-page .m-about { display:grid; grid-template-columns:58% 38%; gap:4%; align-items:start; min-height:0; padding:48px 0 24px; }
+.m-about-eyebrow { color:var(--red); font-size:22px; font-weight:700; margin-bottom:16px; }
+.m-about-greeting { font-size:clamp(60px,9.1svh,96px); font-weight:900; letter-spacing:-.045em; line-height:1.05; }
+.m-about-greeting span { display:block; color:var(--red); font-family:Anton,sans-serif; font-size:clamp(144px,20svh,212px); font-weight:400; letter-spacing:-.025em; line-height:1.02; margin-top:4px; }
+.m-about-name { font-size:40px; font-weight:800; line-height:1.3; margin-top:2px; }
+.m-about-page .m-biography { font-size:24px; line-height:1.7; margin-top:36px; letter-spacing:0; max-width:740px; }
+.m-about-page .m-biography p+p { margin-top:32px; }
+.m-about-education { display:grid; grid-template-columns:190px 1fr; gap:48px; padding:26px 0 28px; border-top:1px solid #29282528; }
+.m-about-education>h2 { color:var(--red); font-size:20px; font-weight:700; }
+.m-about-schools { display:grid; grid-template-columns:1fr 1.55fr; gap:0; margin:0; }
+.m-about-schools article+article { border-left:1px solid #29282528; padding-left:clamp(28px,5vw,76px); }
+.m-school-period { color:var(--muted); font-size:18px; font-variant-numeric:tabular-nums; margin-top:7px; }
+.m-about-schools h3 { font-size:28px; font-weight:800; line-height:1.4; }
+.m-school-degree { font-size:20px; line-height:1.6; margin-top:8px; }
+body:has(.m-about-page) .m-header-contact { box-shadow:none; border-bottom:2px solid var(--ink); }
+.m-about-page .m-about-education>.m-link { font-size:16px; }
+@media(max-width:900px) {
+  .m-about-education { display:block; }
+  .mori-site main.m-about-page { width:calc(100% - 40px); margin-inline:auto; }
+  .m-about-page .m-about { grid-template-columns:1fr; gap:12px; min-height:0; padding:24px 0 40px; }
+  .m-about-greeting { font-size:56px; }
+  .m-about-greeting span { font-size:154px; }
+  .m-about-name { font-size:28px; }
+  .m-about-page .m-biography { font-size:18px; margin-top:28px; }
+  .m-about-schools { gap:30px; }
+  .m-about-schools article+article { padding-left:24px; }
+}
+@media(min-width:901px) and (max-height:860px) {
+  .mori-site main.m-about-page { --about-badge-height:470px; --about-badge-offset:-40px; }
+  .m-about-page .m-about { padding:14px 0 24px; }
+  .m-about-eyebrow { margin-bottom:12px; font-size:16px; }
+  .m-about-greeting { font-size:52px; }
+  .m-about-greeting span { font-size:130px; }
+  .m-about-name { font-size:26px; }
+  .m-about-page .m-biography { font-size:17px; margin-top:20px; }
+  .m-about-page .m-biography p+p { margin-top:16px; }
+  .m-about-education { padding-block:22px; }
+  .m-about-schools h3 { font-size:23px; }
+  .m-about-education { grid-template-columns:150px 1fr; gap:32px; }
+  .m-school-degree { font-size:17px; }
+  .m-school-period { font-size:15px; }
+}
+@media(min-width:901px) and (min-height:861px) and (max-height:1000px) {
+  .mori-site main.m-about-page { --about-badge-height:clamp(490px,calc(100svh - 368px),582px); --about-badge-offset:-40px; }
+  .m-about-page .m-about { padding:24px 0; }
+  .m-about-eyebrow { font-size:18px; margin-bottom:14px; }
+  .m-about-greeting { font-size:70px; }
+  .m-about-greeting span { font-size:164px; }
+  .m-about-name { font-size:32px; }
+  .m-about-page .m-biography { font-size:20px; margin-top:24px; }
+  .m-about-page .m-biography p+p { margin-top:24px; }
+  .m-about-schools h3 { font-size:26px; }
+  .m-school-degree { font-size:18px; }
+  .m-school-period { font-size:16px; }
+}
+@media(max-width:600px) {
+  .m-about-greeting { font-size:46px; }
+  .m-about-greeting span { font-size:130px; }
+  .m-about-eyebrow { font-size:15px; margin-bottom:16px; }
+  .m-about-page .m-biography { font-size:17px; line-height:1.85; }
+  .m-about-education { padding:32px 0 42px; }
+  .m-about-schools { grid-template-columns:1fr; gap:32px; margin:28px 0; }
+  .m-about-schools h3 { font-size:24px; }
+  .m-about-schools article+article { border-left:0; padding-left:0; }
+  .m-school-degree { font-size:17px; }
+}
+@media(min-width:901px) and (max-height:740px) {
+  .mori-site main.m-about-page { --about-badge-height:410px; }
+  .m-about-page .m-about { padding:8px 0 14px; }
+  .m-about-greeting { font-size:48px; }
+  .m-about-greeting span { font-size:120px; }
+  .m-about-page .m-biography { margin-top:16px; }
+  .m-about-page .m-biography p+p { margin-top:12px; }
+}

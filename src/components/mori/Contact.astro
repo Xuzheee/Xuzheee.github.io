@@ -1,0 +1,13 @@
+---
+import Arrow from './Arrow.astro';
+import { profile } from '../../data/portfolio';
+---
+<section class="m-contact m-scene" id="contact" aria-labelledby="contact-heading">
+  <div class="m-contact-heading">
+    <h2 class="m-display" id="contact-heading">保持联系</h2>
+    <p class="m-contact-intro">如果你也喜欢游戏、音乐，<br />或正在做一个有意思的东西，欢迎聊聊。</p>
+  </div>
+  <button class="m-email" data-copy={profile.email} aria-label={`复制邮箱 ${profile.email}`}>{profile.email}</button>
+  <div class="m-contact-actions"><div><button class="m-copy-email" data-copy={profile.email}>复制邮箱</button><a href={`mailto:${profile.email}`} class="m-send-email">发送邮件 <Arrow direction="diagonal" /></a></div><a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub / Xuzheee <Arrow direction="diagonal" /></a></div>
+  <footer class="m-footer"><div class="m-footer-name" aria-hidden="true">MORI</div><nav aria-label="页脚导航"><div><a href="/projects/">作品</a><a href="/interests/">兴趣爱好</a><a href="/about/">关于我</a></div><a href="#top">回到顶部 <Arrow direction="up" /></a></nav></footer>
+</section>

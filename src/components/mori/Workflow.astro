@@ -1,0 +1,10 @@
+---
+import Arrow from './Arrow.astro';
+const { detailed = false } = Astro.props;
+const steps = detailed ? ['玩家行为','分层策略','AI 生成','客服审核','效果反馈'] : ['用户分层','AI 建议','客服审核','效果反馈'];
+---
+<figure class:list={['m-workflow',{'is-detailed':detailed}]} aria-label={`流程示意：${steps.join('，')}`}>
+  <img src="/hobbies/hike4.jpg" alt="" loading="lazy" />
+  <div class="m-workflow-steps">{steps.map((step,index) => <div class="m-workflow-step"><span class:list={[{'is-accent':detailed && index===2}]}>{step}</span>{index !== steps.length-1 && <Arrow />}</div>)}</div>
+  <figcaption>流程示意</figcaption>
+</figure>

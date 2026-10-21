@@ -13,12 +13,22 @@ const ids = (html) => [...html.matchAll(/data-project-id="([^"]+)"/g)].map((matc
 const home = await read('index.html');
 const overview = await read('projects/index.html');
 const cv = await read('cv/index.html');
+const about = await read('about/index.html');
+const interests = await read('interests/index.html');
 const featured = ['netease-ai-workflow', 'inky-paper', 'urai-lab'];
-assert.deepEqual(ids(home), featured, 'Home must have exactly the three selected cases, in order');
+assert.deepEqual(ids(home), ['inky-paper', 'netease-ai-workflow', 'seven-angry-man'], 'Home follows the approved personal-site selection');
 assert(!/HV Deep Research|横纵分析|hv-deep-research/i.test(home), 'HV must not appear anywhere on home');
-assert.equal([...home.matchAll(/<section\b/g)].length, 6, 'Preserve the six original home sections');
+assert.equal([...home.matchAll(/<section\b/g)].length, 7, 'Home includes the approved skills chapter after selected work');
 const headings = [...home.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/g)].map((match) => plain(match[1]));
-assert.deepEqual(headings.filter((text) => ['精选项目', '实践经历', '能力结构', '最新文章'].includes(text)), ['精选项目', '实践经历', '能力结构', '最新文章']);
+assert.deepEqual(headings, ['从这里出发', '作品与探索', '我掌握的 技能', '最近喜欢', '屏幕 之外', '保持联系']);
+const hero = home.match(/<section[^>]*class="m-hero[\s\S]*?<\/section>/)?.[0];
+assert(hero && !/教育|硕士|大学/.test(plain(hero)), 'Education belongs in About, not the home hero');
+assert(['社会学法学学士', '计算社会科学（统计学）理学硕士', '2021.9', '2025.7', '2025.9', '2027.7'].every(text => about.includes(text)), 'Preserve the approved degrees and education dates');
+assert(about.includes('研究经历') && about.includes('研究助理'), 'URAI must remain research experience');
+for (const html of [home, about, overview, interests]) {
+  for (const href of ['/', '/about/', '/projects/', '/interests/']) assert(html.includes(`href="${href}"`), `Missing primary route ${href}`);
+  assert(!html.includes('href="#"'), 'No placeholder links');
+}
 
 const originalProjects = ['hv-deep-research', 'seven-angry-man', 'inky-app', 'cookie-cats', 'steam-analytics', 'xiamen-12345', 'urai-lab', 'rural-governance', 'irrigation-research', 'anti-emo'];
 const overviewIds = ids(overview);
@@ -28,12 +38,12 @@ assert.equal(overviewIds.length, 13, 'Retain existing projects and add GeoPin');
 assert(overviewIds.includes('geopin'), 'GeoPin must appear in the overview');
 assert(overview.includes('#小程序://集钉/hLldIW6f0oJWevh'), 'Keep the supplied mini-program token');
 assert(!overview.includes('href="#小程序:'), 'Mini-program token is not a browser URL');
-for (const [label, html] of [['home', home], ['overview', overview], ['CV', cv]]) {
+for (const [label, html] of [['CV', cv]]) {
   assert(plain(html).includes('10,000+'), `${label}: missing consistent Xiamen count`);
   assert(!/\b1000\+/.test(plain(html)), `${label}: outdated Xiamen count`);
   assert(!html.includes('href="#"'), `${label}: placeholder link`);
 }
-for (const html of [home, cv]) {
+for (const html of [cv]) {
   assert(plain(html).includes('2025.10 - 2026.05'), 'URAI end date must match resume');
   assert(plain(html).includes('2026.06 - 2026.08'), 'Netease dates must match resume');
 }
@@ -77,4 +87,4 @@ for (const file of (await walk(dist)).filter((file) => file.endsWith('.html'))) 
 const hash = (data) => createHash('sha256').update(data).digest('hex');
 assert.equal(hash(await readFile(join(root, 'public/resume.pdf'))), hash(await readFile(join(dist, 'resume.pdf'))), 'Built resume must equal the source PDF');
 assert((await read('rss.xml')).includes('<rss'), 'RSS should contain a feed');
-console.log(`CONTENT_CHECK_PASS: 3 featured cases, 13 projects, 7 sections per case, shared facts, PDF integrity, RSS, ${checkedLinks} internal resources.`);
+console.log(`CONTENT_CHECK_PASS: 4 primary pages, 7 home sections, 13 projects, preserved existing cases and shared facts, PDF integrity, RSS, ${checkedLinks} internal resources.`);

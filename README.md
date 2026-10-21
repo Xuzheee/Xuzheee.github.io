@@ -21,6 +21,19 @@ npm run build
 - `src/components/`：页面组件
 - `src/content/blog/`：博客文章内容
 - `public/`：静态资源
+- `skills/`：项目内下载的 Taste Skill 与 Redesign Skill，来源与使用说明见 [Skill 说明](skills/README.md)。
+
+## 预览与发布
+
+网站通过 GitHub Actions 发布到 https://xuzheee.github.io/，推送到 `main` 分支后自动构建并部署。
+
+```powershell
+npm run build
+npm run check:content
+npm run preview -- --host 127.0.0.1 --port 4323
+```
+
+打开 `http://127.0.0.1:4323/`。视觉方向、改动边界及验证记录见 [预览说明](docs/taste-preview.md)。
 
 ## 内容维护
 

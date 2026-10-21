@@ -1,5 +1,6 @@
 ---
 title: "告别键盘侠时代：深度解析“氛围编程（Vibe Coding）”的艺术与科学"
+shortTitle: "氛围编程的艺术与科学"
 description: "从 Andrej Karpathy 提出的 Vibe Coding 概念出发，系统梳理其核心原理、工作流、案例、优势与挑战。"
 pubDate: "Apr 8 2026"
 tags: ["AI", "vibe-coding", "software-development"]

@@ -24,3 +24,7 @@ pnpm-debug.log*
 # Local preview verification artifacts
 .playwright-cli/
 output/playwright/
+
+# Local design exports and temporary files
+/output/
+/tmp/

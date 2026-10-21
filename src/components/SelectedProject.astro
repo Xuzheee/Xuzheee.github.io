@@ -1,0 +1,39 @@
+---
+import { projectUrl, type Project } from "../data/portfolio";
+interface Props { project: Project }
+const { project } = Astro.props;
+const titleParts = project.title.split('：');
+---
+<article class:list={["selected-project", `selected-project--${project.id}`]} data-project-id={project.id}>
+  <div class="project-visual" data-enter>
+    {project.id === 'inky-paper' ? (
+      <div class="interface-preview">
+        <p class="visual-caption">实际应用界面 · 可切换查看</p>
+        <fieldset class="preview-switch">
+          <legend class="sr-only">选择 Inky Paper 界面预览</legend>
+          <label><input type="radio" name="inky-preview" value="workbench" checked /><span>工作台</span></label>
+          <label><input type="radio" name="inky-preview" value="tasks" /><span>任务清单</span></label>
+        </fieldset>
+        <div class="preview-images">
+          <img class="preview-workbench" src={project.img} alt="Inky Paper 工作台：每日记录和按需对话" width="2160" height="1350" loading="lazy" data-picture />
+          <img class="preview-tasks" src="/inky-paper-tasks.png" alt="Inky Paper 纸面任务与番茄钟" width="1200" height="900" loading="lazy" />
+        </div>
+      </div>
+    ) : project.id === 'netease-ai-workflow' ? (
+      <div class="workflow-visual" role="img" aria-label="工作流示意：用户理解、策略生成、客服执行、效果反馈，非内部平台截图">
+        <p>让业务经验<br />成为可执行的策略</p>
+        <span class="visual-caption">流程示意，非内部平台截图</span>
+        <ol><li>用户理解<span>标签与行为</span></li><li>策略生成<span>Prompt 与 Schema</span></li><li>客服执行<span>核对与沟通</span></li><li>效果反馈<span>回复与转化</span></li></ol>
+      </div>
+    ) : (
+      <figure><figcaption class="visual-caption">LabelTool · 多模态标注与复核</figcaption><img src={project.img} alt="LabelTool：灾害图像、结构化字段与关系标注界面" width="2465" height="1370" loading="lazy" data-picture /></figure>
+    )}
+  </div>
+  <div class="project-story">
+    <h3 data-enter>{titleParts[0]}</h3>
+    <p class="project-subtitle" data-enter>{titleParts.slice(1).join('：')}</p>
+    <p data-enter>{project.description}</p>
+    <dl data-enter><div><dt>我的职责</dt><dd>{project.role}</dd></div><div><dt>成果</dt><dd>{project.result}</dd></div></dl>
+    <a class="text-link" href={projectUrl(project)} data-enter>阅读完整案例</a>
+  </div>
+</article>

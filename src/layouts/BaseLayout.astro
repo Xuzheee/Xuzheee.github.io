@@ -2,53 +2,38 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import SideBar from "../components/SideBar.astro";
 import { ViewTransitions } from "astro:transitions";
-
 import { SITE_TITLE, SITE_DESCRIPTION, TRANSITION_API } from "../config";
-
-const {
-  image,
-  title = SITE_TITLE,
-  description = SITE_DESCRIPTION,
-  includeSidebar = true,
-  sideBarActiveItemID,
-  ogType,
-} = Astro.props;
+const { image, title = SITE_TITLE, description = SITE_DESCRIPTION, sideBarActiveItemID, ogType, wide = false } = Astro.props;
 ---
-
 <!doctype html>
-<html lang="zh-CN" data-theme="lofi">
+<html lang="zh-CN" data-theme="portfolio">
   <head>
-    <BaseHead title={title} description={description} image={image} , ogType={ogType} />
+    <BaseHead title={title} description={description} image={image} ogType={ogType} />
     {TRANSITION_API && <ViewTransitions />}
   </head>
   <body>
-    <div class="bg-base-100 drawer lg:drawer-open">
-      <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content bg-base-100">
-        <Header title={SITE_TITLE} />
-        <div class="md:flex md:justify-center">
-          <main class="p-6 pt-10 lg:max-w-[900px] max-w-[100vw]">
-            <slot />
-          </main>
-        </div>
-        <Footer />
-      </div>
-      {includeSidebar && <SideBar sideBarActiveItemID={sideBarActiveItemID} />}
-    </div>
-    <script is:inline>
-      document.addEventListener("pointermove", (event) => {
-        for (const card of document.querySelectorAll(".glow-card")) {
-          const rect = card.getBoundingClientRect();
-          const x = event.clientX - rect.left;
-          const y = event.clientY - rect.top;
-          if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
-            card.style.setProperty("--glow-x", `${x}px`);
-            card.style.setProperty("--glow-y", `${y}px`);
+    <a class="skip-link" href="#main-content">跳到正文</a>
+    <Header active={sideBarActiveItemID} />
+    <main id="main-content" tabindex="-1" class:list={["site-main", { "site-main--wide": wide }]}>
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      function revealContent() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const observer = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            const el = entry.target as HTMLElement;
+            el.classList.add('has-entered');
+            observer.unobserve(el);
           }
-        }
-      });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('[data-enter], [data-picture]').forEach(el => observer.observe(el));
+        document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
+      }
+      document.addEventListener('astro:page-load', revealContent);
     </script>
   </body>
 </html>

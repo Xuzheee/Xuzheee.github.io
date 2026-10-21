@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Counter-Strike 2",
+    "page": "https://store.steampowered.com/app/730/",
+    "asset": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/162664aa5da85f418105350c5d67ca565f6c3713/header_2x.jpg?t=1791824795",
+    "file": "cs2.jpg"
+  },
+  {
+    "name": "Persona 5 Royal",
+    "page": "https://store.steampowered.com/app/1687950/",
+    "asset": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1687950/capsule_616x353.jpg",
+    "file": "persona5.jpg"
+  },
+  {
+    "name": "Cyberpunk 2077",
+    "page": "https://store.steampowered.com/app/1091500/",
+    "asset": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/e9047d8ec47ae3d94bb8b464fb0fc9e9972b4ac7/header_2x.jpg?t=1784714077",
+    "file": "cyberpunk.jpg"
+  },
+  {
+    "name": "asen",
+    "page": "https://music.apple.com/us/album/%E5%9C%A8%E9%9B%A8%E5%90%8E%E9%86%92%E6%9D%A5/1845141403",
+    "asset": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/db/0f/8f/db0f8fe2-6fb4-888c-211b-8bda9cd0b3b2/cover.jpg/1200x1200bb.jpg",
+    "file": "asen.jpg"
+  },
+  {
+    "name": "bully",
+    "page": "https://music.apple.com/us/album/bully/1888707282",
+    "asset": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/4b/38/d1/4b38d146-381d-ace2-73df-24074576e62b/656465138828_cover.jpg/1200x1200bb.jpg",
+    "file": "bully.jpg"
+  },
+  {
+    "name": "lsc",
+    "page": "https://www.jvcmusic.co.jp/-/Discography/A024903/VICL-64617.html",
+    "asset": "https://www.jvcmusic.co.jp/img/sns/processed/jackets/VICL-64617.jpg?_c=init",
+    "file": "lsc.jpg"
+  }
+]

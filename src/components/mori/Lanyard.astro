@@ -1,0 +1,45 @@
+---
+import { profile } from '../../data/portfolio';
+---
+<figure class="m-lanyard" data-lanyard data-email={profile.email} aria-label="Mori 的互动挂绳名牌">
+  <div class="m-lanyard-stage" data-lanyard-stage data-side="front" aria-label="拖动名牌让它摆动，点击名牌翻面">
+    <div class="m-lanyard-fallback" aria-hidden="true">
+      <div class="m-lanyard-ribbon">MORI</div>
+      <div class="m-lanyard-card">
+        <strong>MORI</strong><h2>杨黄旭哲</h2>
+        <p class="m-lanyard-interests">游戏 · 音乐 · AI 实验</p>
+        <div><img src="/mori/portrait-selected.png" alt="" width="1254" height="1254" /></div>
+        <p class="m-lanyard-contact"><img src="/mori/icons/mail.svg" alt="" />{profile.email}</p>
+        <p class="m-lanyard-contact"><img src="/mori/icons/github.svg" alt="" />GitHub / Xuzheee</p>
+      </div>
+    </div>
+  </div>
+  <span class="m-lanyard-status" role="status" aria-live="polite"></span>
+</figure>
+<noscript><style>
+  [data-lanyard-stage] .m-lanyard-fallback { visibility:visible!important; }
+  [data-lanyard-stage] { height:auto!important; overflow:visible!important; }
+</style></noscript>
+<script>import '../../scripts/mori-lanyard';</script>
+<style>
+  .m-lanyard { width:100%; min-width:0; margin:var(--about-badge-offset,-70px) 0 0; align-self:start; }
+  .m-lanyard-stage { width:100%; height:var(--about-badge-height, 680px); position:relative; overflow:hidden; }
+  .m-lanyard-stage :global(canvas) { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  .m-lanyard-status { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+  .m-lanyard-fallback { width:68%; margin:0 auto; visibility:hidden; }
+  .m-lanyard-ribbon { height:90px; width:24px; margin:0 auto; background:var(--red); color:var(--paper); font:700 11px/24px sans-serif; writing-mode:vertical-rl; text-align:center; }
+  .m-lanyard-card { color:var(--ink); background:#e9e2d4; padding:28px 24px; border-radius:12px; aspect-ratio:1.6/2.25; box-shadow:0 10px 20px #29282518; }
+  .m-lanyard-card small { font-size:13px; }
+  .m-lanyard-card strong { display:block; color:var(--red); font-family:Arial,sans-serif; font-weight:900; font-size:48px; line-height:1.2; }
+  .m-lanyard-card h2 { font-size:20px; }
+  .m-lanyard-card>div { display:flex; align-items:center; gap:12px; margin:25px 0; }
+  .m-lanyard-card>div p { font-size:15px; flex:1; }
+  .m-lanyard-card img { width:100%; aspect-ratio:1; height:auto; border-radius:8px; object-fit:cover; object-position:center 22%; }
+  .m-lanyard-card>p { font-size:11px; margin:8px 0 0; overflow-wrap:anywhere; }
+  .m-lanyard-contact { display:flex; align-items:center; gap:9px; }
+  .m-lanyard-contact img { width:18px; height:18px; border-radius:0; }
+  .m-lanyard-stage[data-fallback="true"] { height:auto; overflow:visible; }
+  .m-lanyard-stage[data-fallback="true"] .m-lanyard-fallback { visibility:visible; }
+  @media(max-width:900px) { .m-lanyard { max-width:480px; margin:32px auto 0; } .m-lanyard-stage { height:620px; } }
+  @media(max-width:600px) { .m-lanyard-stage { height:540px; } }
+</style>

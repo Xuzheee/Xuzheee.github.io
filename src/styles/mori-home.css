@@ -1,0 +1,307 @@
+/* Homepage composition: the original two-line greeting above the MORI / mech overlap. */
+@font-face {
+  font-family: Switzer;
+  src: url('/fonts/switzer-500.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: Switzer;
+  src: url('/fonts/switzer-600.woff2') format('woff2');
+  font-weight: 600;
+  font-display: swap;
+}
+.m-home {
+  --home-title: clamp(40px, 4.2vw, 58px);
+  --home-body: 17px;
+  --home-caption: 14px;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+}
+.m-home .m-hero {
+  height: clamp(660px, calc(100svh - 166px), 720px);
+  min-height: 0;
+  padding: 0;
+  overflow: visible;
+}
+.m-home .m-hero-intro {
+  top: 44px;
+  left: 0;
+  max-width: 49%;
+  z-index: 3;
+}
+.m-home .m-hero h1 {
+  font-size: clamp(34px, 3.1vw, 46px);
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: -.035em;
+  color: var(--red);
+}
+.m-home .m-hero h1 span { text-decoration: none; }
+.m-home .m-hero-intro p {
+  margin-top: 22px;
+  font-size: clamp(20px, 1.6vw, 23px);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -.025em;
+  white-space: nowrap;
+}
+.m-home .m-hero-cta {
+  position: static;
+  width: auto;
+  min-height: 48px;
+  margin-top: 28px;
+  padding: 13px 24px;
+  gap: 28px;
+  font-size: 16px;
+  font-weight: 500;
+}
+.m-home .m-hero .m-mech {
+  top: 12px;
+  right: 0;
+  height: calc(100% - 64px);
+  max-width: 48%;
+}
+.m-home .m-hero-name {
+  left: -8px;
+  bottom: 40px;
+  z-index: 2;
+  font-size: clamp(280px, 31vw, 380px);
+  line-height: 1;
+  letter-spacing: -.035em;
+  transform: scaleX(1.12);
+  transform-origin: left bottom;
+}
+.m-home .m-hero-scroll {
+  left: 0;
+  bottom: 0;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--home-caption);
+  font-weight: 400;
+}
+.m-home .m-scene .m-display {
+  font-size: var(--home-title);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -.025em;
+}
+.m-home .m-subtitle {
+  font-size: var(--home-body);
+  font-weight: 400;
+  line-height: 1.75;
+  letter-spacing: 0;
+}
+.m-home .m-project-caption h3, .m-home .m-home-work-side h3 {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -.02em;
+}
+.m-home .m-project-caption p, .m-home .m-home-work-side p {
+  font-size: var(--home-body);
+  font-weight: 400;
+  line-height: 1.75;
+}
+.m-home .m-home-work-side h4 { font-size: 18px; font-weight: 500; line-height: 1.6; }
+.m-home .m-workflow figcaption { font-size: 13px; }
+.m-home .m-favorites h3 { font-size: 20px; font-weight: 500; }
+.m-home .m-sleeve strong { font-size: 20px; font-weight: 500; }
+.m-home .m-favorite-games>a { font-weight: 500; letter-spacing: -.025em; }
+.m-home .m-contact-intro { font-size: 20px; line-height: 1.75; font-weight: 400; }
+.m-home .m-contact .m-email { font-weight: 500; letter-spacing: -.04em; }
+
+@media (min-width: 901px) {
+  .m-home { --home-space: clamp(36px, 6svh, 72px); }
+  .m-home .m-scene:not(.m-hero) { padding-block: var(--home-space); }
+  .m-home .m-hub .m-subtitle { margin-top: 16px; }
+  .m-home .m-model-stage { min-height: 240px; margin-top: 24px; }
+  .m-home .m-model-stage>img { width: 84%; left: 8%; opacity: .7; }
+  .m-home .m-hotspot { padding: 18px 0; }
+  .m-home .m-hotspot strong { font-size: 18px; font-weight: 600; }
+  .m-home .m-hotspot small { font-size: var(--home-caption); line-height: 1.6; }
+  .m-home .m-hotspot-about { top: 18%; }
+  .m-home .m-hotspot-work { top: 12%; }
+  .m-home .m-hotspot-life { bottom: 10%; }
+  .m-home .m-model-note { margin: 20px 0 0; }
+  .m-home .m-direct-links { padding-top: 24px; }
+
+  .m-home .m-home-work {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    align-content: center;
+    gap: 24px clamp(36px, 4.5vw, 64px);
+  }
+  .m-home-work-heading { grid-column: 1 / -1; }
+  .m-home .m-home-work .m-subtitle { margin: 16px 0 0; }
+  .m-home .m-home-work-main { align-self: center; }
+  .m-home .m-desk {
+    max-width: calc(clamp(220px, calc(100svh - 350px), 420px) * 1.54);
+    margin-top: 0;
+  }
+  .m-home .m-home-work-side { align-self: center; padding: 0; }
+  .m-home .m-home-work-side article+article { margin-top: 24px; }
+  .m-home .m-home-work-side h3 { margin-top: 14px; }
+  .m-home .m-home-work-side h4 { margin: 4px 0; }
+  .m-home .m-home-work-side p { font-size: 16px; line-height: 1.6; }
+  .m-home .m-workflow, .m-home .m-jury-image { height: clamp(100px, calc(22svh - 60px), 160px); }
+  .m-home .m-project-caption { padding-top: 20px; }
+  .m-home .m-project-caption p { max-width: 30em; }
+  .m-home .m-project-caption-link { margin-top: 16px; gap: 24px; }
+  .m-home .m-project-caption-link p { margin: 0; }
+  .m-home .m-project-caption-link .m-link { margin-top: 0; }
+  .m-home .m-jury-link { float: none; margin-top: 10px; }
+  .m-home .m-all-work { grid-column: 1 / -1; justify-self: end; float: none; margin: 0; }
+
+  .m-home .m-favorites { margin-block: 0; }
+  .m-home .m-section-top { align-items: baseline; }
+  .m-home .m-section-top>span { font-size: var(--home-body); padding-bottom: 0; }
+  .m-home .m-favorites-grid {
+    grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+    gap: clamp(40px, 5vw, 72px);
+    align-items: center;
+    margin-block: 40px;
+  }
+  .m-home .m-favorite-games { padding-left: 0; }
+  .m-home .m-sleeves { height: clamp(280px, 37svh, 380px); margin-top: 32px; }
+  .m-home .m-sleeve strong { font-size: 18px; }
+  .m-home .m-favorite-games>a { font-size: 28px; line-height: 1.3; }
+  .m-home .m-favorites-bottom { margin-top: 0; }
+
+  .m-home .m-offscreen { grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); gap: 9%; align-items: center; }
+  .m-home .m-offscreen .m-display { font-size: clamp(64px, 8.5svh, 96px); }
+  .m-home .m-offscreen .m-subtitle { margin: 24px 0; }
+  .m-home .m-offscreen-left figure img { height: clamp(180px, 29svh, 320px); }
+  .m-home .m-offscreen-coast img { height: clamp(420px, 70svh, 760px); }
+
+  .m-home .m-contact { display: flex; flex-direction: column; }
+  .m-home .m-contact-intro { margin-top: 24px; }
+  .m-home .m-contact .m-email { align-self: flex-start; margin-top: clamp(28px, 5svh, 60px); font-size: clamp(52px, 6.6vw, 92px); }
+  .m-home .m-contact-actions { margin-top: 20px; }
+  .m-home .m-footer { margin-top: auto; padding-top: 40px; }
+  .m-home .m-footer-name { font-size: clamp(180px, 30svh, 340px); }
+  .m-home .m-footer nav { padding-bottom: 12px; }
+}
+@media (max-width: 900px) {
+  .m-home .m-hero {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    padding: 20px var(--gutter) 28px;
+  }
+  .m-home .m-hero-intro { position: static; max-width: none; }
+  .m-home .m-hero h1 { font-size: clamp(30px, 5vw, 42px); }
+  .m-home .m-hero-intro p { margin-top: 18px; font-size: 20px; }
+  .m-home .m-hero-cta { margin-top: 24px; }
+  .m-home .m-hero .m-mech {
+    position: relative;
+    inset: auto;
+    order: 3;
+    align-self: flex-end;
+    width: 90%;
+    max-width: 440px;
+    height: auto;
+    margin-top: 24px;
+  }
+  .m-home .m-hero-name {
+    position: relative;
+    inset: auto;
+    align-self: flex-start;
+    order: 4;
+    margin-top: -96px;
+    margin-left: -3px;
+    font-size: clamp(160px, 46vw, 240px);
+    transform: none;
+  }
+  .m-home .m-hero-scroll { position: static; order: 5; margin-top: 16px; align-self: flex-start; }
+  .m-home .m-subtitle { font-size: 16px; }
+  .m-home .m-home-work-side p, .m-home .m-project-caption p { font-size: 16px; }
+  .m-home .m-home-work-heading { grid-column: 1 / -1; }
+  .m-home .m-all-work { grid-column: 1 / -1; justify-self: end; float: none; margin-top: 0; }
+  .m-home .m-scene:not(.m-hero) { padding-block: 56px; }
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .m-home .m-home-work { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; padding-inline: var(--gutter); }
+  .m-home .m-home-work .m-subtitle { margin: 16px 0 0; }
+  .m-home .m-home-work-main { align-self: start; }
+  .m-home .m-desk { margin-top: 0; }
+  .m-home .m-project-caption-link { flex-wrap: wrap; gap: 12px; }
+  .m-home .m-home-work-side article+article { margin-top: 36px; }
+  .m-home .m-home-work-side article:nth-child(2)>p { max-width: none; }
+  .m-home .m-jury-link { position: static; float: none; margin-top: 14px; }
+  .m-home .m-workflow { height: 160px; }
+  .m-home .m-workflow-steps { flex-wrap: wrap; gap: 8px; padding: 16px; }
+  .m-home .m-workflow-step>span { font-size: 13px; padding: 10px 6px; }
+  .m-home .m-view-bubble { font-size: 13px; }
+  .m-home .m-favorites-grid { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 32px; }
+  .m-home .m-favorite-games { padding-left: 0; }
+  .m-home .m-favorite-games>a { font-size: 22px; white-space: normal; }
+  .m-home .m-offscreen { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; }
+  .m-home .m-offscreen .m-subtitle { white-space: normal; }
+  .m-home .m-contact .m-email { transform: none; font-size: 8.3vw; }
+}
+@media (max-width: 600px) {
+  .m-home { --home-title: 40px; }
+  .m-home .m-hero { padding-top: 14px; }
+  .m-home .m-hero h1 { font-size: 30px; letter-spacing: -.025em; }
+  .m-home .m-hero-intro p { font-size: 19px; }
+  .m-home .m-hero-cta { min-height: 44px; padding: 12px 22px; }
+  .m-home .m-project-caption h3, .m-home .m-home-work-side h3 { font-size: 26px; }
+  .m-home .m-home-work-side article+article { margin-top: 40px; }
+  .m-home .m-offscreen .m-display { font-size: 56px; }
+  .m-home .m-contact-intro { font-size: 18px; }
+  .m-home .m-contact-actions { font-size: 15px; }
+  .m-home .m-home-work-heading { margin-bottom: 28px; }
+  .m-home .m-home-work .m-subtitle { margin-bottom: 0; }
+  .m-home .m-all-work { margin-top: 28px; }
+  .m-home .m-model-stage { min-height: 300px; }
+}
+@media (min-width: 901px) and (max-height: 820px) {
+  .m-home .m-hero-intro { top: 20px; }
+  .m-home .m-hero h1 { font-size: 36px; }
+  .m-home .m-hero-intro p { margin-top: 18px; font-size: 20px; }
+  .m-home .m-hero-cta { margin-top: 24px; }
+}
+
+/* Paging is an enhancement, enabled only by the homepage script on desktop. */
+html.m-home-paging {
+  scroll-behavior: auto;
+  scroll-padding-top: 0;
+}
+html.m-home-paging .m-header { margin-bottom: 16px; }
+html.m-home-paging .m-home > .m-scene {
+  min-height: 100svh;
+  margin-block: 0;
+}
+html.m-home-paging .m-home > .m-hero {
+  height: max(500px, var(--home-first-screen-height));
+  min-height: 0;
+}
+@media (min-width: 901px) {
+  .m-home .m-hero-intro { top: clamp(20px, 4svh, 44px); }
+  .m-home .m-hero-name { font-size: clamp(220px, min(31vw, 42svh), 380px); bottom: 60px; }
+  .m-home .m-hero-scroll { bottom: 16px; }
+  .m-home .m-hero .m-mech { height: calc(100% - 84px); top: 8px; }
+}
+@media (min-width: 901px) and (max-height: 820px) {
+  .m-home { --home-title: 44px; --home-space: 32px; }
+  .m-home .m-hero h1 { font-size: 32px; }
+  .m-home .m-hero-intro p { margin-top: 14px; }
+  .m-home .m-hero-cta { margin-top: 18px; }
+  .m-home .m-hero-name { font-size: min(26vw, 35svh); }
+  .m-home .m-home-work { row-gap: 18px; }
+  .m-home .m-home-work-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 32px; }
+  .m-home .m-home-work .m-subtitle { margin: 0; }
+  .m-home .m-desk { max-width: calc(clamp(220px, calc(100svh - 390px), 420px) * 1.54); }
+  .m-home .m-project-caption { padding-top: 16px; }
+  .m-home .m-project-caption-link { margin-top: 12px; }
+  .m-home .m-home-work-side article+article { margin-top: 18px; }
+  .m-home .m-home-work-side h3 { font-size: 24px; margin-top: 10px; }
+  .m-home .m-home-work-side h4 { font-size: 16px; }
+  .m-home .m-sleeves { height: 280px; }
+  .m-home .m-favorites-grid { margin-block: 28px; }
+  .m-home .m-contact-intro { margin-top: 18px; }
+  .m-home .m-footer { padding-top: 28px; }
+}

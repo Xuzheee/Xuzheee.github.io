@@ -1,0 +1,29 @@
+---
+import recordPlayerSource from '../../assets/record-player.html?raw';
+import '../../styles/mori-record-player.css';
+interface Track { id: string; title: string; artist: string; url: string; previewUrl: string }
+interface Props { albums: Track[] }
+const { albums } = Astro.props;
+let playerDocument = recordPlayerSource;
+for (const track of albums) {
+  playerDocument = playerDocument.replaceAll(`music/${track.id}.mp3`, track.previewUrl);
+}
+// The supplied player keeps the user's requested controls; connect audio and fit its height.
+const integration = `<style>
+html,body{height:auto;min-height:0}
+:root{--paper:#f6f4ee}
+body{background-color:var(--paper);background-image:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style><script>
+const reportHeight = () => parent.postMessage({type:'mori-record-player-height',height:Math.ceil(document.body.getBoundingClientRect().height)}, '*');
+new ResizeObserver(reportHeight).observe(document.body);
+addEventListener('load', reportHeight);
+addEventListener('pagehide', () => { if(typeof stopAudio === 'function') stopAudio(); });
+<\/script>`;
+playerDocument = playerDocument.replace('</body>', `${integration}</body>`);
+---
+<div class="m-turntable" data-record-player>
+  <iframe data-player-frame title="listen with me：Blue、黑白、Closed on Sunday" srcdoc={playerDocument} sandbox="allow-scripts" allow="autoplay" loading="lazy" height="760"></iframe>
+  <noscript><p>启用 JavaScript 后可使用唱片机，也可以直接听：{albums.map(track => <a href={track.url} target="_blank" rel="noopener noreferrer">{track.title} · {track.artist}　</a>)}</p></noscript>
+</div>
+<script>import '../../scripts/record-player';</script>

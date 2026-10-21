@@ -1,0 +1,138 @@
+<div class="m-mech" data-mech>
+  <svg class="m-mech-filter" aria-hidden="true" width="0" height="0">
+    <defs>
+      <filter id="mech-paper-key" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 -12.5 0 8.25" result="keyed" />
+        <feComposite in="keyed" in2="SourceAlpha" operator="in" />
+      </filter>
+    </defs>
+  </svg>
+  <picture class="m-mech-still">
+    <source media="(prefers-reduced-motion: reduce)" srcset="/mori/mech/mori-mech-boot-online.png" />
+    <img src="/mori/mech/mori-mech-boot-poster.png" alt="朱红与米白配色的 Mori 机甲" width="1080" height="1350" fetchpriority="high" />
+  </picture>
+  <video class="m-mech-video" muted loop playsinline preload="none" poster="/mori/mech/mori-mech-boot-poster.png" aria-hidden="true">
+    <source data-src="/mori/mech/mori-mech-boot.webm" type="video/webm" />
+    <source data-src="/mori/mech/mori-mech-boot.mp4" type="video/mp4" />
+  </video>
+  <button class="m-mech-toggle" type="button" hidden>播放动画</button>
+</div>
+
+<style>
+  .m-mech {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: calc(100% - 40px);
+    aspect-ratio: 4 / 5;
+    max-width: 48%;
+  }
+  .m-mech-filter { position: absolute; pointer-events: none; }
+  .m-mech-still, .m-mech-still img, .m-mech-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .m-mech-still img, .m-mech-video { filter: url('#mech-paper-key'); }
+  .m-mech-video { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+  .m-mech.is-playing .m-mech-video { opacity: 1; }
+  .m-mech.is-playing .m-mech-still { visibility: hidden; }
+  .m-mech-toggle {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    min-height: 44px;
+    padding: 10px 18px;
+    border-radius: 100px;
+    color: var(--paper);
+    background: var(--ink);
+    font-size: 14px;
+  }
+  .m-mech-toggle:hover { background: #ce3c2b; }
+  @media (max-width: 900px) {
+    .m-mech {
+      position: relative;
+      inset: auto;
+      order: 3;
+      align-self: center;
+      width: 100%;
+      max-width: 480px;
+      height: auto;
+      margin-top: 32px;
+    }
+    .m-mech-toggle { top: 16px; bottom: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .m-mech .m-mech-video, .m-mech-toggle { display: none; }
+  }
+</style>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('[data-mech]');
+  if (stage) {
+    const video = stage.querySelector<HTMLVideoElement>('video')!;
+    const toggle = stage.querySelector<HTMLButtonElement>('button')!;
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    let hovered = false;
+    let userPlaying = false;
+    let userPaused = false;
+    let inView = false;
+    let failed = false;
+
+    const syncPlayback = () => {
+      const shouldPlay = (hovered || userPlaying) && !reducedMotion.matches && !userPaused && inView && !document.hidden && !failed;
+      if (shouldPlay) {
+        if (!video.querySelector('source[src]')) {
+          video.querySelectorAll<HTMLSourceElement>('source').forEach(source => { source.src = source.dataset.src!; });
+          video.load();
+        }
+        void video.play().catch(() => { toggle.hidden = false; toggle.textContent = '播放动画'; });
+      } else {
+        video.pause();
+        stage.classList.remove('is-playing');
+        toggle.textContent = '播放动画';
+      }
+      toggle.hidden = reducedMotion.matches || failed;
+    };
+    video.addEventListener('playing', () => {
+      stage.classList.add('is-playing');
+      toggle.hidden = false;
+      toggle.textContent = '暂停动画';
+    });
+    video.addEventListener('pause', () => {
+      stage.classList.remove('is-playing');
+      toggle.textContent = '播放动画';
+    });
+    video.addEventListener('error', () => {
+      failed = true;
+      stage.classList.remove('is-playing');
+      toggle.hidden = true;
+    });
+    stage.addEventListener('pointerenter', event => {
+      if (event.pointerType !== 'mouse') return;
+      hovered = true;
+      userPaused = false;
+      if (video.readyState > 0) video.currentTime = 0;
+      syncPlayback();
+    });
+    stage.addEventListener('pointerleave', event => {
+      if (event.pointerType !== 'mouse') return;
+      hovered = false;
+      userPlaying = false;
+      userPaused = false;
+      syncPlayback();
+    });
+    toggle.addEventListener('click', () => {
+      userPaused = !video.paused;
+      userPlaying = !userPaused;
+      syncPlayback();
+    });
+    reducedMotion.addEventListener('change', syncPlayback);
+    document.addEventListener('visibilitychange', syncPlayback);
+    new IntersectionObserver(entries => {
+      inView = entries[0].isIntersecting;
+      syncPlayback();
+    }, { threshold: 0.05 }).observe(stage);
+  }
+</script>

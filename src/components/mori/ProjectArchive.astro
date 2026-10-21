@@ -1,0 +1,28 @@
+---
+import Arrow from './Arrow.astro';
+import { getProject } from '../../data/portfolio';
+const columns = [
+ {title:'工具与实验', entries:[
+  ['inky-paper','Inky Paper','独立设计与开发 · 已交付应用','任务规划、专注执行与复盘'],
+  ['geopin','集钉','合作开发：产品设计、开发与测试','任务发布与采集双角色流程'],
+  ['seven-angry-man','多智能体陪审团','探索原型','角色、讨论与论据变化'],
+  ['hv-deep-research','HV Deep Research','研究流程、证据整理与报告生成',''],
+  ['anti-emo','Anti Emo','合作开发的游戏原型',''],
+ ]},
+ {title:'分析与研究', entries:[
+  ['steam-analytics','Steam 游戏市场分析','市场热度、玩家口碑与运营建议',''],
+  ['xiamen-12345','厦门 12345 文本分析','用户反馈归类与标签体系',''],
+  ['rural-governance','农村治理满意度研究','问卷、访谈与定量分析',''],
+  ['irrigation-research','节水灌溉社会服务研究','田野调研与政策接受度',''],
+  ['inky-app','FocusFlow / Inky','早期专注助手',''],
+ ]},
+];
+const entries=columns.flatMap(c=>c.entries.map(e=>getProject(e[0])));
+---
+<section class="m-archive m-scene" id="archive" aria-labelledby="archive-title" data-archive>
+  <div class="m-archive-head"><div><h2 class="m-display" id="archive-title">继续探索</h2><p class="m-subtitle">工具、实验与更多经历</p></div><div class="m-view-options" aria-label="作品展示方式"><button data-archive-view="browse" aria-pressed="false">浏览</button><button data-archive-view="directory" aria-pressed="true">目录</button></div></div>
+  <div class="m-archive-columns">{columns.map((col,idx)=><div class="m-archive-column" id={idx===0?'tools':'research'}><h3>{col.title}</h3>{col.entries.map(([id,title,desc,note])=>{const project=getProject(id);const url=project.hasCase?`/projects/${id}/`:project.links?.[0]?.url;return <article class="m-archive-entry" id={id} data-project-id={id} data-preview={project.img && project.img!=='/post_img.webp'?project.img:'/project-inky-paper.png'}><div class="m-archive-entry-copy"><h4>{url?<a href={url} target={url.startsWith('http')?'_blank':undefined} rel={url.startsWith('http')?'noopener noreferrer':undefined}>{title}</a>:<button data-project-open={id}>{title}</button>}</h4><p>{desc}{note&&<><br />{note}</>}</p></div>{url?<a class="m-archive-arrow" href={url} target={url.startsWith('http')?'_blank':undefined} rel={url.startsWith('http')?'noopener noreferrer':undefined} aria-label={`查看 ${title}`}><Arrow direction="diagonal" /></a>:<button class="m-archive-arrow" data-project-open={id} aria-label={`查看 ${title}`}><Arrow direction="diagonal" /></button>}{project.img && project.img!=='/post_img.webp'&&<img class="m-browse-image" src={project.img} alt={`${title} 项目截图`} loading="lazy" />}</article>})}</div>)}</div>
+  <img class="m-archive-preview" src="/project-inky-paper.png" alt="Inky Paper 项目预览" loading="lazy" />
+</section>
+<dialog class="m-project-dialog" aria-labelledby="project-dialog-title"><button class="m-dialog-close" data-project-close aria-label="关闭项目介绍">关闭</button><div data-project-content></div></dialog>
+<script type="application/json" id="m-project-data" set:html={JSON.stringify(entries).replace(/</g,'\\u003c')} />

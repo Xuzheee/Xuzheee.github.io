@@ -1,0 +1,5 @@
+---
+const { direction = 'right', class: className = '' } = Astro.props;
+const rotation = { right: 0, down: 90, left: 180, up: -90, diagonal: -45 }[direction] ?? 0;
+---
+<svg class:list={['m-arrow', className]} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style={`transform:rotate(${rotation}deg)`}><path d="M4 12h16M13 5l7 7-7 7" /></svg>
