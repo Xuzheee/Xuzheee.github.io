@@ -1,7 +1,7 @@
 // Progressive desktop paging; the document remains the only scroll container.
 const home = document.querySelector<HTMLElement>('.m-home');
 if (home) {
-  const sections = [...home.querySelectorAll<HTMLElement>(':scope > section.m-scene')];
+  const sections = [...document.querySelectorAll<HTMLElement>('.m-home > section.m-scene, .m-home-site > .m-site-closing')];
   const desktop = matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const root = document.documentElement;
@@ -27,7 +27,8 @@ if (home) {
   };
   const ranges = () => sections.map((section, index) => {
     const box = section.getBoundingClientRect();
-    const start = index === 0 ? 0 : box.top + scrollY;
+    // The compact shared footer can start below the last reachable scroll position.
+    const start = index === 0 ? 0 : Math.min(box.top + scrollY, Math.max(0, root.scrollHeight - innerHeight));
     return { start, end: Math.max(start, box.bottom + scrollY - innerHeight) };
   });
   const scrollToPage = (position: number) => {

@@ -11,7 +11,7 @@ export const profile = {
   website: "xuzheee.github.io",
   github: "https://github.com/Xuzheee",
   resume: "/resume.pdf",
-  resumeSyncedAt: "2026-09-16",
+  resumeSyncedAt: "2026-10-23",
 };
 
 export const facts = {

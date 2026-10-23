@@ -1,0 +1,27 @@
+---
+import bookshelfSource from '../../assets/bookshelf.html?raw';
+const integration = `<style>
+html,body{height:auto;min-height:0}
+body{background-color:#f6f4ee;background-image:none}
+header,.made-with,.actions,.stats{display:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style><script>
+document.documentElement.style.setProperty('--paper','#f6f4ee');
+const reportBookshelfHeight = () => parent.postMessage({type:'mori-bookshelf-height',height:Math.ceil(document.body.getBoundingClientRect().height)}, '*');
+new ResizeObserver(reportBookshelfHeight).observe(document.body);
+addEventListener('load', reportBookshelfHeight);
+addEventListener('message', event => { if(event.source === parent && event.data?.type === 'mori-bookshelf-measure') reportBookshelfHeight(); });
+<\/script>`;
+const bookshelfDocument = bookshelfSource.replace('</body>', `${integration}</body>`);
+---
+<div class="m-bookshelf" data-bookshelf>
+  <iframe data-bookshelf-frame title="互动小书架：选书、翻阅、推荐与整理" srcdoc={bookshelfDocument} sandbox="allow-scripts" loading="lazy" height="760"></iframe>
+  <noscript><p>启用 JavaScript 后可抽出书本、翻阅和整理书架。</p></noscript>
+</div>
+<script>import '../../scripts/bookshelf';</script>
+<style>
+  .m-bookshelf { width: 100%; margin: 36px auto 0; }
+  .m-bookshelf iframe { display: block; width: 100%; border: 0; }
+  .m-bookshelf noscript p { padding-top: 20px; font-size: 16px; }
+  @media (max-width: 600px) { .m-bookshelf { margin-top: 24px; } }
+</style>

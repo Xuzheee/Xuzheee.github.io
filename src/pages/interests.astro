@@ -2,9 +2,10 @@
 import MoriLayout from '../layouts/MoriLayout.astro';
 import Arrow from '../components/mori/Arrow.astro';
 import RecordPlayer from '../components/mori/RecordPlayer.astro';
+import Bookshelf from '../components/mori/Bookshelf.astro';
 import {albums,recordTracks,games,photos} from '../data/mori';
 ---
-<MoriLayout title="兴趣爱好 · Mori" active="interests">
+<MoriLayout title="兴趣爱好 · Mori" active="interests" pageClass="m-interests">
  <section class="m-games m-scene" id="games" aria-labelledby="games-title" data-games>
   <h1 class="m-display" id="games-title">喜欢的游戏</h1><p class="m-subtitle">我喜欢在游戏和电影里体验不同的故事。</p>
   <div class="m-game-stage" tabindex="0" role="region" aria-label="游戏画廊，使用左右方向键切换" data-game-stage>
@@ -22,7 +23,10 @@ import {albums,recordTracks,games,photos} from '../data/mori';
   <div class="m-section-top"><h2 class="m-display" id="record-player-title">listen with me</h2></div>
   <RecordPlayer albums={recordTracks} />
  </section>
+ <section class="m-scene" id="bookshelf" aria-labelledby="bookshelf-title">
+  <div class="m-section-top"><h2 class="m-display" id="bookshelf-title">一起来看</h2></div>
+  <Bookshelf />
+ </section>
  <section class="m-life m-scene" id="life" aria-labelledby="life-title"><div class="m-photo-grid">{photos.map((photo,i)=><figure><button data-photo={i} aria-label={`放大查看${photo.title}照片`}><img src={photo.src} alt={photo.alt} loading="lazy" /><span class="m-photo-open"><span class="m-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v18M3 12h18" /></svg></span>点击照片查看</span></button><figcaption>{photo.title}</figcaption></figure>)}</div><div class="m-life-bottom"><h2 class="m-display" id="life-title">篮球与徒步</h2><p>屏幕之外，我喜欢打篮球、<br />去徒步。</p></div></section>
- <footer class="m-small-footer"><a href="/about/">关于我 <Arrow direction="diagonal" /></a><a href="/#contact">保持联系 <Arrow /></a><a href="#top">回到顶部 <Arrow direction="up" /></a></footer>
  <dialog class="m-lightbox" aria-label="生活照片查看器"><div class="m-lightbox-head"><span data-photo-caption>球场</span><button data-photo-close aria-label="关闭照片">关闭 <span aria-hidden="true">Esc</span></button></div><img data-photo-full src={photos[0].src} alt={photos[0].alt} /><div class="m-lightbox-controls"><button data-photo-prev aria-label="上一张照片"><Arrow direction="left" /></button><span data-photo-counter>1 / 3</span><button data-photo-next aria-label="下一张照片"><Arrow /></button></div></dialog>
 </MoriLayout>

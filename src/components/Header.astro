@@ -1,5 +1,4 @@
 ---
-import { profile } from "../data/portfolio";
 const { active } = Astro.props;
 const current = active ?? Astro.url.pathname.split('/').filter(Boolean)[0] ?? 'home';
 const links = [
@@ -14,5 +13,5 @@ const links = [
   <nav aria-label="主导航">
     {links.map(link => <a href={link.href} aria-current={current === link.id ? 'page' : undefined}>{link.label}</a>)}
   </nav>
-  <a class="header-contact" href={`mailto:${profile.email}`}>联系我</a>
+  <a class="header-contact" href="#contact">联系我</a>
 </header>

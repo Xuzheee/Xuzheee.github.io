@@ -1,6 +1,7 @@
 ---
 import '../styles/mori.css';
 import '../styles/mori-reading.css';
+import SiteFooter from '../components/mori/SiteFooter.astro';
 import Arrow from '../components/mori/Arrow.astro';
 const { title = 'Mori · 杨黄旭哲', active = 'home', pageClass = '', description = '喜欢游戏、音乐、电影，也喜欢和 AI 伙伴一起动手做点东西。这里是 Mori 的个人网站。' } = Astro.props;
 const navigation = [{id:'home',href:'/',name:'首页'},{id:'about',href:'/about/',name:'关于我'},{id:'projects',href:'/projects/',name:'作品'},{id:'interests',href:'/interests/',name:'兴趣爱好'}];
@@ -23,9 +24,10 @@ const navigation = [{id:'home',href:'/',name:'首页'},{id:'about',href:'/about/
     <header class="m-header" id="top">
       <a class="m-logo" href="/" aria-label="Mori 首页">Mori</a>
       <nav aria-label="主导航">{navigation.map(item => <a href={item.href} aria-label={item.name} aria-current={active === item.id ? 'page' : undefined}>{item.name}</a>)}</nav>
-      <a class="m-header-contact" href="/#contact">联系我 <Arrow direction="diagonal" /></a>
+      <a class="m-header-contact" href="#contact" lang="en">LET’S TALK <Arrow direction="diagonal" /></a>
     </header>
     <main id="main" class={pageClass} tabindex="-1"><slot /></main>
+    <SiteFooter />
     <div class="m-toast" role="status" aria-live="polite"></div>
     <script>import '../scripts/mori';</script>
   </body>

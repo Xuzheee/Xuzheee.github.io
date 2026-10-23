@@ -1,4 +1,4 @@
-.mori-site main.m-about-page { width:min(1264px,calc(100% - 112px)); max-width:1264px; margin-inline:auto; --about-badge-height:clamp(520px,calc(100svh - 338px),720px); }
+.mori-site main.m-about-page { width:calc(100% - 2 * var(--page-gutter)); max-width:var(--reading-width); margin-inline:auto; --about-badge-height:clamp(520px,calc(100svh - 338px),720px); }
 .m-about-page .m-about { display:grid; grid-template-columns:58% 38%; gap:4%; align-items:start; min-height:0; padding:48px 0 24px; }
 .m-about-eyebrow { color:var(--red); font-size:22px; font-weight:700; margin-bottom:16px; }
 .m-about-greeting { font-size:clamp(60px,9.1svh,96px); font-weight:900; letter-spacing:-.045em; line-height:1.05; }
@@ -13,11 +13,9 @@
 .m-school-period { color:var(--muted); font-size:18px; font-variant-numeric:tabular-nums; margin-top:7px; }
 .m-about-schools h3 { font-size:28px; font-weight:800; line-height:1.4; }
 .m-school-degree { font-size:20px; line-height:1.6; margin-top:8px; }
-body:has(.m-about-page) .m-header-contact { box-shadow:none; border-bottom:2px solid var(--ink); }
 .m-about-page .m-about-education>.m-link { font-size:16px; }
 @media(max-width:900px) {
   .m-about-education { display:block; }
-  .mori-site main.m-about-page { width:calc(100% - 40px); margin-inline:auto; }
   .m-about-page .m-about { grid-template-columns:1fr; gap:12px; min-height:0; padding:24px 0 40px; }
   .m-about-greeting { font-size:56px; }
   .m-about-greeting span { font-size:154px; }
@@ -72,4 +70,79 @@ body:has(.m-about-page) .m-header-contact { box-shadow:none; border-bottom:2px s
   .m-about-greeting span { font-size:120px; }
   .m-about-page .m-biography { margin-top:16px; }
   .m-about-page .m-biography p+p { margin-top:12px; }
+}
+
+/* Practice spread follows the supplied reference; all rules stay on About. */
+.m-about-practice { padding-block: 72px 0; }
+.m-about-practice > h2 { margin-bottom: 28px; color: var(--red); font-size: clamp(44px, 6.6vw, 80px); font-weight: 900; line-height: 1.15; letter-spacing: -.045em; }
+.m-practice-entry { display: grid; grid-template-columns: 120px minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px; align-items: start; padding-block: 40px 48px; border-top: 1px solid #29282528; }
+.m-practice-meta { padding-top: 2px; font-size: 14px; line-height: 1.6; }
+.m-practice-meta p { color: #be3827; font-weight: 700; margin-bottom: 6px; }
+.m-practice-meta span { color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; font-size: 13px; }
+.m-practice-copy h3 { font-size: clamp(38px, 4.6vw, 56px); font-weight: 800; line-height: 1.1; letter-spacing: -.045em; }
+.m-practice-copy h4 { margin: 8px 0 0; font-size: 21px; line-height: 1.4; font-weight: 700; }
+.m-practice-summary { margin-top: 12px; font-size: 16px; line-height: 1.8; }
+.m-practice-details { margin: 24px 0 28px; font-size: 15px; line-height: 1.75; }
+.m-practice-details > div { display: grid; grid-template-columns: 126px minmax(0, 1fr); gap: 14px; }
+.m-practice-details > div + div { margin-top: 18px; }
+.m-practice-details dt { position: relative; padding-left: 12px; font-weight: 700; }
+.m-practice-details dt::before { content: ''; position: absolute; left: 0; top: .8em; width: 5px; height: 5px; border-radius: 50%; background: var(--red); }
+.m-practice-details dd { margin: 0; color: #56534e; }
+.m-practice-copy .m-button { font-size: 16px; padding: 12px 24px; min-height: 46px; gap: 24px; }
+.m-practice-workflow { padding: 26px; background: var(--panel); }
+.m-practice-steps { padding: 0; margin: 0; list-style: none; counter-reset: workflow; }
+.m-practice-steps li { counter-increment: workflow; display: flex; align-items: center; gap: 16px; position: relative; min-height: 48px; padding: 10px 16px; background: var(--paper); font-size: 18px; font-weight: 700; }
+.m-practice-steps li::before { content: counter(workflow, decimal-leading-zero); font-family: Anton, sans-serif; font-size: 15px; color: var(--muted); }
+.m-practice-steps li + li { margin-top: 12px; }
+.m-practice-steps li + li::after { content: ''; position: absolute; width: 1px; height: 12px; left: 28px; top: -12px; background: var(--red); }
+.m-practice-steps li.is-accent { background: #ce3c2b; color: var(--paper); }
+.m-practice-steps li.is-accent::before { color: inherit; }
+.m-practice-steps small { margin-left: auto; font-size: 12px; font-weight: 500; }
+.m-practice-results { margin: 24px 0 0; }
+.m-practice-results > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; }
+.m-practice-results > div + div { margin-top: 10px; }
+.m-practice-results dt { font-size: 13px; color: #56534e; }
+.m-practice-results dd { order: -1; margin: 0; font-family: Anton, sans-serif; font-size: 24px; letter-spacing: -.025em; }
+.m-practice-note { font-size: 13px; line-height: 1.7; color: #56534e; margin-top: 18px; }
+.m-practice-tool { margin: 0; }
+.m-practice-tool a { display: flex; align-items: center; min-height: 300px; padding: 18px; background: var(--panel); }
+.m-practice-tool img { width: 100%; height: auto; }
+.m-practice-tool figcaption { margin-top: 12px; color: var(--muted); font-size: 14px; }
+.m-practice-earlier { border-top: 1px solid #29282528; padding-top: 32px; }
+.m-practice-earlier > h3 { font-size: 22px; margin-bottom: 24px; }
+.m-practice-earlier > div { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+.m-practice-earlier article > span { font-size: 14px; color: var(--muted); }
+.m-practice-earlier h4 { font-size: 20px; margin: 10px 0; }
+.m-practice-earlier p { font-size: 16px; line-height: 1.8; max-width: 45ch; }
+@media (min-width: 901px) and (max-width: 1150px) {
+  .m-practice-entry { grid-template-columns: 108px minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; }
+  .m-practice-details { font-size: 14px; }
+  .m-practice-details > div { grid-template-columns: 112px minmax(0, 1fr); gap: 8px; }
+  .m-practice-workflow { padding: 20px; }
+  .m-practice-steps li { padding-inline: 12px; gap: 12px; font-size: 16px; }
+  .m-practice-steps small { white-space: nowrap; font-size: 11px; }
+}
+@media (max-width: 900px) {
+  .m-about-practice { padding-top: 48px; }
+  .m-practice-entry { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px 32px; }
+  .m-practice-meta { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 16px; }
+  .m-practice-meta p { margin: 0; }
+  .m-practice-details > div { display: block; }
+  .m-practice-details dd { margin-top: 6px; padding-left: 12px; }
+  .m-practice-workflow { padding: 18px; }
+  .m-practice-steps li { flex-wrap: wrap; gap: 8px; padding-inline: 12px; font-size: 16px; }
+  .m-practice-steps small { flex-basis: 100%; margin-left: 24px; }
+  .m-practice-tool a { min-height: 240px; padding: 12px; }
+}
+@media (max-width: 600px) {
+  .m-about-practice > h2 { font-size: 44px; margin-bottom: 24px; }
+  .m-practice-entry { grid-template-columns: minmax(0, 1fr); padding-block: 28px 36px; gap: 24px; }
+  .m-practice-meta { grid-column: auto; }
+  .m-practice-copy h3 { font-size: 38px; }
+  .m-practice-copy h4 { font-size: 19px; }
+  .m-practice-details { font-size: 16px; }
+  .m-practice-workflow { padding: 20px; }
+  .m-practice-steps small { flex-basis: auto; margin-left: auto; }
+  .m-practice-earlier > div { grid-template-columns: 1fr; gap: 28px; }
+  .m-practice-tool a { min-height: 0; padding: 14px; }
 }

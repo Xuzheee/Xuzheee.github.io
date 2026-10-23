@@ -1,14 +1,5 @@
 /* Approved opening poster and contact spread; scoped to the homepage. */
-.m-home-site { --bookend-gutter: clamp(20px, 4.4vw, 96px); }
-.m-home-site .m-header {
-  max-width: none;
-  width: auto;
-  margin-inline: var(--bookend-gutter);
-  padding-inline: 0;
-  background: transparent;
-  border-radius: 0;
-}
-.m-home-site .m-header-contact { border-bottom: 2px solid var(--ink); border-radius: 18px; }
+.m-home-site { --bookend-gutter: var(--page-gutter); }
 .m-home .m-hero h1 { color: var(--ink); }
 .m-home .m-contact-heading { display: grid; align-items: center; gap: 32px; }
 .m-home .m-contact .m-display { color: var(--ink); font-weight: 800; letter-spacing: -.045em; }
@@ -45,8 +36,7 @@
 @media (min-width: 901px) {
   /* Keep the four middle chapters on their existing reading grid. */
   .m-home-site main { width: 100%; max-width: none; }
-  .m-home > .m-scene { width: calc(100% - 112px); max-width: 1200px; margin-inline: auto; }
-  .m-home > .m-favorites { width: calc(100% - 32px); max-width: 1280px; }
+  .m-home > .m-scene { width: calc(100% - 2 * var(--page-gutter)); max-width: var(--reading-width); margin-inline: auto; }
   .m-home > .m-hero, .m-home > .m-contact { width: 100%; max-width: none; padding-inline: var(--bookend-gutter); }
 
   .m-home .m-hero {
@@ -142,7 +132,6 @@
   .m-home .m-footer nav { font-size: 16px; padding: 0; gap: 24px; }
 }
 @media (max-width: 600px) {
-  .m-home-site .m-header { margin-inline: 20px; }
   .m-home .m-hero h1 { font-size: clamp(25px, 7.2vw, 34px); }
   .m-home .m-hero-intro p { font-size: 18px; }
   .m-home .m-hero .m-mech { width: 86%; align-self: center; }

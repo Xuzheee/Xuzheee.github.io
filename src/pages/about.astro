@@ -2,7 +2,7 @@
 import MoriLayout from '../layouts/MoriLayout.astro';
 import Arrow from '../components/mori/Arrow.astro';
 import Lanyard from '../components/mori/Lanyard.astro';
-import { profile } from '../data/portfolio';
+import { facts } from '../data/portfolio';
 import '../styles/mori-about.css';
 ---
 <MoriLayout title="关于我 · Mori" active="about" pageClass="m-about-page">
@@ -22,10 +22,47 @@ import '../styles/mori-about.css';
       <article><h3>香港中文大学（深圳）</h3><p class="m-school-degree">计算社会科学（统计学）理学硕士</p><p class="m-school-period"><time datetime="2025-09">2025.9</time>–<time datetime="2027-07">2027.7</time></p></article>
     </div>
   </section>
-  <section class="m-experience m-scene" id="experience" aria-labelledby="experience-title">
-    <h2 class="m-display" id="experience-title">实习与实践</h2>
-    <article class="m-experience-row"><div><p class="m-experience-label">实习经历</p><h3>网易</h3><h4>AI 策略运营</h4><p class="m-experience-description">参与游戏用户分层、AI 辅助触达与效果评估。</p><a class="m-button" href="/projects/#netease-ai-workflow">查看网易案例 <Arrow /></a></div><div class="m-experience-flow" aria-label="用户理解，策略，反馈"><span>用户理解</span><Arrow /><span>策略</span><Arrow /><span>反馈</span></div></article>
-    <article class="m-experience-row"><div><p class="m-experience-label">研究经历</p><h3>URAI Lab</h3><h4>研究助理</h4><p class="m-experience-description">参与多模态数据流程、模型比较与质量评测。</p><a class="m-button" href="/projects/#urai-lab">查看 URAI 案例 <Arrow /></a></div><img class="m-labeltool" src="/project3.png" alt="LabelTool 标注与复核工具真实截图" loading="lazy" /></article>
-    <footer class="m-about-contact"><div><h2>保持联系</h2><button data-copy={profile.email}>{profile.email}</button><a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub / Xuzheee</a></div><div class="m-resume"><a class="m-button" href="/resume.pdf" download="杨黄旭哲_简历.pdf">下载简历 <Arrow /></a><small>现有版本 · 2026.09.16</small></div></footer>
+  <section class="m-about-practice" id="experience" aria-labelledby="experience-title">
+    <h2 id="experience-title">实习与实践</h2>
+    <article class="m-practice-entry" aria-labelledby="netease-title">
+      <div class="m-practice-meta"><p>实习经历</p><span>{facts.netease.period}</span></div>
+      <div class="m-practice-copy">
+        <h3 id="netease-title">网易互娱</h3><h4>AI 策略运营</h4>
+        <p class="m-practice-summary">核心游戏用户分层策略与 AI 辅助触达工作流。</p>
+        <dl class="m-practice-details">
+          <div><dt>用户洞察与策略</dt><dd>面向 {facts.netease.coverage}，基于 RFM 模型与游戏行为标签分层，差异化设计内容推荐、信息量与操作引导。</dd></div>
+          <div><dt>AI 工作流落地</dt><dd>在内部平台配置用户理解、策略生成、内容生成与效果反馈流程，负责字段、Prompt 与策略配置；AI 生成内容，客服审核后发送。</dd></div>
+          <div><dt>效果评估与迭代</dt><dd>围绕 iOS 充值与 CPS 转化，结合上线前后对比、同期 A/B 测试与 Bad Case 复盘，持续优化分层和生成规则。</dd></div>
+        </dl>
+        <a class="m-button" href="/projects/netease-ai-workflow/">查看网易案例 <Arrow /></a>
+      </div>
+      <aside class="m-practice-workflow" aria-label="网易工作流程与整体结果">
+        <ol class="m-practice-steps">
+          <li><span>用户理解</span></li><li><span>策略生成</span></li>
+          <li class="is-accent"><span>内容生成</span><small>AI 生成 · 客服审核</small></li>
+          <li><span>效果反馈</span></li>
+        </ol>
+        <dl class="m-practice-results"><div><dt>48 小时回复率</dt><dd>{facts.netease.replyRate}</dd></div><div><dt>7 天转化率</dt><dd>{facts.netease.conversionRate}</dd></div></dl>
+        <p class="m-practice-note">{facts.netease.comparison}</p>
+      </aside>
+    </article>
+    <article class="m-practice-entry" aria-labelledby="urai-title">
+      <div class="m-practice-meta"><p>研究经历</p><span>{facts.urai.period}</span></div>
+      <div class="m-practice-copy">
+        <h3 id="urai-title">URAI Lab</h3><h4>研究助理</h4>
+        <p class="m-practice-summary">香港中文大学（深圳）城市韧性与人工智能实验室 · 多模态数据流程与 AI 质量评测。</p>
+        <dl class="m-practice-details">
+          <div><dt>AI 效果评测</dt><dd>横向比较 GPT、Qwen、GLM 的灾害图像信息抽取与结构化标注，搭建 Precision / Recall / F1 评测流程，明确自动处理与人工复核的边界。</dd></div>
+          <div><dt>数据流程建设</dt><dd>设计采集、清洗与标注流程，构建 {facts.urai.samples} 新闻及社交媒体多模态样本，并设计结构化输出 Schema。</dd></div>
+          <div><dt>工具落地</dt><dd>独立开发并云端部署 LabelTool 标注 WebApp，让标注与复核在线协作。</dd></div>
+        </dl>
+        <a class="m-button" href="/projects/urai-lab/">查看 URAI 案例 <Arrow /></a>
+      </div>
+      <figure class="m-practice-tool"><a href="/projects/urai-lab/" aria-label="查看 LabelTool 所在的 URAI 案例"><img src="/project3.png" alt="LabelTool 真实界面：左侧灾害图像与右侧结构化标注字段" loading="lazy" /></a><figcaption>LabelTool · 标注与复核工具</figcaption></figure>
+    </article>
+    <section class="m-practice-earlier" aria-labelledby="earlier-title">
+      <h3 id="earlier-title">更早的研究实践</h3>
+      <div><article><span>{facts.irrigation.period}</span><h4>节水灌溉社会服务研究</h4><p>结合 {facts.irrigation.households} 农户调研、访谈与公开数据，理解节水行为和政策激励。</p></article><article><span>{facts.rural.period}</span><h4>农村居民满意度治理指标验证</h4><p>参与 {facts.rural.surveys} 样本问卷与 {facts.rural.interviews} 农户访谈研究，基于回归分析提出指标优化建议。</p></article></div>
+    </section>
   </section>
 </MoriLayout>

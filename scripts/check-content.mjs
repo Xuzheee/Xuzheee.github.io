@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { readFile, stat, readdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { join, resolve } from 'node:path';
+import { join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -18,9 +18,9 @@ const interests = await read('interests/index.html');
 const featured = ['netease-ai-workflow', 'inky-paper', 'urai-lab'];
 assert.deepEqual(ids(home), ['inky-paper', 'netease-ai-workflow', 'seven-angry-man'], 'Home follows the approved personal-site selection');
 assert(!/HV Deep Research|横纵分析|hv-deep-research/i.test(home), 'HV must not appear anywhere on home');
-assert.equal([...home.matchAll(/<section\b/g)].length, 7, 'Home includes the approved skills chapter after selected work');
+assert.equal([...home.matchAll(/<section\b/g)].length, 6, 'Home retains six chapters followed by the shared footer');
 const headings = [...home.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/g)].map((match) => plain(match[1]));
-assert.deepEqual(headings, ['从这里出发', '作品与探索', '我掌握的 技能', '最近喜欢', '屏幕 之外', '保持联系']);
+assert.deepEqual(headings, ['从这里出发', '作品与探索', '我掌握的 技能', '最近喜欢', '屏幕 之外', 'Nice to meet you.']);
 const hero = home.match(/<section[^>]*class="m-hero[\s\S]*?<\/section>/)?.[0];
 assert(hero && !/教育|硕士|大学/.test(plain(hero)), 'Education belongs in About, not the home hero');
 assert(['社会学法学学士', '计算社会科学（统计学）理学硕士', '2021.9', '2025.7', '2025.9', '2027.7'].every(text => about.includes(text)), 'Preserve the approved degrees and education dates');
@@ -51,7 +51,8 @@ for (const html of [cv]) {
 const sections = ['问题与背景', '用户和约束', '我的职责', '方案与关键取舍', '实施与验证', '结果及局限', '下一步'];
 for (const id of featured) {
   const html = await read(`projects/${id}/index.html`);
-  const actual = [...html.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/g)].map((match) => plain(match[1]));
+  const main = html.match(/<main\b[\s\S]*?<\/main>/)?.[0] ?? '';
+  const actual = [...main.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/g)].map((match) => plain(match[1]));
   assert.deepEqual(actual, sections, `${id}: seven case sections required`);
   assert(html.includes(`data-results-for="${id}"`), `${id}: shared results missing`);
 }
@@ -68,6 +69,11 @@ async function walk(directory) {
 let checkedLinks = 0;
 for (const file of (await walk(dist)).filter((file) => file.endsWith('.html'))) {
   const html = await readFile(file, 'utf8');
+  if (!file.startsWith(join(dist, 'preview') + sep)) {
+    assert.equal([...html.matchAll(/class="m-site-closing"/g)].length, 1, `Shared footer missing or duplicated: ${file}`);
+    assert.equal([...html.matchAll(/id="contact"/g)].length, 1, `Contact anchor missing or duplicated: ${file}`);
+    assert(html.includes('id="top"'), `Footer back-to-top target missing: ${file}`);
+  }
   for (const [, value] of html.matchAll(/(?:href|src)="([^"\s]+)"/g)) {
     if (!value.startsWith('/') || value.startsWith('//')) continue;
     const url = new URL(value, 'https://portfolio.test');
@@ -87,4 +93,4 @@ for (const file of (await walk(dist)).filter((file) => file.endsWith('.html'))) 
 const hash = (data) => createHash('sha256').update(data).digest('hex');
 assert.equal(hash(await readFile(join(root, 'public/resume.pdf'))), hash(await readFile(join(dist, 'resume.pdf'))), 'Built resume must equal the source PDF');
 assert((await read('rss.xml')).includes('<rss'), 'RSS should contain a feed');
-console.log(`CONTENT_CHECK_PASS: 4 primary pages, 7 home sections, 13 projects, preserved existing cases and shared facts, PDF integrity, RSS, ${checkedLinks} internal resources.`);
+console.log(`CONTENT_CHECK_PASS: shared footer on all public pages, 6 home sections, 13 projects, preserved existing cases and shared facts, PDF integrity, RSS, ${checkedLinks} internal resources.`);
