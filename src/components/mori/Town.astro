@@ -1,0 +1,132 @@
+---
+import townSource from '../../assets/town.html?raw';
+import calloutScript from '../../scripts/town-callouts.js?raw';
+import calloutStyles from '../../styles/mori-town-callouts.css?raw';
+
+const destinations = {
+  home: { label: 'HOME', cn: '主页', url: '/' },
+  about: { label: 'ABOUT', cn: '关于我', url: '/about/' },
+  works: { label: 'WORKS', cn: '作品', url: '/projects/' },
+  interests: { label: 'INTERESTS', cn: '兴趣爱好', url: '/interests/' },
+  blog: { label: 'BLOG', cn: '博客', url: '/blog/' },
+};
+const replace = (source: string, before: string | RegExp, after: string) => {
+  const updated = source.replace(before, () => after);
+  if (updated === source) throw new Error(`Town integration target missing: ${before}`);
+  return updated;
+};
+let townDocument = replace(townSource, /const LINKS = \{[\s\S]*?\n\};/, `const LINKS = ${JSON.stringify(destinations)};`);
+townDocument = townDocument.replaceAll('夜景', '夜晚');
+townDocument = replace(townDocument, 'aria-label="切换夜晚"', 'aria-label="切换夜晚" aria-pressed="false"');
+townDocument = replace(townDocument, "mb.textContent=nightGoal?'☀️ 白天':'🌙 夜晚';", "mb.textContent=nightGoal?'☀️ 白天':'🌙 夜晚'; mb.setAttribute('aria-label',nightGoal?'切换白天':'切换夜晚'); mb.setAttribute('aria-pressed',String(Boolean(nightGoal)));"); // taste-skill-ignore: preserve the supplied day/night button icons.
+townDocument = replace(townDocument, "cy=Hh*(mob?.6:.64)", "cy=Hh*(mob?.56:.53)");
+townDocument = replace(townDocument, "cx=W*(mob?.2:.16)", "cx=W*(mob?.26:.205)");
+townDocument = replace(townDocument, 'const topPad = h<520? 56: 64, botPad = 76;', 'const topPad = w<620?40:96, botPad = w<620?74:80;');
+// Reserve sky above the model without shrinking it when the frame gets taller.
+townDocument = replace(townDocument, /const aspect=w\/h; let halfH=Math.max\(my, mx\/aspect\)\*0.92;\s*const scale = h\/\(h-topPad-botPad\); halfH\*=scale;/, `const aspect=w/h;
+  const halfH=Math.max(my*(w<620?.94:.84)*h/(h-topPad-botPad), mx/aspect*(w<620?1.22:1.16));`);
+townDocument = replace(townDocument, 'const shift=(botPad-topPad)/h*halfH;', 'const shift=(botPad-topPad-2*(w<620?14:w<1100?28:44))/h*halfH;');
+townDocument = replace(townDocument, 'camera.left=-halfH*aspect; camera.right=halfH*aspect;', 'const spread=w<620?.98:w<1100?.97:.92; camera.left=-halfH*aspect*spread; camera.right=halfH*aspect*spread;');
+townDocument = replace(townDocument, "const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;", `const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+let reduce = motionPreference.matches;
+motionPreference.addEventListener('change', () => {
+  reduce = motionPreference.matches;
+  if(reduce && walking){ hero.g.position.copy(walking.pts[walking.pts.length-1]); arrive(); }
+});`);
+townDocument = replace(townDocument, "function go(k){", `function go(k){
+  if(!Object.hasOwn(LINKS,k) || walking?.key===k) return;
+  parent.postMessage({type:'mori-town-depart',key:k}, '*');`);
+townDocument = replace(townDocument, 'if(L<1e-3) arrive();', 'if(reduce || L<1e-3){ hero.g.position.copy(pts[pts.length-1]); arrive(); }');
+townDocument = replace(townDocument, /function markNav\(\)\{[^\n]+\}/, `function markNav(){
+  nav.querySelectorAll('button').forEach(button => {
+    const active = walking?.key===button.dataset.k;
+    button.classList.toggle('on', button.dataset.k===hovered || active);
+    button.toggleAttribute('data-walking', active);
+    button.setAttribute('aria-busy', String(active));
+    const note=button.querySelector('small');
+    if(note && button.dataset.note) note.textContent=active?'正在前往…':button.dataset.note;
+  });
+}`);
+// Vertical touch gestures scroll the page; cancelled gestures never activate a building.
+townDocument = replace(townDocument, /cvs.addEventListener\('pointerdown',[\s\S]*?cvs.addEventListener\('pointerleave',[^\n]+/, `cvs.style.touchAction='pan-y';
+cvs.addEventListener('pointerdown',e=>{
+  if(!e.isPrimary || e.button!==0) return;
+  dragging={id:e.pointerId,x:e.clientX,y:e.clientY,yaw:yawGoal,moved:false};
+});
+window.addEventListener('pointermove',e=>{
+  if(dragging && e.pointerId===dragging.id){
+    const dx=e.clientX-dragging.x, dy=e.clientY-dragging.y;
+    if(Math.max(Math.abs(dx),Math.abs(dy))>8) dragging.moved=true;
+    if(dragging.moved){
+      if(Math.abs(dx)>Math.abs(dy)) yawGoal=Math.max(BASE_YAW-.7,Math.min(BASE_YAW+.7,dragging.yaw-dx*.006));
+      cvs.style.cursor='grabbing'; setHover(null); return;
+    }
+  }
+  if(e.target===cvs) setHover(pick(e),e);
+});
+window.addEventListener('pointerup',e=>{
+  const d=dragging;
+  if(!d || e.pointerId!==d.id) return;
+  dragging=null; cvs.style.cursor='grab';
+  if(!d.moved && e.target===cvs){ const k=pick(e); if(k==='bee') bee.click(); else if(k) go(k); else if(orbHit(e)) document.getElementById('mode').click(); }
+  if(e.target===cvs && e.pointerType!=='touch') setHover(pick(e),e);
+});
+window.addEventListener('pointercancel',()=>{dragging=null;cvs.style.cursor='grab';setHover(null);});
+cvs.addEventListener('pointerleave',()=>{if(!dragging) setHover(null);});
+window.addEventListener('keydown',e=>{
+  if(e.key!=='Escape' || !walking) return;
+  walking=null; arrivedKey=null;
+  for(const k in buildings) buildings[k].pin.visible=false;
+  markNav(); parent.postMessage({type:'mori-town-cancel'}, '*');
+});`);
+townDocument = replace(townDocument, /function showToast\(k, opened\)\{[\s\S]*?\n\}/, `function showToast(k){
+  toast.textContent = '已到达「' + LINKS[k].cn + '」，正在打开…';
+  toast.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>toast.classList.remove('show'), 8000);
+}`);
+townDocument = replace(townDocument, /  let w=null; try\{ w=window.open\(LINKS\[k\].url,'_blank'\); if\(w\) w.opener=null; \}catch\(e\)\{\}\n  showToast\(k, !!w\);/, `  if(LINKS[k]?.url) parent.postMessage({type:'mori-town-navigate',key:k}, '*');
+  showToast(k);`);
+townDocument = replace(townDocument, 'function loop(){', `let townVisible=true, townFrame=0;
+addEventListener('message', event => {
+  if(event.source !== parent || event.data?.type !== 'mori-town-visibility') return;
+  townVisible = event.data.visible === true;
+  if(townVisible && !townFrame){ clock.getDelta(); loop(); }
+});
+function loop(){
+  townFrame=0;
+  if(!townVisible && !walking) return;`);
+townDocument = replace(townDocument, 't+=dt;', 'if(!reduce) t+=dt;');
+townDocument = replace(townDocument, 'phase=Math.min(phaseGoal,phase+Math.min(dt,.1)/2.8);', 'phase=reduce?phaseGoal:Math.min(phaseGoal,phase+Math.min(dt,.1)/2.8);');
+townDocument = replace(townDocument, 'o.pin.rotation.y+=dt*1.5;', 'o.pin.rotation.y+=reduce?0:dt*1.5;');
+townDocument = replace(townDocument, 'requestAnimationFrame(loop);', 'townFrame=requestAnimationFrame(loop);');
+townDocument = replace(townDocument, '// ---------- loop', `${calloutScript}\n\n// ---------- loop`);
+townDocument = replace(townDocument, 'renderer.render(scene,camera);', 'updateTownCallouts();\n  renderer.render(scene,camera);');
+
+const integrationStyles = `<style>
+html,body,#stage,#skyN,#skyS{background:transparent}
+.head{display:none}
+#sun,#moon{width:80px}
+#nav button:disabled{opacity:.45;cursor:default}
+@media(max-width:620px){#sun,#moon{width:46px}}
+${calloutStyles}
+</style>`;
+townDocument = replace(townDocument, '</head>', `${integrationStyles}</head>`);
+const integration = `<script>
+addEventListener('wheel', event => {
+  if(event.ctrlKey || event.metaKey || event.altKey || event.shiftKey || Math.abs(event.deltaX) >= Math.abs(event.deltaY)) return;
+  event.preventDefault();
+  parent.postMessage({type:'mori-town-wheel',deltaY:event.deltaY,deltaMode:event.deltaMode}, '*');
+}, {passive:false});
+parent.postMessage({type:'mori-town-ready'}, '*');
+<\/script>`;
+townDocument = townDocument.replace('</body>', `${integration}</body>`);
+---
+<div class="m-town" data-town>
+  <iframe data-town-frame title="互动小镇：点击建筑前往页面，可切换白天与夜晚" srcdoc={townDocument} sandbox="allow-scripts" allow="autoplay" loading="lazy" height="580"></iframe>
+</div>
+<script>import '../../scripts/town';</script>
+<style>
+  .m-town { position: relative; left: 50%; width: min(1480px, calc(100vw - 40px)); margin-top: 24px; transform: translateX(-50%); }
+  .m-town iframe { display: block; width: 100%; height: clamp(580px, calc(100svh - 180px), 860px); border: 0; }
+  @media (max-width: 900px) { .m-town iframe { height: 700px; } }
+  @media (max-width: 600px) { .m-town iframe { height: 444px; } }
+</style>

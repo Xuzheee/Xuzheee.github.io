@@ -1,0 +1,36 @@
+---
+import Arrow from './Arrow.astro';
+import '../../styles/mori-c4-hero.css';
+---
+<section class="m-hero m-c4-hero m-scene" aria-label="你好，我是 Mori" data-c4-hero>
+  <div class="m-c4-copy">
+    <h1>你好，我是杨黄旭哲<br /><span class="m-c4-name">可以叫我 <img src="/mori/c4/signature.webp" alt="Mori" width="295" height="142" fetchpriority="high" /></span></h1>
+    <p class="m-c4-lead">喜欢游戏、电影、音乐，<br />也喜欢动手做些有意思的东西</p>
+    <div class="m-c4-actions">
+      <a class="m-c4-button m-c4-primary" href="#explore">随便逛逛 <Arrow direction="down" /></a>
+      <a class="m-c4-button" href="/projects/">看看作品 <Arrow direction="diagonal" /></a>
+    </div>
+  </div>
+  <p class="m-c4-motto" lang="en">A little logic. A little chaos.</p>
+  <div class="m-c4-stage">
+    <div class="m-c4-panel" aria-hidden="true">
+      <div class="m-c4-ghost">MORI</div>
+      <div class="m-c4-stripe"><span>GAMES</span><i>/</i><span>MOVIES</span><i>/</i><span>MUSIC</span><i>/</i><span>MAKING</span></div>
+    </div>
+    <button class="m-c4-logo" type="button" aria-label="重新播放 Mori 标志启动动画" title="点击重新启动" data-c4-replay>
+      <span class="m-c4-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="m-c4-float"><span class="m-c4-shake"><span class="m-c4-rig">
+        <img class="m-c4-horn" src="/mori/c4/horn.webp" alt="" width="564" height="525" fetchpriority="high" draggable="false" />
+        <img class="m-c4-fang" src="/mori/c4/fang.webp" alt="" width="564" height="525" fetchpriority="high" draggable="false" />
+        <img class="m-c4-left" src="/mori/c4/shell.webp" alt="" width="564" height="525" fetchpriority="high" draggable="false" />
+        <img class="m-c4-right" src="/mori/c4/shell.webp" alt="" width="564" height="525" fetchpriority="high" draggable="false" />
+        <img class="m-c4-eye" src="/mori/c4/eye.webp" alt="" width="564" height="525" fetchpriority="high" draggable="false" />
+        <span class="m-c4-scan" aria-hidden="true"></span><span class="m-c4-scanline" aria-hidden="true"></span>
+      </span></span></span>
+    </button>
+    <div class="m-c4-system" aria-hidden="true"><span data-c4-state>MORI-01</span><i><b></b></i><span data-c4-progress>● ONLINE</span></div>
+    <div class="m-c4-sticker" lang="en"><b aria-hidden="true">●</b> PLAYER 1 READY</div>
+  </div>
+  <span class="m-c4-sr" role="status" aria-live="polite" data-c4-announcement></span>
+</section>
+<script>import '../../scripts/c4-hero';</script>

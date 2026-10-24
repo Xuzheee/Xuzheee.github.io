@@ -1,0 +1,57 @@
+/* These guide lines are part of the requested architectural annotations. */
+#nav, body.night #nav {
+  inset: 0; width: 100%; transform: none; display: block; padding: 0;
+  background: none; border: 0; border-radius: 0; box-shadow: none; /* taste-skill-ignore: explicitly remove the original panel shadow. */
+  backdrop-filter: none; pointer-events: none; z-index: 3; /* taste-skill-ignore: explicitly remove the original panel blur. */
+}
+#nav button {
+  position: absolute; display: flex; flex-direction: column; align-items: flex-start;
+  justify-content: center; gap: 4px; padding: 6px 0; min-height: 44px;
+  border-radius: 0; background: none; pointer-events: auto;
+  text-align: left; transition: color 160ms ease;
+}
+#nav button strong {
+  display: inline-flex; align-items: center; gap: 9px;
+  color: #2b2a29; font-size: 19px; line-height: 1.35; font-weight: 650;
+}
+#nav button strong svg { width: 14px; height: 14px; flex: 0 0 auto; }
+#nav button strong svg { transition: transform 180ms ease; }
+#nav button:hover strong svg, #nav button[data-walking] strong svg { transform: translate(2px, -2px); }
+#nav button:active strong { transform: translateY(1px); }
+#nav button[data-walking], #nav button[data-walking] * { cursor: progress; }
+#nav button[data-walking] small { color: #c4271f; }
+#nav button small { color: #7d7a75; font-size: 12px; line-height: 1.5; }
+#nav button[data-side="top"] { align-items: center; text-align: center; }
+#nav button:hover, #nav button.on,
+body.night #nav button:hover, body.night #nav button.on { background: none; }
+#nav button:hover strong, #nav button.on strong, #nav button:focus-visible strong { color: #c4271f; }
+#nav button:focus-visible { outline: 2px solid #c4271f; outline-offset: 6px; }
+body.night #nav button strong { color: #eef3ff; }
+body.night #nav button small { color: #a9b8cb; }
+body.night #nav button:hover strong, body.night #nav button.on strong,
+body.night #nav button:focus-visible strong { color: #70dfed; }
+body.night #nav button:focus-visible { outline-color: #70dfed; }
+#town-guides { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+.town-guide { color: #938c82; opacity: .65; transition: color 160ms ease, opacity 160ms ease; }
+.town-guide path { fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+.town-guide circle { fill: currentColor; }
+.town-guide.is-active { color: #c4271f; opacity: 1; }
+body.night .town-guide { color: #91a4bc; }
+body.night .town-guide.is-active { color: #70dfed; }
+#mode { z-index: 4; }
+#tip, #toast { z-index: 5; }
+@media (max-width: 1100px) {
+  #nav button strong { font-size: 17px; gap: 6px; }
+  #nav button small { font-size: 11px; }
+}
+@media (max-width: 620px) {
+  #nav button { gap: 3px; padding: 3px 0; }
+  #nav button strong { font-size: 15px; gap: 5px; }
+  #nav button strong svg { width: 12px; height: 12px; }
+  #nav button small { font-size: 10px; }
+  .town-guide path { stroke-width: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #nav button, #nav button strong svg, .town-guide { transition: none; }
+  #nav button:hover strong svg, #nav button[data-walking] strong svg, #nav button:active strong { transform: none; }
+}

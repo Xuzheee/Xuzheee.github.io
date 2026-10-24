@@ -16,6 +16,17 @@ import '../../styles/mori-footer.css';
       <a class="m-closing-github" href={profile.github} target="_blank" rel="noopener noreferrer"><Icon name="github" class="m-closing-icon" strokeWidth={1.6} />GitHub / Xuzheee <Arrow direction="diagonal" /></a>
       <div class="m-closing-bottom"><button type="button" data-closing-copy={profile.email}><Icon name="copy" class="m-closing-icon" strokeWidth={1.6} />复制邮箱</button><a href="#top">回到顶部 <Icon name="arrowUpToLine" class="m-closing-icon" strokeWidth={1.6} /></a></div>
     </div>
+    <svg class="m-closing-color-filter" aria-hidden="true" width="0" height="0"><defs>
+      <filter id="mori-footer-colors" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="3 -3 0 0 0  3 -3 0 0 0  3 -3 0 0 0  0 0 0 1 0" />
+        <feComponentTransfer>
+          <feFuncR type="discrete" tableValues="0.160784 0.909804" />
+          <feFuncG type="discrete" tableValues="0.156863 0.274510" />
+          <feFuncB type="discrete" tableValues="0.145098 0.196078" />
+        </feComponentTransfer>
+      </filter>
+    </defs></svg>
+    <img class="m-closing-wordmark" src="/mori/mori-wordmark-footer.png" alt="Mori" width="2004" height="785" loading="lazy" />
     <span class="m-closing-status" role="status" aria-live="polite"></span>
   </footer>
 

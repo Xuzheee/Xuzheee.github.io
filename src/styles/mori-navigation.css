@@ -1,0 +1,26 @@
+/* Native document transitions leave each scene's lifecycle and browser history intact. */
+.mori-site > main { view-transition-name: mori-content; }
+::view-transition-group(mori-content) { animation-duration: 240ms; }
+::view-transition-old(mori-content) { animation: mori-page-out 160ms ease-out both; }
+::view-transition-new(mori-content) { animation: mori-page-in 240ms cubic-bezier(.22, 1, .36, 1) both; }
+@keyframes mori-page-out { to { opacity: 0; transform: translateY(-8px); } }
+@keyframes mori-page-in { from { opacity: 0; transform: translateY(12px); } }
+
+/* Immediate feedback while the browser loads the destination. No artificial delay. */
+html[data-navigation="pending"] .m-header-contact,
+html[data-navigation="pending"] [data-navigating] { cursor: progress; }
+html[data-navigation="pending"] .m-nav-pill { opacity: .72; }
+.m-nav-pill { transition: transform 380ms cubic-bezier(.22, 1, .36, 1), opacity 160ms ease; }
+.m-header-contact svg, .m-link svg, .m-c4-button svg { transition: translate 180ms cubic-bezier(.22, 1, .36, 1); }
+@media (hover: hover) {
+  .m-header-contact:hover svg, .m-link:hover svg, .m-c4-button:hover svg { translate: 2px -2px; }
+  .m-c4-primary:hover svg { translate: 0 2px; }
+}
+.mori-site :where(main, section, footer, header)[tabindex="-1"]:focus { outline: none; }
+.mori-site :where(main, section, footer, header)[tabindex="-1"]:focus-visible { outline: 2px solid var(--red); outline-offset: -4px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  .m-nav-pill, .m-header-contact svg, .m-link svg, .m-c4-button svg { transition: none; }
+  .m-header-contact:hover svg, .m-link:hover svg, .m-c4-button:hover svg { translate: none; }
+}

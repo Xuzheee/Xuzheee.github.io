@@ -1,23 +1,16 @@
 ---
 import MoriLayout from '../layouts/MoriLayout.astro';
-import Arrow from '../components/mori/Arrow.astro';
 import HomeSections from '../components/mori/HomeSections.astro';
-import MechHero from '../components/mori/MechHero.astro';
+import C4Hero from '../components/mori/C4Hero.astro';
 import '../styles/mori-home.css';
 import '../styles/mori-bookends.css';
 import '../styles/mori-work-posters.css';
+import '../styles/mori-home-composition.css';
 ---
 <MoriLayout pageClass="m-home">
-  <section class="m-hero m-hero-mech m-scene" aria-label="你好，我是 Mori">
-    <MechHero />
-    <div class="m-hero-name" aria-hidden="true">MORI</div>
-    <div class="m-hero-intro">
-      <h1>你好，我是杨黄旭哲<br />也可以叫我 <span>Mori。</span></h1>
-      <p lang="en">A little logic. A little chaos.</p>
-      <a class="m-button m-hero-cta" href="/projects/">看看我的作品 <Arrow /></a>
-    </div>
-    <a class="m-hero-scroll" href="#explore">向下探索互动空间 <Arrow direction="down" /></a>
-  </section>
+  <C4Hero />
   <HomeSections />
 </MoriLayout>
-<script>import '../scripts/home-paging';</script>
+<script>
+  import '../scripts/home-paging';
+</script>

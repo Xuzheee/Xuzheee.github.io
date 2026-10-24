@@ -1,0 +1,5 @@
+<!-- The browser needs the cross-document opt-in before the incoming page is revealed. -->
+<style is:inline>
+  @view-transition { navigation: auto; }
+  @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+</style>

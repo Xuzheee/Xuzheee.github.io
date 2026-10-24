@@ -1,3 +1,15 @@
+# 方案 B 标志与顶栏字体统一 · 2026-10-24
+
+final result: blocked
+
+- 实现：采用设计板中间 B / BALANCED 红色 M 机甲头像，替换原小圆点；Mori、英文导航与 Let’s talk 统一 Switzer 600 和 -.015em 字距，保留字号层级、玻璃底色及滑动导航。桌面图标 40px，手机及平板 36px。
+- 素材：内置 Image Gen 生成，透明 WebP 输出到 public/mori/mori-mark-b.webp（256×256，31,686 字节）；已在奶油白底色上检查图标边缘。原生成 PNG 保存在 C:/Users/31009/.codex/generated_images/01a15dde-86ae-74b0-89b3-6660c341d5ba/exec-650813df-073c-4314-bf45-c80359a7412f.png。
+- 构建与内容检查通过：16 页，294 个内部资源。未改动其他正在进行的首页与作品更新。
+- 视觉验收阻塞：本地 URL 的浏览器访问此前被安全策略明确拒绝，未改用其他浏览器或访问路径绕过。未获得本次页面截图，不能声明实际页面视觉与交互验收通过。
+- 选定参考：exec-d9e7318d-f6fb-4b8b-806f-c14d0a00ec6f.png 中 B / BALANCED。
+- 生成提示：Extract and refine ONLY the CENTER large logo marked B / BALANCED from this design board into a standalone production logo image. Preserve that exact selected option, not A or C: predominantly vermilion red uppercase M helmet outer shape, central deep V valley, two tall vertical side antennae with charcoal tips, ivory negative-space faceplate and charcoal angular eyes and cheek pieces. Same silhouette, proportions, color blocking as center reference. No text, no wordmark, no labels, no board, no other logos, no container, no shadow, no glow, no 3D rendering. Flat sharp clean vector-like fills #e84632 red, #292825 charcoal, #f6f4ee ivory. Truly transparent background outside the symbol and in the antenna gaps. Redrawn clean edges at high resolution. Center icon on a square canvas filling about 88 percent width and height with equal transparent margins. This is for a 36px tall website header mark; keep the broad shapes, simplify only tiny subpixel eye slivers for legibility. The letter M and mecha head must remain fused as one symbol.
+
+---
 # 关于我底栏同步全站 · 2026-10-23
 
 - 后续图标补充：共用底栏增加信封、文档、GitHub、复制和返回顶部线条图标；复用现有 Icon 组件，统一 1.6px 描边、18–24px 尺寸，悬停使用朱红色。保留文字标签，装饰图标对辅助技术隐藏。重新构建与内容检查通过；浏览器视觉复核仍受下述访问限制影响。

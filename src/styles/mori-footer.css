@@ -7,6 +7,9 @@
 .m-site-closing button { color: inherit; font: inherit; border: 0; background: none; padding: 0; cursor: pointer; }
 .m-site-closing .m-arrow { display: inline-block; flex-shrink: 0; width: 1.15em; height: 1.15em; vertical-align: middle; }
 .m-closing-status { position: absolute; right: 40px; bottom: 8px; font-size: 13px; }
+.m-closing-color-filter { position: absolute; pointer-events: none; }
+.m-closing-wordmark { position: absolute; left: 40px; bottom: 24px; display: block; width: 150px; height: auto; filter: url('#mori-footer-colors'); }
+@media (max-width: 900px) { .m-closing-wordmark { left: 24px; } }
 @media (max-width:600px) { .m-closing-status { right:20px; bottom:4px; } }
 .m-site-closing { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: start; width: calc(100% - 2 * max(20px, 4.4vw, calc((100vw - 1200px) / 2))); max-width: 1200px; margin: 48px auto 24px; padding: 40px; background: var(--panel); }
 .m-closing-intro h2 { color: var(--red); font-family: Anton, sans-serif; font-size: clamp(68px, 7.2vw, 104px); font-weight: 400; line-height: 1.04; letter-spacing: -.025em; }
@@ -35,7 +38,8 @@
 
 @media (max-width: 900px) { .m-site-closing { gap: 28px; padding: 32px 24px; } }
 @media (max-width: 600px) {
-  .m-site-closing { grid-template-columns: minmax(0, 1fr); gap: 28px; margin-block: 36px 12px; padding: 28px 20px 20px; }
+  .m-site-closing { grid-template-columns: minmax(0, 1fr); gap: 28px; margin-block: 36px 12px; padding: 28px 20px 104px; }
+  .m-closing-wordmark { left: 20px; bottom: 20px; }
   .m-closing-intro h2 { font-size: clamp(64px, 17vw, 84px); }
   .m-closing-intro p { margin-top: 16px; }
   .m-closing-contact { padding-top: 0; }

@@ -4,11 +4,14 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { ViewTransitions } from "astro:transitions";
 import { SITE_TITLE, SITE_DESCRIPTION, TRANSITION_API } from "../config";
+import '../styles/mori-navigation.css';
+import NavigationHead from '../components/mori/NavigationHead.astro';
 const { image, title = SITE_TITLE, description = SITE_DESCRIPTION, sideBarActiveItemID, ogType, wide = false } = Astro.props;
 ---
 <!doctype html>
 <html lang="zh-CN" data-theme="portfolio">
   <head>
+    <NavigationHead />
     <BaseHead title={title} description={description} image={image} ogType={ogType} />
     {TRANSITION_API && <ViewTransitions />}
   </head>
@@ -19,6 +22,7 @@ const { image, title = SITE_TITLE, description = SITE_DESCRIPTION, sideBarActive
       <slot />
     </main>
     <Footer />
+    <script>import '../scripts/navigation';</script>
     <script>
       function revealContent() {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;

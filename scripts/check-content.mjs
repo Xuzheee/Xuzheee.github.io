@@ -27,6 +27,9 @@ assert(['社会学法学学士', '计算社会科学（统计学）理学硕士'
 assert(about.includes('研究经历') && about.includes('研究助理'), 'URAI must remain research experience');
 for (const html of [home, about, overview, interests]) {
   for (const href of ['/', '/about/', '/projects/', '/interests/']) assert(html.includes(`href="${href}"`), `Missing primary route ${href}`);
+  const navigation = html.match(/<nav\b[^>]*data-mori-nav[\s\S]*?<\/nav>/)?.[0] ?? '';
+  assert.deepEqual([...navigation.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/g)].map(match => plain(match[1])), ['Home', 'About', 'Work', 'Interests'], 'Primary navigation keeps all four English routes');
+  assert.equal([...navigation.matchAll(/aria-current="page"/g)].length, 1, 'Exactly one navigation link identifies the current page');
   assert(!html.includes('href="#"'), 'No placeholder links');
 }
 

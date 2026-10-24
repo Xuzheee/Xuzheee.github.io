@@ -1,19 +1,12 @@
 ---
 import Arrow from './Arrow.astro';
 import HomeSkills from './HomeSkills.astro';
+import Town from './Town.astro';
 import { albums, games } from '../../data/mori';
 ---
 <section class="m-hub m-scene" id="explore" aria-labelledby="hub-title">
-  <h2 class="m-display" id="hub-title">从这里出发</h2>
-  <p class="m-subtitle">认识我，看看作品，逛逛兴趣。</p>
-  <div class="m-model-stage" data-model-slot>
-    <img src="/mori/model-stage.png" alt="未来互动模型的空白展示空间" loading="lazy" />
-    <a class="m-hotspot m-hotspot-about" href="/about/"><strong>关于我 <Arrow direction="diagonal" /></strong><small>教育经历 · 实习经历</small></a>
-    <a class="m-hotspot m-hotspot-work" href="/projects/"><strong>作品 <Arrow direction="diagonal" /></strong><small>项目与实践</small></a>
-    <a class="m-hotspot m-hotspot-life" href="/interests/"><strong>兴趣爱好 <Arrow direction="diagonal" /></strong><small>游戏 · 音乐 · 生活</small></a>
-  </div>
-  <p class="m-model-note">模型预留区 · 后续接入 3D / 2.5D 内容</p>
-  <nav class="m-direct-links" aria-label="直接前往"><span>直接前往</span><a class="m-link" href="/about/">关于我 <Arrow direction="diagonal" /></a><a class="m-link" href="/projects/">作品 <Arrow direction="diagonal" /></a><a class="m-link" href="/interests/">兴趣爱好 <Arrow direction="diagonal" /></a></nav>
+  <header class="m-hub-heading"><h2 class="m-display" id="hub-title">从这里出发</h2><p class="m-subtitle">点一栋建筑，去下一站。</p></header>
+  <Town />
 </section>
 <section class="m-home-work m-scene" id="selected-work" aria-labelledby="home-work-title">
   <header class="m-home-work-heading">
@@ -34,11 +27,11 @@ import { albums, games } from '../../data/mori';
 <section class="m-favorites m-scene" aria-labelledby="favorites-title">
   <div class="m-section-top"><h2 class="m-display" id="favorites-title">最近喜欢</h2><span>游戏与音乐</span></div>
   <div class="m-favorites-grid"><div class="m-favorite-music"><h3>最近在听</h3><div class="m-sleeves" data-sleeves>
-    {albums.map((album,i)=><a class:list={['m-sleeve',{'is-selected':i===0}]} href={`/interests/?album=${album.id}#music`} data-sleeve={i} aria-label={`在兴趣页查看 ${album.title}`}><img class="m-sleeve-vinyl" src="/mori/vinyl.png" alt="" loading="lazy" /><img class="m-sleeve-cover" src={album.image} alt={`${album.title} 专辑封面`} loading="lazy" /><strong>{album.title}</strong></a>)}
-  </div></div><div class="m-favorite-games"><h3>喜欢的游戏</h3>{games.map(game=><a href={`/interests/?game=${game.id}#games`}>{game.title}</a>)}</div></div>
+    {albums.map((album,i)=><a class:list={['m-sleeve',{'is-selected':i===0}]} href={`/interests/?album=${album.id}#music`} data-sleeve={i} aria-label={`在兴趣页查看 ${album.title}`}><img class="m-sleeve-vinyl" src="/mori/vinyl.png" alt="" loading="lazy" /><img class="m-sleeve-cover" src={album.image} alt={`${album.title} 专辑封面`} loading="lazy" /><strong>{album.title}</strong><span class="m-sleeve-artist">{album.artist}</span></a>)}
+  </div></div><div class="m-favorite-games"><h3>喜欢的游戏</h3>{games.map(game=><a href={`/interests/?game=${game.id}#games`}><img src={game.image} alt="" width="104" height="72" loading="lazy" /><span><strong>{game.title}</strong><small>{game.genre}</small></span><Arrow direction="diagonal" /></a>)}</div></div>
   <div class="m-favorites-bottom"><span>R&amp;B / Jazz / Hip-Hop</span><a href="/interests/">去兴趣页逛逛 <span class="m-circle"><Arrow /></span></a></div>
 </section>
 <section class="m-offscreen m-scene" aria-labelledby="offscreen-title">
-  <div class="m-offscreen-left"><h2 class="m-display" id="offscreen-title">屏幕<br />之外</h2><p class="m-subtitle">屏幕之外，我喜欢打篮球、去徒步。</p><a href="/interests/#life"><figure><img src="/hobbies/sport1.jpg" alt="夜晚球场上的篮球队员" loading="lazy" /><figcaption>篮球</figcaption></figure></a><a class="m-link" href="/interests/#life">更多屏幕之外的记录 <Arrow /></a></div>
+  <div class="m-offscreen-left"><h2 class="m-display" id="offscreen-title">屏幕<br />之外</h2><p class="m-subtitle">屏幕之外，我喜欢打篮球、去徒步。</p><div class="m-offscreen-pair"><a href="/interests/#life"><figure><img src="/hobbies/sport1.jpg" alt="夜晚球场上的篮球队员" loading="lazy" /><figcaption>篮球</figcaption></figure></a><a href="/interests/#life"><figure><img src="/hobbies/hike4.jpg" alt="云雾笼罩的山林与湖水" loading="lazy" /><figcaption>山间</figcaption></figure></a></div><a class="m-link" href="/interests/#life">更多屏幕之外的记录 <Arrow /></a></div>
   <a class="m-offscreen-coast" href="/interests/#life"><figure><img src="/hobbies/hike3.jpg" alt="海边的金色岩壁" loading="lazy" /><figcaption>徒步</figcaption></figure></a>
 </section>

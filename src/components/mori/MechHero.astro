@@ -15,7 +15,12 @@
     <source data-src="/mori/mech/mori-mech-boot.webm" type="video/webm" />
     <source data-src="/mori/mech/mori-mech-boot.mp4" type="video/mp4" />
   </video>
-  <button class="m-mech-toggle" type="button" hidden>播放动画</button>
+  <button class="m-mech-toggle" type="button" hidden aria-pressed="false" aria-label="播放机甲动画">
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+      <path class="m-mech-play-icon" d="M8 5v14l11-7z" />
+      <path class="m-mech-pause-icon" d="M6 5h4v14H6zm8 0h4v14h-4z" />
+    </svg>
+  </button>
 </div>
 
 <style>
@@ -50,6 +55,9 @@
     font-size: 14px;
   }
   .m-mech-toggle:hover { background: #ce3c2b; }
+  .m-mech-toggle svg { display: block; }
+  .m-mech-pause-icon, .m-mech-toggle[aria-pressed="true"] .m-mech-play-icon { display: none; }
+  .m-mech-toggle[aria-pressed="true"] .m-mech-pause-icon { display: initial; }
   @media (max-width: 900px) {
     .m-mech {
       position: relative;
@@ -65,6 +73,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .m-mech .m-mech-video, .m-mech-toggle { display: none; }
+    .m-mech.is-playing .m-mech-still { visibility: visible; }
   }
 </style>
 
@@ -74,58 +83,47 @@
     const video = stage.querySelector<HTMLVideoElement>('video')!;
     const toggle = stage.querySelector<HTMLButtonElement>('button')!;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-    let hovered = false;
     let userPlaying = false;
-    let userPaused = false;
     let inView = false;
     let failed = false;
 
     const syncPlayback = () => {
-      const shouldPlay = (hovered || userPlaying) && !reducedMotion.matches && !userPaused && inView && !document.hidden && !failed;
+      const shouldPlay = userPlaying && !reducedMotion.matches && inView && !document.hidden && !failed;
       if (shouldPlay) {
         if (!video.querySelector('source[src]')) {
           video.querySelectorAll<HTMLSourceElement>('source').forEach(source => { source.src = source.dataset.src!; });
           video.load();
         }
-        void video.play().catch(() => { toggle.hidden = false; toggle.textContent = '播放动画'; });
+        void video.play().catch(() => {
+          if (!userPlaying || !inView || document.hidden || reducedMotion.matches) return;
+          userPlaying = false;
+          toggle.setAttribute('aria-label', '重试播放机甲动画');
+          toggle.setAttribute('aria-pressed', 'false');
+        });
       } else {
         video.pause();
-        stage.classList.remove('is-playing');
-        toggle.textContent = '播放动画';
+        toggle.setAttribute('aria-label', '播放机甲动画');
+        toggle.setAttribute('aria-pressed', 'false');
       }
       toggle.hidden = reducedMotion.matches || failed;
     };
     video.addEventListener('playing', () => {
       stage.classList.add('is-playing');
       toggle.hidden = false;
-      toggle.textContent = '暂停动画';
+      toggle.setAttribute('aria-label', '暂停机甲动画');
+      toggle.setAttribute('aria-pressed', 'true');
     });
     video.addEventListener('pause', () => {
-      stage.classList.remove('is-playing');
-      toggle.textContent = '播放动画';
+      toggle.setAttribute('aria-label', '播放机甲动画');
+      toggle.setAttribute('aria-pressed', 'false');
     });
     video.addEventListener('error', () => {
       failed = true;
       stage.classList.remove('is-playing');
       toggle.hidden = true;
     });
-    stage.addEventListener('pointerenter', event => {
-      if (event.pointerType !== 'mouse') return;
-      hovered = true;
-      userPaused = false;
-      if (video.readyState > 0) video.currentTime = 0;
-      syncPlayback();
-    });
-    stage.addEventListener('pointerleave', event => {
-      if (event.pointerType !== 'mouse') return;
-      hovered = false;
-      userPlaying = false;
-      userPaused = false;
-      syncPlayback();
-    });
     toggle.addEventListener('click', () => {
-      userPaused = !video.paused;
-      userPlaying = !userPaused;
+      userPlaying = !userPlaying;
       syncPlayback();
     });
     reducedMotion.addEventListener('change', syncPlayback);

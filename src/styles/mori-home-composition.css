@@ -1,0 +1,105 @@
+/* Content-sized chapters on the existing Mori grid. */
+.m-home { --home-title: clamp(36px, 3.6vw, 52px); }
+.m-home > .m-scene:not(.m-hero),
+html.m-home-paging .m-home > .m-scene:not(.m-hero) {
+  min-height: 0;
+  padding-block: 52px;
+}
+.m-home .m-hub-heading,
+.m-home .m-home-work-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; }
+.m-home .m-hub-heading .m-subtitle,
+.m-home .m-home-work-heading .m-subtitle { margin: 0; }
+.m-home .m-town { margin-top: 20px; }
+.m-home .m-hub.m-scene .m-town iframe { height: clamp(520px, 45vw, 650px); }
+.m-home .m-home-work {
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  gap: 28px 40px;
+  align-content: start;
+}
+.m-home .m-home-work-main,
+.m-home .m-home-work-side { align-self: start; }
+.m-home .m-home-work .m-desk { width: 100%; max-width: none; margin: 0; }
+.m-home .m-home-work-side { margin-top: 0; }
+.m-home .m-home-work .m-work-poster { height: auto; aspect-ratio: 3 / 1; }
+.m-home .m-home-work-side article + article { margin-top: 24px; }
+.m-home .m-home-work-side h3 { margin-top: 14px; font-size: 26px; }
+.m-home .m-home-work-side h4 { margin: 4px 0; font-size: 17px; }
+.m-home .m-project-caption { padding-top: 18px; }
+.m-home .m-project-caption h3 { font-size: 28px; }
+.m-home .m-project-caption-link { margin-top: 14px; }
+.m-home .m-all-work { margin-top: 0; }
+.m-home > .m-skills.m-scene { max-width: var(--reading-width); grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 0 32px; }
+.m-home .m-skills-copy { align-self: center; padding-top: 0; }
+.m-home .m-skills h2 { font-size: clamp(48px, 5vw, 72px); }
+.m-home .m-skills-intro { font-size: 18px; margin-top: 24px; }
+.m-home .m-skills-stage { width: 100%; max-width: 560px; }
+.m-home .m-skills-footer { padding-top: 12px; }
+.m-home > .m-favorites.m-scene { padding-inline: 40px; }
+.m-home .m-favorites-grid { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 48px; margin-block: 32px; }
+.m-home .m-sleeves { height: clamp(270px, 24vw, 330px); margin-top: 28px; }
+.m-home .m-sleeve strong { font-size: 18px; }
+.m-sleeve-artist { display: block; font-size: 14px; color: #b9b6b0; line-height: 1.5; margin-top: 5px; }
+.m-home .m-favorite-games { padding-left: 0; }
+.m-home .m-favorite-games > a { display: flex; align-items: center; gap: 16px; margin-top: 24px; white-space: normal; }
+.m-home .m-favorite-games > a::after { content: none; }
+.m-home .m-favorite-games > a img { width: 96px; height: 68px; object-fit: cover; flex-shrink: 0; transition: transform 180ms ease; }
+.m-home .m-favorite-games > a strong { font-size: 19px; font-weight: 500; line-height: 1.35; display: block; }
+.m-home .m-favorite-games > a small { display: block; font-size: 13px; color: #b9b6b0; margin-top: 6px; line-height: 1.5; }
+.m-home .m-favorite-games > a .m-arrow { width: 18px; height: 18px; margin-left: auto; flex-shrink: 0; }
+.m-home .m-favorite-games > a:hover img { transform: translateX(3px); }
+.m-home .m-offscreen { grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); gap: 48px; align-items: center; }
+.m-home .m-offscreen .m-display { font-size: clamp(56px, 5.8vw, 80px); }
+.m-home .m-offscreen .m-subtitle { margin-block: 20px 28px; white-space: normal; }
+.m-offscreen-pair { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; gap: 18px; }
+.m-offscreen-pair > a:nth-child(2) { padding-top: 32px; }
+.m-home .m-offscreen-left figure img { height: 200px; }
+.m-home .m-offscreen-coast img { height: clamp(420px, 40vw, 560px); }
+.m-home .m-offscreen .m-link { margin-top: 22px; }
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .m-home .m-home-work { display: grid; padding-inline: var(--page-gutter); gap: 24px; }
+  .m-home .m-home-work-side h3 { font-size: 22px; }
+  .m-home > .m-skills.m-scene { grid-template-columns: 1fr; gap: 24px; }
+  .m-home .m-skills h2 { font-size: 44px; }
+  .m-home .m-skills-stage { max-width: 460px; }
+  .m-home .m-favorites-grid { gap: 28px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .m-home .m-sleeves { height: 240px; }
+  .m-home .m-favorite-games > a { gap: 12px; }
+  .m-home .m-favorite-games > a img { width: 64px; height: 54px; }
+  .m-home .m-favorite-games > a strong { font-size: 16px; }
+  .m-home .m-offscreen { gap: 28px; }
+  .m-home .m-offscreen-left figure img { height: 160px; }
+}
+@media (max-width: 600px) {
+  .m-home > .m-scene:not(.m-hero) { padding-block: 36px; }
+  .m-home .m-hub-heading, .m-home .m-home-work-heading { display: block; }
+  .m-home .m-hub-heading .m-subtitle, .m-home .m-home-work-heading .m-subtitle { margin-top: 12px; }
+  .m-home .m-town { margin-top: 12px; }
+  .m-home .m-hub.m-scene .m-town iframe { height: 444px; }
+  .m-home .m-home-work-heading { margin-bottom: 24px; }
+  .m-home .m-home-work-side { margin-top: 32px; }
+  .m-home .m-home-work-side article + article { margin-top: 28px; }
+  .m-home .m-all-work { margin-top: 24px; }
+  .m-home > .m-skills.m-scene { grid-template-columns: 1fr; gap: 20px; }
+  .m-home .m-skills h2 { font-size: 38px; }
+  .m-home .m-skills-intro { margin: 0; font-size: 16px; }
+  .m-home .m-skills-footer { gap: 12px; }
+  .m-home > .m-favorites.m-scene { padding-inline: 20px; }
+  .m-home .m-favorites-grid { display: block; margin-block: 28px; }
+  .m-home .m-sleeves { height: 250px; }
+  .m-home .m-favorite-games { margin-top: 24px; }
+  .m-home .m-favorite-games > a { margin-top: 20px; }
+  .m-home .m-favorite-games > a strong { font-size: 17px; }
+  .m-home .m-sleeve strong { font-size: 16px; }
+  .m-home .m-favorites-bottom { margin-top: 0; gap: 18px; flex-wrap: wrap; font-size: 14px; }
+  .m-home .m-offscreen { grid-template-columns: 1fr; gap: 28px; }
+  .m-home .m-offscreen .m-display br { display: none; }
+  .m-home .m-offscreen .m-display { font-size: 40px; }
+  .m-home .m-offscreen-left figure img { height: 180px; }
+  .m-home .m-offscreen-coast img { height: 360px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-home .m-favorite-games > a img { transition: none; }
+  .m-home .m-favorite-games > a:hover img { transform: none; }
+}

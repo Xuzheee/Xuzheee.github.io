@@ -1,32 +1,29 @@
 ---
 import MoriLayout from '../layouts/MoriLayout.astro';
-import Arrow from '../components/mori/Arrow.astro';
+import FeaturedCards from '../components/mori/FeaturedCards.astro';
 import ProjectArchive from '../components/mori/ProjectArchive.astro';
 ---
 <MoriLayout title="作品 · Mori" active="projects">
- <section class="m-featured m-scene" aria-labelledby="works-title" id="featured">
-  <aside class="m-works-index"><h1 class="m-display" id="works-title">作品</h1><p>运营判断、数据分析与<br />AI 评测。</p><nav aria-label="作品目录"><a class="is-current" href="#featured">重点案例</a><a href="#tools">工具与实验</a><a href="#research">更多经历</a></nav></aside>
-  <div class="m-featured-rows">
-   <article class="m-featured-row" id="netease-ai-workflow" data-project-id="netease-ai-workflow"><div class="m-featured-copy"><h2>网易 AI 辅助触达</h2><span class="m-project-label">实习项目</span><p class="m-project-question"><strong>如何为不同玩家制定合适的触达策略？</strong></p><p class="m-project-description">用户分层、策略配置与效果评估。</p><a href="/projects/netease-ai-workflow/">查看案例 <span class="m-circle"><Arrow /></span></a></div><a class="m-featured-media m-project-cover" href="/projects/netease-ai-workflow/" aria-label="查看网易案例"><img src="/mori/project-covers/netease-toy.webp" alt="网易案例概念封面：玩家棋子与消息卡组成的立体微缩场景" width="1536" height="1024" decoding="async" fetchpriority="high" /></a></article>
-   <article class="m-featured-row" id="cookie-cats" data-project-id="cookie-cats"><div class="m-featured-copy"><h2>Cookie Cats</h2><h3>用户流失预测</h3><span class="m-project-label">数据分析项目</span><p class="m-project-question">如何把流失风险转成运营可用的分层？</p><a href="https://github.com/Xuzheee/game_churn_project_plan" target="_blank" rel="noopener noreferrer">查看分析 <span class="m-circle"><Arrow /></span></a></div><a class="m-featured-media m-project-cover" href="https://github.com/Xuzheee/game_churn_project_plan" target="_blank" rel="noopener noreferrer" aria-label="查看 Cookie Cats 分析"><img src="/mori/project-covers/cookie-cats-toy.webp" alt="Cookie Cats 案例概念封面：猫咪棋子与饼干游戏棋盘" width="1536" height="1024" loading="lazy" decoding="async" /></a></article>
-   <article class="m-featured-row" id="urai-lab" data-project-id="urai-lab"><div class="m-featured-copy"><h2>URAI Lab</h2><h3>AI 质量评测</h3><span class="m-project-label">研究项目</span><p class="m-project-question">如何比较多模态抽取质量，并确定人工复核范围？</p><a href="/projects/urai-lab/">查看案例 <span class="m-circle"><Arrow /></span></a></div><a class="m-featured-media m-project-cover" href="/projects/urai-lab/" aria-label="查看 URAI 案例"><img src="/mori/project-covers/urai-toy.webp" alt="URAI Lab 案例概念封面：城市微缩模型、图像标注框与复核清单" width="1536" height="1024" loading="lazy" decoding="async" /></a></article>
-  </div>
+ <section class="m-featured m-scene m-featured-card-section" aria-labelledby="works-title" id="featured">
+  <aside class="m-works-index"><h1 class="m-display" id="works-title">作品</h1><p>运营判断、数据分析与<br />AI 评测。</p><nav aria-label="作品目录" data-section-nav><a class="is-current" href="#featured" aria-current="location">重点案例</a><a href="#tools">工具与实验</a><a href="#research">更多经历</a></nav></aside>
+  <div class="m-featured-rows"><FeaturedCards /></div>
  </section>
  <ProjectArchive />
 </MoriLayout>
 
 <style>
-  /* Keep the complete cover artwork visible at every breakpoint. */
-  .m-featured-row .m-project-cover {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 2;
-    align-self: center;
+  .m-featured-card-section { padding-bottom: 64px; }
+  .m-featured-rows { min-width: 0; }
+  @media (min-width: 901px) {
+    .m-featured-card-section { display: grid; grid-template-columns: 19% 81%; }
+    .m-works-index { position: sticky; top: 30px; display: block; align-self: start; margin-bottom: 0; }
+    .m-works-index > p { margin-top: 22px; }
+    .m-works-index nav { margin-top: 34px; margin-left: 0; font-size: 16px; }
+    .m-featured-rows { padding-left: 34px; }
   }
-  .m-featured-row .m-project-cover > img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+  @media (max-width: 900px) {
+    .m-featured-card-section { display: block; }
+    .m-works-index { position: static; margin-bottom: 36px; }
+    .m-featured-rows { padding-left: 0; }
   }
 </style>

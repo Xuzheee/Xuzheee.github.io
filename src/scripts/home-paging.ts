@@ -111,18 +111,10 @@ if (home) {
     event.preventDefault();
     if (!animating) navigate(direction, innerHeight * 0.85);
   });
-  document.addEventListener('click', event => {
-    if (!enabled || event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
-    const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href]') : null;
-    if (!link || link.target === '_blank' || link.hasAttribute('download')) return;
-    const url = new URL(link.href, location.href);
-    if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search || !url.hash) return;
-    const index = sections.findIndex(section => `#${section.id}` === url.hash);
-    if (url.hash !== '#top' && index < 0) return;
-    event.preventDefault();
-    if (location.hash !== url.hash) history.pushState(null, '', url.hash);
+  // Anchor navigation owns its animation; never let a paging frame pull it back.
+  document.addEventListener('mori:before-scroll', () => {
+    cancelAnimation();
     gestureUsed = true;
-    scrollToPage(url.hash === '#top' ? 0 : ranges()[index].start);
   });
   window.addEventListener('pointerdown', cancelAnimation, { passive: true });
   window.addEventListener('hashchange', cancelAnimation);

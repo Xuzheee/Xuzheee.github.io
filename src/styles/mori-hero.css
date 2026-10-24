@@ -1,0 +1,194 @@
+/* Personal introduction and a single M; existing site colors and reading grid. */
+.m-home .m-hero.m-signature-hero,
+html.m-home-paging .m-home > .m-hero.m-signature-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  grid-template-rows: auto;
+  align-items: center;
+  align-content: center;
+  gap: 4%;
+  height: auto;
+  min-height: var(--home-first-screen-height, calc(100svh - 102px));
+  padding: 56px var(--bookend-gutter) 72px;
+  overflow: visible;
+}
+.m-home .m-signature-hero .m-hero-intro {
+  position: relative;
+  inset: auto;
+  grid-column: 1;
+  grid-row: 1;
+  max-width: none;
+  min-width: 0;
+}
+.m-home .m-signature-hero h1 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(28px, 3.15vw, 44px);
+  font-weight: 800;
+  line-height: 1.55;
+  letter-spacing: -.045em;
+}
+.m-signature {
+  display: inline-block;
+  position: relative;
+  width: 3.2em;
+  height: 1.8em;
+  margin-left: .04em;
+  vertical-align: -.43em;
+  color: var(--red);
+}
+.m-signature svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.m-signature path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: m-signature-write 550ms ease-out 180ms backwards;
+}
+.m-signature path:nth-child(2) { animation-duration: 300ms; animation-delay: 650ms; }
+.m-signature path:nth-child(3) { animation-duration: 240ms; animation-delay: 900ms; }
+.m-signature path:nth-child(4) { animation-duration: 220ms; animation-delay: 1090ms; }
+.m-signature path:nth-child(5) { animation-duration: 130ms; animation-delay: 1290ms; }
+.m-signature path:nth-child(6) { animation-duration: 420ms; animation-delay: 1460ms; }
+@keyframes m-signature-write {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+.m-signature-text {
+  position: absolute;
+  width: 1px;
+  height: 1px; /* taste-skill-ignore: visually hidden accessible name, not a visible rule. */
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.m-signature-period { color: var(--red); margin-left: -.25em; }
+.m-home .m-signature-hero .m-hero-description {
+  margin: 28px 0 0;
+  max-width: 28em;
+  color: var(--ink);
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0;
+  white-space: normal;
+}
+.m-hero-copy-break { display: initial; }
+.m-hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 30px; }
+.m-home .m-signature-hero .m-hero-actions a {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 52px;
+  margin: 0;
+  padding: 13px 24px;
+  gap: 14px;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+.m-home .m-signature-hero .m-hero-cta { background: var(--red); color: var(--paper); }
+.m-home .m-signature-hero .m-hero-cta:hover { background: var(--ink); }
+.m-hero-work { border: 2px solid var(--ink); border-bottom-color: var(--red); color: var(--ink); }
+.m-hero-work:hover { background: var(--panel); }
+.m-hero-actions svg { width: 20px; height: 20px; transition: transform 160ms ease; }
+.m-hero-work:hover svg { transform: translate(2px, -2px); }
+.m-home .m-signature-hero .m-hero-actions a:active { transform: translateY(2px); }
+.m-hero-actions a:focus-visible { outline: 3px solid var(--ink); outline-offset: 5px; }
+.m-home .m-signature-hero .m-hero-motto {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  white-space: normal;
+}
+.m-hero-mark {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  min-width: 0;
+  justify-self: center;
+  user-select: none;
+}
+.m-hero-mark img { display: block; width: 100%; height: auto; pointer-events: none; }
+.m-hero-mark-float { animation: m-mark-breathe 7s ease-in-out infinite; animation-play-state: paused; }
+.m-hero-mark.is-moving .m-hero-mark-float { animation-play-state: running; }
+.m-hero-mark-tilt {
+  transform: perspective(1000px) translate3d(var(--mark-x, 0px), var(--mark-y, 0px), 0) rotateX(var(--mark-rx, 0deg)) rotateY(var(--mark-ry, 0deg));
+  transition: transform 350ms cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes m-mark-breathe {
+  0%, 100% { transform: translateY(0) rotate(-.35deg); }
+  50% { transform: translateY(-6px) rotate(.35deg); }
+}
+@media (min-width: 901px) {
+  .m-home .m-hero.m-signature-hero,
+  html.m-home-paging .m-home > .m-hero.m-signature-hero {
+    padding: 40px var(--bookend-gutter) 48px;
+  }
+  .m-home .m-signature-hero .m-hero-intro {
+    display: block;
+    min-height: 0;
+  }
+  .m-home .m-signature-hero .m-hero-mark {
+    width: min(640px, calc(100% + min(60px, var(--bookend-gutter) - 24px)));
+  }
+  .m-home .m-signature-hero h1 {
+    font-size: clamp(34px, 3.7vw, 56px);
+    line-height: 1.45;
+  }
+  .m-home .m-signature-hero .m-hero-description {
+    margin: 28px 0 0;
+    font-size: clamp(19px, 1.65vw, 25px);
+    line-height: 1.65;
+  }
+  .m-home .m-signature-hero .m-hero-actions { margin-top: 28px; gap: 20px; }
+  .m-home .m-signature-hero .m-hero-actions a {
+    min-height: 56px;
+    padding: 15px 28px;
+    font-size: 18px;
+  }
+  .m-home .m-signature-hero .m-hero-motto { margin-top: 18px; font-size: 18px; }
+}
+@media (min-width: 901px) and (max-height: 700px) {
+  .m-home .m-signature-hero .m-hero-mark { width: min(100%, 62svh); }
+  .m-home .m-signature-hero h1 { font-size: clamp(34px, 3.4vw, 52px); }
+  .m-home .m-signature-hero .m-hero-description { margin-top: 20px; font-size: 19px; }
+  .m-home .m-signature-hero .m-hero-actions { margin-top: 24px; }
+  .m-home .m-signature-hero .m-hero-motto { margin-top: 16px; }
+}
+@media (max-width: 900px) {
+  .m-home .m-hero.m-signature-hero {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: 40px;
+    padding: 36px var(--bookend-gutter) 56px;
+  }
+  .m-home .m-signature-hero .m-hero-intro { grid-column: 1; grid-row: 1; }
+  .m-home .m-signature-hero h1 { font-size: clamp(27px, 4.7vw, 40px); }
+  .m-hero-mark { grid-column: 1; grid-row: 2; width: min(76%, 400px); }
+  .m-home .m-signature-hero .m-hero-description { margin-top: 22px; font-size: 18px; }
+  .m-hero-actions { margin-top: 24px; }
+}
+@media (max-width: 600px) {
+  .m-home .m-hero.m-signature-hero { gap: 36px; padding-top: 24px; padding-bottom: 40px; }
+  .m-home .m-signature-hero h1 { font-size: clamp(25px, 6.8vw, 34px); }
+  .m-home .m-signature-hero .m-hero-description { font-size: 16px; }
+  .m-home .m-signature-hero .m-hero-actions a { min-height: 48px; padding: 12px 18px; font-size: 16px; gap: 10px; }
+  .m-home .m-signature-hero .m-hero-motto { font-size: 14px; }
+  .m-hero-actions { gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-signature path { animation: none; stroke-dashoffset: 0; }
+  .m-hero-mark-float { animation: none; transform: none; }
+  .m-hero-mark-tilt { transform: none; transition: none; }
+  .m-home .m-signature-hero .m-hero-actions a, .m-hero-actions svg { transition: none; }
+  .m-hero-work:hover svg, .m-home .m-signature-hero .m-hero-actions a:active { transform: none; }
+}
