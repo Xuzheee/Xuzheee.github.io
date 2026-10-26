@@ -1,4 +1,5 @@
 ---
+import objectStyles from "../../styles/mori-object-document.css?raw";
 import recordPlayerSource from '../../assets/record-player.html?raw';
 import '../../styles/mori-record-player.css';
 interface Track { id: string; title: string; artist: string; url: string; previewUrl: string }
@@ -9,7 +10,7 @@ for (const track of albums) {
   playerDocument = playerDocument.replaceAll(`music/${track.id}.mp3`, track.previewUrl);
 }
 // The supplied player keeps the user's requested controls; connect audio and fit its height.
-const integration = `<style>
+const integration = `<style>${objectStyles}
 html,body{height:auto;min-height:0}
 :root{--paper:#f6f4ee}
 body{background-color:var(--paper);background-image:none}

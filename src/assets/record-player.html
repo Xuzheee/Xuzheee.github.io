@@ -11,7 +11,7 @@
 /* ---------- palettes ---------- */
 const PALS = {
   mustard: { l:'#f4b829', m:'#d49c1f', d:'#4e4a18' },
-  tomato:  { l:'#ef6a4c', m:'#cf5038', d:'#4a2219' },
+  tomato:  { l:'#e84632', m:'#ce3c2b', d:'#87382c' },
   mint:    { l:'#93d3b0', m:'#71b693', d:'#1f4034' },
   cobalt:  { l:'#76a0e2', m:'#5a82c6', d:'#1c2948' },
   blush:   { l:'#f3a6bb', m:'#d8869c', d:'#4b2430' },
@@ -20,8 +20,8 @@ const METAL   = { l:'#eef0f0', m:'#c6ccce', d:'#8f989b' };
 const CLEAR   = { l:'#e4f2f4', m:'#c4dfe4', d:'#97b9c0' };
 const CERAMIC = { l:'#fbfaf3', m:'#e3e0d2', d:'#bdb8a6' };
 const DARK    = { l:'#55504a', m:'#3d3935', d:'#272421' };
-const INK = '#231e16';
-const SHADOW = '#41538f';
+const INK = '#292825';
+const SHADOW = '#756f6b';
 
 /* ---------- projection (x = depth toward viewer-right, y = toward viewer-left, z = up) ---------- */
 const C = Math.cos(Math.PI/6), S = Math.sin(Math.PI/6);
@@ -282,7 +282,7 @@ function mountFigure(cfg){
     <div id="readout"></div>
     ${cfg.idea ? `<p class="idea"><strong>The big idea</strong>${cfg.idea}</p>` : ''}
     <div class="controls">
-      <div class="ctl"><label for="wb">Hand-drawn wobble</label><input id="wb" type="range" min="0" max="7" step="0.1" value="2.4"></div>
+      <div class="ctl"><label for="wb">Hand-drawn wobble</label><input id="wb" type="range" min="0" max="7" step="0.1" value="1.2"></div>
       <div class="ctl"><label>Colour</label><div class="row" id="pals"></div></div>
       <div class="ctl" id="lblctl" hidden><label>Labels</label><div class="row"><button id="lbl" aria-pressed="true">On</button></div></div>
     </div>
@@ -303,7 +303,7 @@ function mountFigure(cfg){
   const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
   const bw = Math.max(...xs)-Math.min(...xs), bh = Math.max(...ys)-Math.min(...ys);
   // the object fills ~74% of the width / ~88% of the height, nudged right of centre so the buttons (top left) stay clear
-  const vbW = Math.max(bw/.74, bh/.88/.75), vbH = vbW*.75;
+  const vbW = Math.max(bw/(innerWidth < 560 ? .88 : .74), bh/.88/.75), vbH = vbW*.75;
   OX = (vbW-bw)/2 + vbW*.06 - Math.min(...xs); OY = vbH*.04 - Math.min(...ys);   // sit a little high: shadows fall downward
   const svg = document.getElementById('fig');
   svg.setAttribute('viewBox', `0 0 ${f(vbW)} ${f(vbH)}`);

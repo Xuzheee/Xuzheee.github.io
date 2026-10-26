@@ -306,3 +306,5 @@
   .m-interests > .m-scene { padding-block: 32px; }
   .m-interests > .m-scene:first-child { padding-top: 18px; }
 }
+
+.m-header nav[data-nav-empty="true"] .m-nav-pill { opacity: 0; }

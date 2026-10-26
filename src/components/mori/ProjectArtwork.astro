@@ -1,0 +1,14 @@
+---
+import FeaturedCards from './FeaturedCards.astro';
+import '../../styles/mori-artwork.css';
+const { projectId } = Astro.props;
+const scenes = ['netease-ai-workflow', 'cookie-cats', 'urai-lab'];
+const assets = {
+  'inky-paper': {src:'/project-inky-paper.png', title:'Inky Paper', note:'任务规划 · 专注执行 · 复盘', alt:'Inky Paper 实际工作台界面'},
+  'seven-angry-man': {src:'/mori/work-posters/evidence-dialogue.svg', title:'多智能体陪审团', note:'证据 · 讨论 · 判断', alt:'共同证据连接不同讨论意见的示意图'},
+};
+const asset = assets[projectId];
+---
+<div class="m-project-artwork" data-artwork={projectId} role="img" aria-label={asset?.alt ?? ({"netease-ai-workflow":"网易用户分层与触达工作流示意", "cookie-cats":"Cookie Cats 用户流失风险分层示意", "urai-lab":"URAI 模型评测与人工复核示意"}[projectId])}>
+ {scenes.includes(projectId) ? <FeaturedCards projectId={projectId} artworkOnly /> : asset && <div class:list={['m-artwork-sheet', {'is-interface': projectId === 'inky-paper'}]}><div class="m-artwork-label"><span>{asset.title}</span><span aria-hidden="true">↗</span></div><img src={asset.src} alt={asset.alt} loading="lazy" /><p>{asset.note}</p></div>}
+</div>

@@ -7,11 +7,11 @@ module.exports = {
 	plugins: [require("@tailwindcss/typography"),require("daisyui")],
 	daisyui: {
 		themes: [{ portfolio: {
-			"primary": "#0d2a1c", "primary-content": "#f7f7f7",
-			"secondary": "#e3e9e4", "secondary-content": "#0d2a1c",
-			"accent": "#f6e016", "accent-content": "#0d2a1c",
-			"neutral": "#0d2a1c", "neutral-content": "#f7f7f7",
-			"base-100": "#f7f7f7", "base-200": "#ebeeeb", "base-300": "#d7dfd8", "base-content": "#0d2a1c",
+			"primary": "#ce3c2b", "primary-content": "#f6f4ee",
+			"secondary": "#eae7df", "secondary-content": "#292825",
+			"accent": "#ce3c2b", "accent-content": "#f6f4ee",
+			"neutral": "#292825", "neutral-content": "#f6f4ee",
+			"base-100": "#f6f4ee", "base-200": "#eae7df", "base-300": "#d8d4cb", "base-content": "#292825",
 			"info": "#3a6470", "success": "#3c6d46", "warning": "#e7ce48", "error": "#b24242",
 			"--rounded-box": "0.25rem", "--rounded-btn": "0rem", "--rounded-badge": "0rem", "--btn-text-case": "none"
 		} }],

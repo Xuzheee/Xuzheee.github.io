@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import ProjectArtwork from "../../components/mori/ProjectArtwork.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { profile, getProject } from "../../data/portfolio";
 
@@ -23,6 +24,7 @@ const date = entry.data.updatedDate.toISOString().slice(0, 10);
       <span class="badge badge-secondary">{project.badge}</span>
       <h1 class="mt-4 text-3xl font-bold leading-tight md:text-4xl">{project.title}</h1>
       <p class="mt-5 text-lg leading-relaxed text-base-content/80">{project.description}</p>
+      <div class="m-case-artwork"><ProjectArtwork projectId={project.id} /></div>
       <dl class="mt-6 grid gap-3 rounded-lg border border-base-300 p-4 text-sm sm:grid-cols-2">
         <div><dt class="text-base-content/65">我的职责</dt><dd class="mt-1">{project.role}</dd></div>
         {project.period && <div><dt class="text-base-content/65">项目经历</dt><dd class="mt-1">{project.period}</dd></div>}

@@ -1,0 +1,19 @@
+/* Reading pages share Mori's identity while retaining their document layout. */
+html:has(.mori-document), .mori-document {
+  --paper: #f6f4ee; --surface: #eae7df; --ink: #292825;
+  --muted: #756f6b; --accent: #ce3c2b; --red: #e84632;
+  background: var(--paper); color: var(--ink);
+  font-family: Switzer, 'Mori Sans', sans-serif;
+}
+.mori-document .site-main { max-width: 1200px; padding: 48px 40px 64px; }
+.mori-document .case-study, .mori-document .prose { margin-inline: auto; }
+.mori-document .btn { border-radius: 999px; min-height: 44px; height: auto; padding: 10px 20px; line-height: 1.4; }
+.mori-document .btn-primary, .mori-document .btn-accent { background: #ce3c2b; color: #fff; }
+.mori-document .btn-outline { border: 1px solid #b7b1a6; background: transparent; color: var(--ink); }
+.mori-document .btn:hover { background: var(--ink); color: var(--paper); }
+.mori-document .badge { border-radius: 4px; background: var(--surface); color: var(--ink); }
+.mori-document ::selection { background: #e8463233; color: var(--ink); }
+.mori-document .skip-link { background: var(--ink); color: var(--paper); }
+@media (max-width: 600px) {
+  .mori-document .site-main:not(.site-main--wide) { padding: 28px 20px 48px; }
+}

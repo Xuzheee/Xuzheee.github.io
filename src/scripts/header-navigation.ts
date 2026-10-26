@@ -3,12 +3,13 @@
 const nav = document.querySelector<HTMLElement>('[data-mori-nav]');
 if (nav) {
   const links = [...nav.querySelectorAll<HTMLAnchorElement>('a[href]')];
-  const current = Math.max(0, links.findIndex(link => link.getAttribute('aria-current') === 'page'));
+  const current = links.findIndex(link => link.getAttribute('aria-current') === 'page');
   let pointerIndex: number | null = null;
   let pendingIndex: number | null = null;
 
   const highlight = (index: number) => {
-    nav.style.setProperty('--nav-index', String(index));
+    nav.dataset.navEmpty = String(index < 0);
+    nav.style.setProperty('--nav-index', String(Math.max(0, index)));
     links.forEach((link, i) => {
       if (i === index) link.dataset.highlighted = 'true';
       else delete link.dataset.highlighted;

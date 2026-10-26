@@ -1,8 +1,11 @@
 ---
 import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
+import Header from "../components/mori/SiteHeader.astro";
+import "../styles/mori.css";
+import "../styles/mori-reading.css";
+import "../styles/mori-document.css";
 import Footer from "../components/Footer.astro";
-import { ViewTransitions } from "astro:transitions";
+
 import { SITE_TITLE, SITE_DESCRIPTION, TRANSITION_API } from "../config";
 import '../styles/mori-navigation.css';
 import NavigationHead from '../components/mori/NavigationHead.astro';
@@ -13,16 +16,17 @@ const { image, title = SITE_TITLE, description = SITE_DESCRIPTION, sideBarActive
   <head>
     <NavigationHead />
     <BaseHead title={title} description={description} image={image} ogType={ogType} />
-    {TRANSITION_API && <ViewTransitions />}
+
   </head>
-  <body id="top">
+  <body class="mori-site mori-document">
     <a class="skip-link" href="#main-content">跳到正文</a>
-    <Header active={sideBarActiveItemID} />
+    <Header active={sideBarActiveItemID === "cv" ? "about" : sideBarActiveItemID} />
     <main id="main-content" tabindex="-1" class:list={["site-main", { "site-main--wide": wide }]}>
       <slot />
     </main>
     <Footer />
     <script>import '../scripts/navigation';</script>
+    <script>import '../scripts/header-navigation';</script>
     <script>
       function revealContent() {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -37,7 +41,7 @@ const { image, title = SITE_TITLE, description = SITE_DESCRIPTION, sideBarActive
         document.querySelectorAll('[data-enter], [data-picture]').forEach(el => observer.observe(el));
         document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
       }
-      document.addEventListener('astro:page-load', revealContent);
+      revealContent();
     </script>
   </body>
 </html>

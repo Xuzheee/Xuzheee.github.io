@@ -94,3 +94,11 @@
 @media (prefers-reduced-motion: reduce) {
   .m-featured-cards .pc { transform: none; transition: none; }
 }
+
+/* Shared warm studio palette; interaction changes the scene, never its identity. */
+.m-featured-cards .pc, .m-featured-cards .pc.is-on {
+ --mfc-bg:#eae7df; --mfc-bg2:#ded9ce; --mfc-line:#55514a;
+ --mfc-soft:#29282522; --mfc-title:#292825; --mfc-muted:#756f6b;
+ --mfc-red:#e84632; --mfc-red-l:#ce3c2b; --mfc-red-r:#a83a2c;
+}
+.m-featured-cards .pc .stage { overflow:hidden; }

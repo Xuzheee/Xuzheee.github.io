@@ -1,0 +1,14 @@
+---
+import Arrow from './Arrow.astro';
+const { active = '' } = Astro.props;
+const navigation = [{id:'home',href:'/',name:'Home'},{id:'about',href:'/about/',name:'About'},{id:'projects',href:'/projects/',name:'Work'},{id:'interests',href:'/interests/',name:'Interests'}];
+const activeIndex = navigation.findIndex(item => item.id === active);
+---
+    <header class="m-header" id="top">
+      <a class="m-logo" href="/" aria-label="Mori 首页" lang="en"><img class="m-logo-mark" src="/mori/mori-mark-b.webp" alt="" width="40" height="40" />Mori</a>
+      <nav aria-label="Main navigation" lang="en" data-mori-nav style={`--nav-index:${Math.max(0,activeIndex)}`} data-nav-empty={activeIndex < 0 ? "true" : undefined}>
+        <span class="m-nav-pill" aria-hidden="true"></span>
+        {navigation.map(item => <a href={item.href} aria-current={active === item.id ? 'page' : undefined} data-highlighted={active === item.id ? 'true' : undefined}>{item.name}</a>)}
+      </nav>
+      <a class="m-header-contact" href="#contact" lang="en">Let’s talk <Arrow direction="diagonal" /></a>
+    </header>

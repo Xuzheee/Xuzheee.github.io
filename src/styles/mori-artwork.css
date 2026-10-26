@@ -1,0 +1,16 @@
+/* Shared cover grammar: warm paper, charcoal detail, vermilion accent. */
+.m-project-artwork { width:100%; min-width:0; background:#eae7df; aspect-ratio:3/2; overflow:hidden; }
+.m-artwork-sheet { height:100%; display:flex; flex-direction:column; padding:5%; gap:5%; }
+.m-artwork-label { display:flex; justify-content:space-between; font-size:clamp(14px,1.6vw,24px); font-weight:600; line-height:1.2; }
+.m-artwork-label > span:last-child { color:#ce3c2b; }
+.m-artwork-sheet img { flex:1; min-height:0; width:100%; object-fit:contain; }
+.m-artwork-sheet.is-interface img { object-fit:cover; object-position:top; border:1px solid #d8d4cb; box-shadow:0 8px 20px -12px #29282540; }
+.m-artwork-sheet p { margin:0; font-size:12px; line-height:1.5; color:#756f6b; }
+.m-artwork-only, .m-artwork-only .pc { height:100%; }
+.m-featured-cards.m-artwork-only .pc { display:block; }
+.m-featured-cards.m-artwork-only .pc > :not(.stage) { display:none; }
+.m-featured-cards.m-artwork-only .pc .stage { height:100%; aspect-ratio:3/2; }
+.m-home .m-home-work .m-desk { height:auto; }
+.m-home .m-home-work-side .m-project-artwork { aspect-ratio:3/2; max-height:240px; }
+.m-case-artwork { margin:28px 0; }
+@media(max-width:600px) { .m-home .m-home-work-side .m-project-artwork { max-height:none; } }

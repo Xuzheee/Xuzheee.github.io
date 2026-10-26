@@ -1,6 +1,10 @@
 ---
 import cards from '../../assets/featured-cards.html?raw';
 import '../../styles/mori-featured-cards.css';
+const { projectId, artworkOnly = false } = Astro.props;
+const selected = projectId ? [...cards.matchAll(/<a class="pc"[\s\S]*?<\/a>/g)].map(m => m[0]).find(card => card.includes(`data-project-id="${projectId}"`)) ?? '' : cards;
+const scene = selected.match(/data-scene="([^"]+)"/)?.[1];
+const content = artworkOnly && scene ? `<div class="pc" data-scene="${scene}"><div class="stage"></div><span class="cta" hidden><i></i></span></div>` : selected;
 ---
-<div class="m-featured-cards" set:html={cards} />
+<div class:list={['m-featured-cards', {'m-artwork-only': artworkOnly}]} set:html={content} />
 <script>import '../../scripts/featured-cards';</script>

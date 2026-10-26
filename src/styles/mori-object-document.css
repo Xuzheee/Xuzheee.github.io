@@ -1,0 +1,8 @@
+
+.controls{display:none!important}
+html body{color:#292825;--ink:#292825;--muted:#756f6b;--paper:#f6f4ee;font-family:Switzer,'Mori Sans',sans-serif}
+@font-face{font-family:Switzer;src:url('/fonts/switzer-400.woff2')}
+@font-face{font-family:'Mori Sans';src:url('/fonts/mori-chinese.woff2')}
+body .act,body .chip{min-height:44px;font-size:14px;border:1px solid #b7b1a6;box-shadow:none}
+body .chips{box-shadow:0 8px 24px #29282518;border:1px solid #d8d4cb}
+@media(max-width:560px){html body{padding:8px 0 16px}.stage{overflow:visible}body .act{min-height:44px;font-size:14px;padding:8px 14px}.stats{font-size:12px}body .chip{min-height:44px}}
